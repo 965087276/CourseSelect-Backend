@@ -25,6 +25,7 @@ hs_err_pid*
 # IDEA
 /.idea/
 /.target/
+/target/
 *.iml
 /.mvn/
 mvnw*
