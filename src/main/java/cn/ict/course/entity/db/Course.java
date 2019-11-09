@@ -69,7 +69,7 @@ public class Course extends BaseEntity {
      * 已选
      */
     @Column(name = "selected_people", nullable = false)
-    private int selectedPeople;
+    private int selectedPeople = 0;
 
     /**
      * 授课方式
