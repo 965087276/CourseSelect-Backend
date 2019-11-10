@@ -31,6 +31,7 @@ public class Course extends BaseEntity {
 
     /**
      * 课程属性(核心课、普及课)
+     * 核心课、普及课、研讨课等等
      */
     @Column(name = "course_type", nullable = false)
     private String courseType;
@@ -62,26 +63,26 @@ public class Course extends BaseEntity {
     /**
      * 限选
      */
-    @Column(name = "max_people", nullable = false)
-    private int maxPeople;
+    @Column(name = "limit_num", nullable = false)
+    private int limitNum;
 
     /**
      * 已选
      */
-    @Column(name = "selected_people", nullable = false)
-    private int selectedPeople = 0;
+    @Column(name = "student_num", nullable = false)
+    private int studentNum = 0;
 
     /**
      * 授课方式
      */
-    @Column(name = "teach_way", nullable = false)
-    private String teachWay;
+    @Column(name = "teaching_type", nullable = false)
+    private String teachingType;
 
     /**
      * 考核方式
      */
-    @Column(name = "assess_way", nullable = false)
-    private String assessWay;
+    @Column(name = "exam_type", nullable = false)
+    private String examType;
 
     /**
      * 授课教师
