@@ -19,8 +19,12 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping(value = "/xk/api")
 public class UserController {
 
+    private final UserService userService;
+
     @Autowired
-    private UserService userService;
+    public UserController(UserService userService) {
+        this.userService = userService;
+    }
 
     @ApiOperation(value = "用户登录", notes = "学生、老师和管理员登录")
     @ApiImplicitParam(name = "loginDTO", value = "用户登录信息", required = true, dataType = "LoginDTO")

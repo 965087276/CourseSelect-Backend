@@ -5,7 +5,6 @@ import cn.ict.course.entity.dto.LoginDTO;
 import cn.ict.course.entity.vo.login.LoginVO;
 import cn.ict.course.repo.UserRepo;
 import cn.ict.course.service.UserService;
-import org.graalvm.compiler.replacements.Log;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -15,8 +14,12 @@ import org.springframework.stereotype.Service;
 @Service
 public class UserServiceImpl implements UserService {
 
+    private final UserRepo userRepo;
+
     @Autowired
-    private UserRepo userRepo;
+    public UserServiceImpl(UserRepo userRepo) {
+        this.userRepo = userRepo;
+    }
 
     @Override
     public LoginVO login(LoginDTO loginDTO) {
