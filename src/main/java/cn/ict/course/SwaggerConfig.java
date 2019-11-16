@@ -19,7 +19,7 @@ public class SwaggerConfig {
         return new Docket(DocumentationType.SWAGGER_2)
                 .apiInfo(apiInfo())
                 .select()
-                .apis(RequestHandlerSelectors.basePackage("cn.ict.jwdsj.datapool"))
+                .apis(RequestHandlerSelectors.basePackage("cn.ict.course.controller"))
                 .paths(PathSelectors.any())
                 .build();
     }
@@ -27,7 +27,7 @@ public class SwaggerConfig {
     private ApiInfo apiInfo() {
         return new ApiInfoBuilder()
                 .title("选课系统后端")
-                .description("菜鸡团队")
+                .description("The Three Musketeers")
                 .version("1.0.0")
                 .build();
     }
