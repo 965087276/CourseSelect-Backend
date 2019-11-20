@@ -117,3 +117,9 @@ jwt（json web token）
 
 参考
 [基于Token的WEB后台认证机制](https://www.cnblogs.com/xiekeli/p/5607107.html)
+
+## 2019.11.20
+IntelliJ中使用Git导入repository出错的问题。
+
+描述：包含前后端的repository直接使用Git无法导入，maven无法构建相关依赖。
+解决办法：Git导入时不选择默认导入，改换maven，并选择后端目录。
