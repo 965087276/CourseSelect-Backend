@@ -1,6 +1,8 @@
 package cn.ict.course.entity.db;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
@@ -8,27 +10,28 @@ import javax.persistence.Table;
 /**
  * @author Jianyong Feng
  **/
+@EqualsAndHashCode(callSuper = true)
 @Entity
 @Table(name = "user")
 @Data
 public class User extends BaseEntity {
     /**
-     * 工号
+     * 默认工号，如学工号/教师工号
      */
-    @Column(name = "user_code", nullable = false)
-    private String userCode;
+    @Column(name = "username", nullable = false)
+    private String username;
 
     /**
-     * 姓名
+     * 真实姓名
      */
-    @Column(name = "name", nullable = false)
-    private String name;
+    @Column(name = "real_name", nullable = false)
+    private String realName;
 
     /**
      * 邮箱
      */
-    @Column(name = "mailbox", nullable = false)
-    private String mailbox;
+    @Column(name = "email", nullable = false)
+    private String email;
 
     /**
      * 手机号

@@ -23,7 +23,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public LoginVO login(LoginDTO loginDTO) {
-        User user = userRepo.findByUserCode(loginDTO.getUserCode());
+        User user = userRepo.findByUsername(loginDTO.getUsername());
         int loginCode;
         if (user == null) {
             loginCode = -1;
