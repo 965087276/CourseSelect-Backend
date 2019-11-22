@@ -1,21 +1,21 @@
 package cn.ict.course.entity.db;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 
 /**
+ * 课程表
  * @author 965087276@qq.com
  * @date 2019/11/9 14:10
  */
+@EqualsAndHashCode(callSuper = true)
 @Entity
 @Table(name = "course")
 @Data
-/**
- * 课程表
- */
 public class Course extends BaseEntity {
     /**
      * 课程编码
