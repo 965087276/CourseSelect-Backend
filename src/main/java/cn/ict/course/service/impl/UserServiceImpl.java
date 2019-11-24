@@ -49,7 +49,7 @@ public class UserServiceImpl implements UserService {
         // to-do 添加用户名密码空异常
         if (StringUtils.isEmpty(username) || StringUtils.isEmpty(password)) {
             loginVO.setCode(405);
-            loginVO.setToken("error");
+            loginVO.setAuthToken("error");
             return loginVO;
         }
 
@@ -63,7 +63,7 @@ public class UserServiceImpl implements UserService {
             subject.login(token);
             loginVO.setCode(ResultEnum.SUCCESS.getCode());
             loginVO.setMessage(ResultEnum.SUCCESS.getMessage());
-            loginVO.setToken(sessionId);
+            loginVO.setAuthToken(sessionId);
         } catch (IncorrectCredentialsException e) {
             loginVO.setCode(ResultEnum.USERNAME_PASSWORD_NOT_MATCH.getCode());
             loginVO.setMessage(ResultEnum.USERNAME_PASSWORD_NOT_MATCH.getMessage());

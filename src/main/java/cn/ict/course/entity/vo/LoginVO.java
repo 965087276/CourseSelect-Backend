@@ -11,5 +11,5 @@ import java.io.Serializable;
 public class LoginVO {
     private int code;
     private String message;
-    private Serializable token;
+    private Serializable authToken;
 }
