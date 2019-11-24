@@ -1,5 +1,6 @@
 package cn.ict.course.entity.db;
 
+import com.github.dozermapper.core.Mapping;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -71,7 +72,10 @@ public class User extends BaseEntity {
 
     /**
      * 类型
+     * student - 学生
+     * admin - 管理员
+     * teacher - 教师
      */
-    @Column(name = "type", nullable = false)
-    private String type;
+    @Column(name = "role", nullable = false)
+    private String role;
 }

@@ -127,3 +127,59 @@ IntelliJ中使用Git导入repository出错的问题。
 输入信息需要验证，可以参考Timo
 
 package com.linln.admin.system.validator;
+## 2019.11.23
+springboot各个分层不明确
+
+service层与controller、dao层关系？
+
+### （坑）使用Swagger添加用户调试错误
+描述：
+使用Swagger向以下API发送POST请求，
+```txt
+http://localhost:8080/xk/api/add
+```
+无法添加用户，并返回Response body如下
+```$xslt
+{
+  "timestamp": "2019-11-22T16:53:19.939+0000",
+  "status": 405,
+  "error": "Method Not Allowed",
+  "message": "Request method 'GET' not supported",
+  "path": "/xk/api/login"
+}
+```
+观察发现以下错误，
+![](_v_images/20191123005533505_2897.png =300x)
+
+思路：
+1. 可能是Controller代码出现错误，但是检查代码后发现url映射正确，排除。
+2. 可能是Swagger出现错误，但是google没有搜到与问题相符的情况。
+3. 使用Postman调试，发现返回结果相同。
+4. 更改用户权限配置代码，
+```java
+Map<String, String> filterChainDefinitionMap = new LinkedHashMap<>();
+filterChainDefinitionMap.put("/xk/api/login", "anon");
+// 添加下面这行代码，允许无需认证即可访问/xk/api/add
+filterChainDefinitionMap.put("/xk/api/add", "anon"); 
+filterChainDefinitionMap.put("/xk/api/logout", "anon");
+// 拦截根目录下的所有路径，需要放行的路径必须在之前添加
+filterChainDefinitionMap.put("/xk/api/**", "userAuth");
+```
+更改后重新运行，错误解决。
+#### 总结
+一定要提前规定好api，并在权限代码中加入，权限问题时刻牢记。
+### （坑）用户登录验证失败
+描述，用户登陆时，密码验证总是失败。
+
+原因：
+
+```java
+@Bean
+public UserRealm getRealm() {
+    UserRealm userRealm = new UserRealm();
+    // 需要把自定义的CredentialsMatcher加入到userRealm中
+    userRealm.setCredentialsMatcher(hashedCredentialsMatcher());
+    return userRealm;
+}
+```
+需要把自定义的凭证匹配器加入到userRealm中。
