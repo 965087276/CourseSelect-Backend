@@ -16,6 +16,26 @@ import java.io.IOException;
  * @author Jianyong Feng
  **/
 public class UserAuthFilter extends FormAuthenticationFilter {
+
+    /**
+     * 直接过滤可以访问的请求类型
+     */
+    private static final String REQUET_TYPE = "OPTIONS";
+
+
+    UserAuthFilter() {
+        super();
+    }
+
+
+    @Override
+    public boolean isAccessAllowed(ServletRequest request, ServletResponse response, Object mappedValue) {
+        if (((HttpServletRequest) request).getMethod().toUpperCase().equals(REQUET_TYPE)) {
+            return true;
+        }
+        return super.isAccessAllowed(request, response, mappedValue);
+    }
+
     @Override
     protected boolean onAccessDenied(ServletRequest request, ServletResponse response) throws IOException {
         HttpServletRequest httpRequest = WebUtils.toHttp(request);
