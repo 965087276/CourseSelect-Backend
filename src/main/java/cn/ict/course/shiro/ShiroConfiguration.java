@@ -116,6 +116,6 @@ public class ShiroConfiguration {
     @Bean
     public SessionManager sessionManager() {
         //将我们继承后重写的shiro session 注册
-        return new ShiroSession();
+        return new ShiroSessionManager();
     }
 }

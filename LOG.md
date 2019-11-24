@@ -183,3 +183,37 @@ public UserRealm getRealm() {
 }
 ```
 需要把自定义的凭证匹配器加入到userRealm中。
+## 2019.11.23
+### 基本类型与对象
+什么时候用基本数据类型（int），什么时候用Integer。
+### （坑）跨域
+### 跨域是什么
+![](_v_images/20191124190100545_6271.png =500x)
+
+**当协议、子域名、主域名、端口号中任意一个不相同时，都算作不同域**。不同域之间相互请求资源，就算作“跨域”。
+
+![](_v_images/20191124190157959_6435.png =600x)
+
+[九种跨域方式实现原理（完整版）](https://juejin.im/post/5c23993de51d457b8c1f4ee1)
+### 跨域之使用token认证信息。
+
+前后端分离情况下，REST是无状态的，shiro是根据sessionID来识别是不是同一个request，但如果前后分离的话，就会出现跨域的问题，session很可能就会发生变化。
+
+解决方法：这样就需要用一个标记来表明是同一个请求。
+
+参考博客：[前后分离，使用自定义token作为shiro认证标识，实现springboot整合shiro](https://my.oschina.net/sprouting/blog/3059282)
+### 跨域之过滤OPTIONS请求
+前后端分离项目中，由于跨域，会导致复杂请求，即会发送preflighted request，这样会导致在GET／POST等请求之前会先发一个OPTIONS请求，但OPTIONS请求并不带shiro的'authToken'字段（shiro的SessionId），即OPTIONS请求不能通过shiro验证，会返回未认证的信息。
+
+解决方法：过滤可以访问的请求类型。
+```java
+// 直接过滤可以访问的请求类型
+private static final String REQUET_TYPE = "OPTIONS";
+@Override
+public boolean isAccessAllowed(ServletRequest request, ServletResponse response, Object mappedValue) {
+    if (((HttpServletRequest) request).getMethod().toUpperCase().equals(REQUET_TYPE)) {
+        return true;
+    }
+    return super.isAccessAllowed(request, response, mappedValue);
+}
+```

@@ -12,7 +12,7 @@ import java.io.Serializable;
 /**
  * @author Jianyong Feng
  **/
-public class ShiroSession extends DefaultWebSessionManager {
+public class ShiroSessionManager extends DefaultWebSessionManager {
 
     /**
      * 定义的请求头中使用的标记key，用来传递 token
@@ -22,7 +22,7 @@ public class ShiroSession extends DefaultWebSessionManager {
     private static final String REFERENCED_SESSION_ID_SOURCE = "Stateless request";
 
 
-    ShiroSession() {
+    ShiroSessionManager() {
         super();
         //设置 shiro session 失效时间，默认为30分钟，这里现在设置为15分钟
         //setGlobalSessionTimeout(MILLIS_PER_MINUTE * 15);
