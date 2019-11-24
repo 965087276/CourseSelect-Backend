@@ -42,11 +42,11 @@ public class UserController {
         return ResponseEntity.ok();
     }
     @RequiresRoles(value={"admin","student"},logical = Logical.OR)
-    @GetMapping("/users/{id}")
+    @GetMapping("/users/{username}")
     @ApiOperation(value = "获取登录用户信息", notes = "根据url的id来获取用户详细信息")
     @ApiImplicitParam(name = "id", value = "用户id", required = true, dataType = "Long", paramType = "path")
-    public ResponseEntity detail(@PathVariable Long id) {
-        UserDetailVO detail = userService.detail(id);
+    public ResponseEntity detail(@PathVariable String username) {
+        UserDetailVO detail = userService.detail(username);
         return ResponseEntity.ok(detail);
     }
 }

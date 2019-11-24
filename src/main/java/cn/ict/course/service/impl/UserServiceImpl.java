@@ -102,8 +102,8 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserDetailVO detail(Long id) {
-        User user = userRepo.findById(id).orElse(new User());
+    public UserDetailVO detail(String username) {
+        User user = userRepo.findByUsername(username);
         return mapper.map(user, UserDetailVO.class);
     }
 

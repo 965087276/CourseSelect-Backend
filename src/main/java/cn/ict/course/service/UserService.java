@@ -14,5 +14,5 @@ public interface UserService {
 
     void save(User user);
 
-    UserDetailVO detail(Long id);
+    UserDetailVO detail(String username);
 }
