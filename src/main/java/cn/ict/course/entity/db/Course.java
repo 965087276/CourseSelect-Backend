@@ -67,18 +67,6 @@ public class Course extends BaseEntity {
     private int selectedNum = 0;
 
     /**
-     * 授课方式
-     */
-    @Column(name = "teaching_type", nullable = false)
-    private String teachingType;
-
-    /**
-     * 考核方式
-     */
-    @Column(name = "exam_type", nullable = false)
-    private String examType;
-
-    /**
      * 授课教师工号
      * 此处为教师用户的username
      * 外键关联查询教师表
