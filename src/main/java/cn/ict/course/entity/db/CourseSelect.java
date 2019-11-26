@@ -18,7 +18,7 @@ import javax.persistence.Table;
 @Data
 public class CourseSelect extends BaseEntity{
     /**
-     * 默认工号，如学工号/教师工号
+     * 学生用户名，此处默认为学号
      */
     @Column(name = "username", nullable = false)
     private String username;

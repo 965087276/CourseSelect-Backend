@@ -80,12 +80,15 @@ public class Course extends BaseEntity {
 
     /**
      * 授课教师工号
+     * 此处为教师用户的username
+     * 外键关联查询教师表
      */
     @Column(name = "teacher_id", nullable = false)
     private String teacherId;
 
     /**
-     * 授课教师
+     * 授课教师的名字
+     * 冗余存储，如果user表中修改了教师的名字，course表也需要修改
      */
     @Column(name = "course_teacher", nullable = false)
     private String courseTeacher;
