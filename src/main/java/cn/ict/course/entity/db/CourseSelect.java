@@ -30,8 +30,14 @@ public class CourseSelect extends BaseEntity{
     private String courseCode;
 
     /**
+     * 是否结课（是否有成绩)
+     */
+    @Column(name = "is_finish", nullable = false)
+    private boolean finished = false;
+
+    /**
      * 成绩
      */
     @Column(name = "grade", nullable = false)
-    private double grade = -1;
+    private double grade = 0;
 }

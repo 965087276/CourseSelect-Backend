@@ -38,26 +38,14 @@ public class CourseSchedule extends BaseEntity{
     /**
      * 上课时间(周几)
      */
-    @Column(name = "course_day", nullable = false)
-    private int courseDay;
+    @Column(name = "day", nullable = false)
+    private int day;
 
     /**
-     * 课时
+     *  第几节
      */
-    @Column(name = "course_hour", nullable = false)
-    private int courseHour;
-
-    /**
-     * 起始节
-     */
-    @Column(name = "start_section", nullable = false)
-    private int startSection;
-
-    /**
-     * 结束节
-     */
-    @Column(name = "end_section", nullable = false)
-    private int endSection;
+    @Column(name = "time", nullable = false)
+    private int time;
 
     /**
      * 教室

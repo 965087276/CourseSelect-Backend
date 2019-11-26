@@ -43,12 +43,6 @@ public class Course extends BaseEntity {
     private String college;
 
     /**
-     * 所属学科、专业
-     */
-    @Column(name = "subject", nullable = false)
-    private String subject;
-
-    /**
      * 课时
      */
     @Column(name = "course_hour", nullable = false)
@@ -69,8 +63,8 @@ public class Course extends BaseEntity {
     /**
      * 已选
      */
-    @Column(name = "student_num", nullable = false)
-    private int studentNum = 0;
+    @Column(name = "selected_num", nullable = false)
+    private int selectedNum = 0;
 
     /**
      * 授课方式
@@ -83,6 +77,12 @@ public class Course extends BaseEntity {
      */
     @Column(name = "exam_type", nullable = false)
     private String examType;
+
+    /**
+     * 授课教师工号
+     */
+    @Column(name = "teacher_id", nullable = false)
+    private String teacherId;
 
     /**
      * 授课教师
