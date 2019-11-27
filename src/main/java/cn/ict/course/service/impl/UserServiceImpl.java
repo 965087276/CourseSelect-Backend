@@ -88,6 +88,7 @@ public class UserServiceImpl implements UserService {
      */
     @Override
     public void save(User user) {
+
         String salt = new SecureRandomNumberGenerator().nextBytes().toString();
         int times = 2;
         String algorithmName = "md5";

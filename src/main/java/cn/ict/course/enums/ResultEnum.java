@@ -21,6 +21,8 @@ public enum ResultEnum {
     USER_NOT_EXIST(402, "用户不存在"),
     UNKNOWN_EXCEPTION(403, "未知错误");
 
+
+
     private Integer code;
     private String message;
 
