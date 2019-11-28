@@ -2,6 +2,7 @@ package cn.ict.course.controller;
 
 import cn.ict.course.entity.dto.CourseDTO;
 import cn.ict.course.entity.http.ResponseEntity;
+import cn.ict.course.service.CourseService;
 import cn.ict.course.service.TeacherService;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
@@ -22,11 +23,11 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping(value = "/xk/api/teacher")
 public class TeacherController {
 
-    private final TeacherService teacherService;
+    private final CourseService courseService;
 
     @Autowired
-    public TeacherController(TeacherService teacherService) {
-        this.teacherService = teacherService;
+    public TeacherController(CourseService courseService) {
+        this.courseService = courseService;
     }
 
     @PostMapping(value = "/courses")
@@ -34,7 +35,7 @@ public class TeacherController {
     @ApiOperation(value = "教师添加课程", notes = "输入信息添加课程")
     @ApiImplicitParam(name = "courseDTO", value = "课程信息", required = true, dataType = "CourseDTO")
     public ResponseEntity saveCourse(@RequestBody CourseDTO courseDTO) {
-        teacherService.saveCourse(courseDTO);
+        courseService.addCourse(courseDTO);
         return ResponseEntity.ok();
     }
 }

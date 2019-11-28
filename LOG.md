@@ -222,3 +222,18 @@ public boolean isAccessAllowed(ServletRequest request, ServletResponse response,
 * 学院、课程属性、教师username、教室在数据库表中存不存在（可以后期添加）
 * 课程唯一性，一门课有多个时间、教室
 * 教室与课程时间（开课周、周几、节次），教师与课程时间（开课周、周几、节次）
+## 2019.11.28
+### Controller与Service分层
+原来的层次结构：
+```
+TeacherController -> TeacherService
+StudentController -> StudentService
+AdminController -> AdminService
+```
+缺点：教师和管理员都可以增加或者修改课程，所以Service层会有重复代码
+
+新的层次结构：
+```
+TeacherController & StudentController & AdminController -> CourseController
+```
+操作课程直接调用CourseService的服务即可。
