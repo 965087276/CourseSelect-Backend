@@ -6,6 +6,8 @@ import cn.ict.course.service.CollegeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.naming.Name;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -21,7 +23,12 @@ public class CollegeServiceImpl implements CollegeService {
     }
 
     @Override
-    public List<College> findAllColleges() {
-        return collegeRepo.findAll();
+    public List<String> findAllColleges() {
+        List<College> colleges = collegeRepo.findAll();
+        List<String> collegeName = new ArrayList<>();
+        for (College college : colleges) {
+            collegeName.add(college.getName());
+        }
+        return collegeName;
     }
 }

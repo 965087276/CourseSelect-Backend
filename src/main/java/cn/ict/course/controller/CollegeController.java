@@ -28,7 +28,7 @@ public class CollegeController {
     @GetMapping(value = "/colleges")
     @ApiOperation(value = "获取所有学院")
     ResponseEntity getCollegeList() {
-        List<College> colleges = collegeService.findAllColleges();
+        List<String> colleges = collegeService.findAllColleges();
         return ResponseEntity.ok(colleges);
     }
 }
