@@ -1,6 +1,6 @@
 package cn.ict.course.controller;
 
-import cn.ict.course.service.StudentService;
+import cn.ict.course.service.CourseService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -12,11 +12,11 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping(value = "/xk/api/student")
 public class StudentController {
 
-    private final StudentService studentService;
+    private final CourseService courseService;
 
     @Autowired
-    public StudentController(StudentService studentService) {
-        this.studentService = studentService;
+    public StudentController(CourseService courseService) {
+        this.courseService = courseService;
     }
 
 }

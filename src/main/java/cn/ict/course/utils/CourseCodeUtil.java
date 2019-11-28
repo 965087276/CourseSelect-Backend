@@ -16,9 +16,8 @@ public class CourseCodeUtil {
      * @return 随机课程编码
      */
     public static String generateCourseCode() {
-        String currTime = new Date().toString();
-        String randomStr = RandomUtil.randomString(currTime, 5).toUpperCase();
-        int randomInt = RandomUtil.randomInt(0, RANDOM_MAX);
+        String randomStr = RandomUtil.randomStringUpper(5);
+        String randomInt = String.format("%06d", RandomUtil.randomInt(0, RANDOM_MAX));
         return COURSE_CODE_PREFIX + randomStr + randomInt;
     }
 }
