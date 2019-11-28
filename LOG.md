@@ -217,3 +217,8 @@ public boolean isAccessAllowed(ServletRequest request, ServletResponse response,
     return super.isAccessAllowed(request, response, mappedValue);
 }
 ```
+## 2019.11.27
+### excel上传
+* 学院、课程属性、教师username、教室在数据库表中存不存在（可以后期添加）
+* 课程唯一性，一门课有多个时间、教室
+* 教室与课程时间（开课周、周几、节次），教师与课程时间（开课周、周几、节次）
