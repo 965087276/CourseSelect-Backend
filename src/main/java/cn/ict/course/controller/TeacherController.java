@@ -26,7 +26,6 @@ public class TeacherController {
     }
 
     @PostMapping(value = "/courses")
-//    @RequiresRoles(value = {"admin", "teacher"}, logical = Logical.OR)
     @ApiOperation(value = "教师添加课程", notes = "输入信息添加课程")
     @ApiImplicitParam(name = "courseDTO", value = "课程信息", required = true, dataType = "CourseDTO")
     public ResponseEntity saveCourse(@RequestBody CourseDTO courseDTO) {

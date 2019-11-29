@@ -3,12 +3,15 @@ package cn.ict.course.service.impl;
 import cn.ict.course.entity.db.Course;
 import cn.ict.course.entity.db.CourseSchedule;
 import cn.ict.course.entity.dto.CourseDTO;
+import cn.ict.course.entity.vo.CourseVO;
 import cn.ict.course.repo.CourseRepo;
 import cn.ict.course.repo.CourseScheduleRepo;
 import cn.ict.course.service.CourseService;
 import cn.ict.course.utils.CourseCodeUtil;
 import com.github.dozermapper.core.Mapper;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 /**
  * @author Jianyong Feng
@@ -44,4 +47,14 @@ public class CourseServiceImpl implements CourseService {
 
         scheduleRepo.save(schedule);
     }
+
+    @Override
+    public List<CourseVO> getCourseList() {
+//        List<Course> courses = courseRepo.findAll();
+//        courses.stream().map(Course -> )
+//        List<CourseVO> courseVOList = mapper.map(courses, List<CourseVO>.class);
+        return null;
+    }
+
+
 }

@@ -9,7 +9,7 @@ import java.io.Serializable;
  **/
 @Data
 public class LoginVO {
-    private int code;
+    private Integer code;
     private String message;
     private Serializable authToken;
 }

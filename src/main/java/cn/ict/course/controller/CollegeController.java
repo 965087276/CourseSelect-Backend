@@ -1,6 +1,5 @@
 package cn.ict.course.controller;
 
-import cn.ict.course.entity.db.College;
 import cn.ict.course.entity.http.ResponseEntity;
 import cn.ict.course.service.CollegeService;
 import io.swagger.annotations.ApiOperation;

@@ -49,7 +49,7 @@ public class UserRealm extends AuthorizingRealm {
         if(user == null) {
             throw new UnknownAccountException();
         }
-        String passwordInDB = user.getPassword();
+        String password = user.getPassword();
         // 对盐进行加密处理
         ByteSource salt = ByteSource.Util.bytes(user.getSalt());
 
@@ -59,6 +59,6 @@ public class UserRealm extends AuthorizingRealm {
          * 参数3：加盐处理
          * 参数4：固定写法
          */
-        return new SimpleAuthenticationInfo(user, passwordInDB, salt, getName());
+        return new SimpleAuthenticationInfo(user, password, salt, getName());
     }
 }

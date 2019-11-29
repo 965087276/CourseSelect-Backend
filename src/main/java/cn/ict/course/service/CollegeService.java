@@ -1,7 +1,5 @@
 package cn.ict.course.service;
 
-import cn.ict.course.entity.db.College;
-
 import java.util.List;
 
 /**
@@ -9,4 +7,6 @@ import java.util.List;
  **/
 public interface CollegeService {
     List<String> findAllColleges();
+
+
 }

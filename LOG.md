@@ -237,3 +237,16 @@ AdminController -> AdminService
 TeacherController & StudentController & AdminController -> CourseController
 ```
 操作课程直接调用CourseService的服务即可。
+### 代码更简洁可读
+```java
+// 修改前
+for (College college : colleges) {
+            collegeName.add(college.getName());
+}
+
+// 函数式编程
+List<String> collegeNames = colleges
+                .stream()
+                .map(College::getName)
+                .collect(Collectors.toList());
+```

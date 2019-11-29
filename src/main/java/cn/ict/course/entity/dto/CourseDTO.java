@@ -1,6 +1,5 @@
 package cn.ict.course.entity.dto;
 
-import cn.ict.course.entity.db.CourseSchedule;
 import lombok.Data;
 
 /**
@@ -9,7 +8,9 @@ import lombok.Data;
 @Data
 public class CourseDTO {
 
-    // 对应course中的teacher_id
+    /**
+     * 对应course中的teacher_id
+     */
     private String teacherId;
 
     private String courseTeacher;

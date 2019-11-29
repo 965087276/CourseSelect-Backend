@@ -7,9 +7,9 @@ import lombok.Data;
  **/
 @Data
 public class ScheduleDTO {
-    private int startWeek;
-    private int endWeek;
-    private int day;
-    private int time;
-    private String classroom;
+    private Integer startWeek;
+    private Integer endWeek;
+    private Integer day;
+    private Integer time;
+    private Integer classroom;
 }
