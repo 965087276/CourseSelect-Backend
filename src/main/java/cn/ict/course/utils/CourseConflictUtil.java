@@ -9,16 +9,16 @@ import java.util.List;
  * @author Jianyong Feng
  **/
 public class CourseConflictUtil {
-    public static boolean courseConflict(List<CourseSchedule> schedules) {
+    private static boolean courseConflict(List<CourseSchedule> schedules) {
         int len = schedules.size();
         for (int i = 0; i < len; i++) {
             for (int j = i+1; j < len; j++) {
                 if (isConflict(schedules.get(i), schedules.get(j))) {
-                    return false;
+                    return true;
                 }
             }
         }
-        return true;
+        return false;
     }
 
     private static boolean isConflict(CourseSchedule course1, CourseSchedule course2) {
@@ -36,6 +36,11 @@ public class CourseConflictUtil {
             }
         }
         return true;
+    }
+
+    public static boolean isConflict(List<CourseSchedule> schedulesPrevious, List<CourseSchedule> schedulesCurrent) {
+        schedulesPrevious.addAll(schedulesCurrent);
+        return courseConflict(schedulesPrevious);
     }
 
 }

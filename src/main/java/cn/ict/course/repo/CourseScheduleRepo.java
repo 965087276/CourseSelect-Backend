@@ -1,6 +1,7 @@
 package cn.ict.course.repo;
 
 import cn.ict.course.entity.db.CourseSchedule;
+import org.apache.ibatis.annotations.Param;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
@@ -13,5 +14,10 @@ import java.util.List;
  */
 @Repository
 public interface CourseScheduleRepo extends JpaRepository<CourseSchedule, Long> {
-    public List<CourseSchedule> findByCourseCode(String courseCode);
+    List<CourseSchedule> findByCourseCode(String courseCode);
+
+    @Query(value = "SELECT * FROM course_schedule WHERE course_code IN (SELECT course_code FROM course WHERE teacher_id = :teacherId)", nativeQuery = true)
+    List<CourseSchedule> findByTeacherId(@Param("teacherId") String teacherId);
+
+    List<CourseSchedule> findByClassroom(@Param(value = "classrooms") List<String> classrooms);
 }
