@@ -2,6 +2,7 @@ package cn.ict.course.entity.vo;
 
 import lombok.Data;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -12,11 +13,21 @@ import java.util.List;
 public class CourseSelectStatsVO {
     private String type;
 
-    private List<String> requiredCoursesAndCredit;
+    private List<String> requiredCoursesAndCredit = new ArrayList<>();
 
-    private List<String> specializedCoursesAndCredit;
+    private List<String> specializedCoursesAndCredit = new ArrayList<>();
 
-    private List<String> electiveCoursesAndCredit;
+    private List<String> electiveCoursesAndCredit = new ArrayList<>();
+
+    private String requiredCoursesCreditSum;
+
+    private String specializedCoursesCreditSum;
+
+    private String electiveCoursesCreditSum;
 
     private String totalCredit;
+
+    public CourseSelectStatsVO(String type) {
+        this.type = type;
+    }
 }
