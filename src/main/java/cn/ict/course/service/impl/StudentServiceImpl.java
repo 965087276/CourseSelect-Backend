@@ -57,7 +57,7 @@ public class StudentServiceImpl implements StudentService {
                     electiveCourseCredit += course.getCredit();
                     break;
                 case SPECIALIZED_CORE_COURSE: case SPECIALIZED_DISCUSSION_COURSE: case SPECIALIZED_POPULARIZATION_COURSE:
-                    vo.getElectiveCoursesAndCredit().add(formatCourseNameAndCredit(course));
+                    vo.getSpecializedCoursesAndCredit().add(formatCourseNameAndCredit(course));
                     specializedCourseCredit += course.getCredit();
                     break;
             }
