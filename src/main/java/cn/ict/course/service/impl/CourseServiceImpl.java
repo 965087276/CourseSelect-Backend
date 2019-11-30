@@ -24,7 +24,6 @@ import java.util.stream.Collectors;
  * @author Jianyong Feng
  **/
 @Service
-@Slf4j
 public class CourseServiceImpl implements CourseService {
 
     private final Mapper mapper;
@@ -39,7 +38,6 @@ public class CourseServiceImpl implements CourseService {
 
     /**
      * 添加课程
-     * to-do：
      * CourseCode重复验证
      * TeacherId/College/Classroom存在验证由前端完成
      * 课程时间冲突验证：教室-上课时间
@@ -51,7 +49,8 @@ public class CourseServiceImpl implements CourseService {
     @Transactional
     public ResponseEntity addCourse(CourseDTO courseDTO) {
         List<ScheduleDTO> schedulesDTO = courseDTO.getScheduleList();
-        List<CourseSchedule> schedulesCurrent = schedulesDTO.stream()
+        List<CourseSchedule> schedulesCurrent = schedulesDTO
+                .stream()
                 .map(schedule -> mapper.map(schedule, CourseSchedule.class))
                 .collect(Collectors.toList());
 
@@ -93,8 +92,6 @@ public class CourseServiceImpl implements CourseService {
     private boolean conflictTeacher(List<CourseSchedule> schedulesCurrent, String teacherId) {
         // 判断老师时间是否冲突
         List<CourseSchedule> schedulesPrevious = scheduleRepo.findByTeacherId(teacherId);
-        log.info(schedulesPrevious.toString());
-        log.info(schedulesCurrent.toString());
         return CourseConflictUtil.isConflict(schedulesPrevious, schedulesCurrent);
     }
 

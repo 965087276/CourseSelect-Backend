@@ -14,6 +14,10 @@ import java.util.List;
  */
 @Repository
 public interface CourseScheduleRepo extends JpaRepository<CourseSchedule, Long> {
+    /**
+     * @param courseCode 课程编码
+     * @return 该课程的所有时刻表
+     */
     List<CourseSchedule> findByCourseCode(String courseCode);
 
     @Query(value = "SELECT * FROM course_schedule WHERE course_code IN (SELECT course_code FROM course WHERE teacher_id = :teacherId)", nativeQuery = true)

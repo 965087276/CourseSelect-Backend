@@ -1,6 +1,5 @@
 package cn.ict.course.utils;
 
-import cn.ict.course.entity.db.Course;
 import cn.ict.course.entity.db.CourseSchedule;
 
 import java.util.List;
@@ -21,12 +20,12 @@ public class CourseConflictUtil {
         return false;
     }
 
-    private static boolean isConflict(CourseSchedule course1, CourseSchedule course2) {
-        if (course1.getEndWeek() < course2.getStartWeek()
-                || course2.getEndWeek() < course1.getStartWeek()) {
+    private static boolean isConflict(CourseSchedule schedule1, CourseSchedule schedule2) {
+        if (schedule1.getEndWeek() < schedule2.getStartWeek()
+                || schedule2.getEndWeek() < schedule1.getStartWeek()) {
             return true;
         }
-        return course1.getDay() == course2.getDay() && course1.getTime() == course2.getTime();
+        return schedule1.getDay() == schedule2.getDay() && schedule1.getTime() == schedule2.getTime();
     }
 
     public static boolean isConflict(CourseSchedule course, List<CourseSchedule> coursePrevious) {

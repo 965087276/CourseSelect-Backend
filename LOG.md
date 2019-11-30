@@ -250,3 +250,27 @@ List<String> collegeNames = colleges
                 .map(College::getName)
                 .collect(Collectors.toList());
 ```
+## 2019.11.30
+### jpa查询list
+orm中自定义sql语句查询，失败，
+```java
+@Query(value = "SELECT * FROM course_schedule WHERE classroom IN :classrooms")
+List<CourseSchedule> findByClassrooms(@Param("classrooms") List<String> classrooms);
+```
+事实上jpa支持list查询，修改后
+```java
+List<CourseSchedule> findByClassroom(@Param(value = "classrooms") List<String> classrooms);
+```
+参考：[JPA槽点之multiple in list查询引发的问题](https://blog.csdn.net/qq_17776287/article/details/78926291)
+### 添加课程冲突
+教师添加课程
+#### 可能存在的情况
+* 教师 - 课程时间，存在冲突
+* 教室 - 课程时间，存在冲突
+#### 处理
+1. 课程添加时，检索该课程教师教授的所有课程CoursePrevious，比较新添加的课程CourseCurrent是否与CoursePrevious存在冲突。
+2. 课程添加时，检索传入的教室已有的课程CoursePrevious，比较新添加的课程CourseCurrent是否与CoursePrevious存在冲突。
+#### 注意的点
+1. 传入的课程时间表为一个List，如CourseCurrent，需要将CoursePrevious与CourseCurrent合并后比较是否存在冲突。
+2. 由于传入课程表为一个List，所有可能有多个教室，需要使用教室List进行查询。
+3. 判断冲突的代码过多，需要抽象出来。
