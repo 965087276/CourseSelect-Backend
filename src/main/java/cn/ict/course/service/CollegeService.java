@@ -6,7 +6,7 @@ import java.util.List;
  * @author Jianyong Feng
  **/
 public interface CollegeService {
-    List<String> findAllColleges();
+    List<String> getCollegeList();
 
 
 }

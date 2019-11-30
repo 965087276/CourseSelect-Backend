@@ -11,5 +11,5 @@ public class ScheduleDTO {
     private Integer endWeek;
     private Integer day;
     private Integer time;
-    private Integer classroom;
+    private String classroom;
 }

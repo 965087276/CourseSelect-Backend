@@ -44,6 +44,7 @@ public class ShiroConfiguration {
         filterChainDefinitionMap.put("/xk/api/logout", "anon");
         filterChainDefinitionMap.put("/xk/api/teacher/courses", "anon");
         filterChainDefinitionMap.put("/xk/api/pub/colleges", "anon");
+        filterChainDefinitionMap.put("/xk/api/pub/courses", "anon");
         // 拦截根目录下的所有路径，需要放行的路径必须在之前添加
         filterChainDefinitionMap.put("/xk/api/**", "userAuth");
 

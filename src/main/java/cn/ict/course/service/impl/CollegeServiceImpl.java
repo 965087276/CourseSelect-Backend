@@ -21,7 +21,7 @@ public class CollegeServiceImpl implements CollegeService {
     }
 
     @Override
-    public List<String> findAllColleges() {
+    public List<String> getCollegeList() {
         List<College> colleges = collegeRepo.findAll();
         return colleges
                 .stream()

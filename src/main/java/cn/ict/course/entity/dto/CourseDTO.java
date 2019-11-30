@@ -2,6 +2,8 @@ package cn.ict.course.entity.dto;
 
 import lombok.Data;
 
+import java.util.List;
+
 /**
  * @author Jianyong Feng
  **/
@@ -27,5 +29,5 @@ public class CourseDTO {
 
     private String college;
 
-    private ScheduleDTO scheduleDTO;
+    private List<ScheduleDTO> scheduleList;
 }
