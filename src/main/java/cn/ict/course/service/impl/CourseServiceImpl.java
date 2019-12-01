@@ -3,14 +3,12 @@ package cn.ict.course.service.impl;
 import cn.ict.course.entity.db.Course;
 import cn.ict.course.entity.db.CoursePreSelect;
 import cn.ict.course.entity.db.CourseSchedule;
+import cn.ict.course.entity.db.SelectionControl;
 import cn.ict.course.entity.dto.CourseDTO;
 import cn.ict.course.entity.dto.ScheduleDTO;
 import cn.ict.course.entity.http.ResponseEntity;
 import cn.ict.course.entity.vo.CourseVO;
-import cn.ict.course.repo.CoursePreSelectRepo;
-import cn.ict.course.repo.CourseRepo;
-import cn.ict.course.repo.CourseScheduleRepo;
-import cn.ict.course.repo.UserRepo;
+import cn.ict.course.repo.*;
 import cn.ict.course.service.CourseService;
 import cn.ict.course.utils.CourseCodeUtil;
 import cn.ict.course.utils.CourseConflictUtil;
@@ -20,7 +18,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 /**
@@ -33,15 +33,18 @@ public class CourseServiceImpl implements CourseService {
     private final CourseRepo courseRepo;
     private final CourseScheduleRepo scheduleRepo;
     private final CoursePreSelectRepo coursePreSelectRepo;
+    private final SelectionControlRepo selectionControlRepo;
 
     public CourseServiceImpl(Mapper mapper,
                              CourseRepo courseRepo,
                              CourseScheduleRepo scheduleRepo,
-                             CoursePreSelectRepo coursePreSelectRepo) {
+                             CoursePreSelectRepo coursePreSelectRepo,
+                             SelectionControlRepo selectionControlRepo) {
         this.mapper = mapper;
         this.courseRepo = courseRepo;
         this.scheduleRepo = scheduleRepo;
         this.coursePreSelectRepo = coursePreSelectRepo;
+        this.selectionControlRepo = selectionControlRepo;
     }
 
     /**
@@ -163,6 +166,29 @@ public class CourseServiceImpl implements CourseService {
                 .collect(Collectors.toList());
         List<Course> coursesPre = courseRepo.findByCourseCode(courseCodesPre);
         return ResponseEntity.ok(coursesPre);
+    }
+
+    /**
+     * 管理员修改选课开放时间
+     *
+     * @param startTime 开放时间
+     * @param endTime   关闭时间
+     * @return 修改是否成功
+     */
+    @Override
+    @Transactional
+    public ResponseEntity updateEnableTime(Date startTime, Date endTime) {
+        if (startTime.after(endTime)) {
+            return ResponseEntity.error(HttpStatus.INTERNAL_SERVER_ERROR, "起始时间不可以在结束时间之后");
+        }
+        SelectionControl selectionControl = selectionControlRepo.findById(1L).orElse(null);
+        if (selectionControl == null) {
+            return ResponseEntity.error(HttpStatus.INTERNAL_SERVER_ERROR, "数据库中无该字段");
+        }
+        selectionControl.setStartTime(startTime);
+        selectionControl.setEndTime(endTime);
+        selectionControlRepo.save(selectionControl);
+        return ResponseEntity.ok();
     }
 
     private boolean conflictTeacher(List<CourseSchedule> schedulesCurrent, String teacherId) {

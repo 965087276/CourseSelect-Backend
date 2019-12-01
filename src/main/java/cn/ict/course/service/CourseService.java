@@ -5,6 +5,8 @@ import cn.ict.course.entity.dto.CourseDTO;
 import cn.ict.course.entity.http.ResponseEntity;
 import cn.ict.course.entity.vo.CourseVO;
 
+import java.time.LocalDate;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -27,13 +29,14 @@ public interface CourseService {
      * @return 预选课添加结果
      */
     ResponseEntity addCoursePreselect(String username, String courseCode);
-//
+
 //    /**
 //     * 学生添加课程
 //     *
 //     * 需要判断以下情况：
-//     * 1. 是否超过选课人数
-//     * 2. 选课冲突
+//     * 1. 选课是否开始
+//     * 2. 课程冲突
+//     * 2. 选课人数
 //     *
 //     * 结果：
 //     * 1. 选课成功，保存记录到CourseSelect表中，课程已选人数加1
@@ -89,4 +92,12 @@ public interface CourseService {
 //    ResponseEntity getCourseSchedules(String courseCode);
 //
 //    ResponseEntity getWeekSchedule(String username, Integer week);
+
+    /**
+     * 管理员修改选课开放时间
+     * @param startTime 开放时间
+     * @param endTime 关闭时间
+     * @return 修改是否成功
+     */
+    ResponseEntity updateEnableTime(Date startTime, Date endTime);
 }

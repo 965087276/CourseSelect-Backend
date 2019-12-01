@@ -1,6 +1,5 @@
 package cn.ict.course.entity.db;
 
-import jdk.vm.ci.meta.Value;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
