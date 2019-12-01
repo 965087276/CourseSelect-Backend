@@ -10,5 +10,7 @@ import org.springframework.stereotype.Repository;
  */
 @Repository
 public interface CoursePreSelectRepo extends JpaRepository<CoursePreSelect, Long> {
-    CoursePreSelect findByCourseCode(String courseCode);
+    CoursePreSelect findByUsernameAndCourseCode(String username, String courseCode);
+
+    void deleteByUsernameAndCourseCode(String username, String courseCode);
 }

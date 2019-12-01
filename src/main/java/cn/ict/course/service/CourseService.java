@@ -54,18 +54,18 @@ public interface CourseService {
 //     * @return 退课结果
 //     */
 //    ResponseEntity dropCourse(String courseCode, String username);
-//
-//    /**
-//     * 学生退预选课
-//     *
-//     * 结果：
-//     * 1. 预选课退课成功，保存记录到CoursePreselect表中
-//     * 2. 预选课退课失败，返回失败信息
-//     * @param courseCode 路径参数，预选课课程编码
-//     * @param username 学生用户名
-//     * @return 预选课退课结果
-//     */
-//    ResponseEntity dropPreselectedCourse(String courseCode, String username);
+
+    /**
+     * 学生退预选课
+     *
+     * 结果：
+     * 1. 预选课退课成功，保存记录到CoursePreselect表中
+     * 2. 预选课退课失败，返回失败信息
+     * @param courseCode 路径参数，预选课课程编码
+     * @param username 学生用户名
+     * @return 预选课退课结果
+     */
+    ResponseEntity DeleteCoursePreselected(String courseCode, String username);
 //
 //    /**
 //     * 查看学生预选课程
