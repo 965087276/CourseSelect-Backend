@@ -227,5 +227,17 @@ public class CourseServiceImpl implements CourseService {
         return null;
     }
 
+    private boolean selectTimeAfterStart(Date startTime, Date endTime) {
+        Date currentTime = new Date();
+
+        return currentTime.after(startTime);
+    }
+
+    private boolean selectTimeBeforeEnd(Date startTime, Date endTime) {
+        Date currentTime = new Date();
+
+        return currentTime.before(startTime);
+    }
+
 
 }
