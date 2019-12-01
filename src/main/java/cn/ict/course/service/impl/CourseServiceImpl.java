@@ -148,6 +148,23 @@ public class CourseServiceImpl implements CourseService {
         return ResponseEntity.error(HttpStatus.INTERNAL_SERVER_ERROR, "删除预选课失败");
     }
 
+    /**
+     * 查看学生预选课程
+     *
+     * @param username 路径参数，学生用户名
+     * @return 学生所有预选课程的信息
+     */
+    @Override
+    public ResponseEntity getPreSelectedCourses(String username) {
+        List<CoursePreSelect> preCourses = coursePreSelectRepo.findAllByUsername(username);
+        List<String> courseCodesPre = preCourses
+                .stream()
+                .map(CoursePreSelect::getCourseCode)
+                .collect(Collectors.toList());
+        List<Course> coursesPre = courseRepo.findByCourseCode(courseCodesPre);
+        return ResponseEntity.ok(coursesPre);
+    }
+
     private boolean conflictTeacher(List<CourseSchedule> schedulesCurrent, String teacherId) {
         // 判断老师时间是否冲突
         List<CourseSchedule> schedulesPrevious = scheduleRepo.findByTeacherId(teacherId);

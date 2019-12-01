@@ -4,6 +4,8 @@ import cn.ict.course.entity.db.Course;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 /**
  * @author 965087276@qq.com
  * @date 2019/11/9 18:15
@@ -16,5 +18,7 @@ public interface CourseRepo extends JpaRepository<Course, Long> {
      * @param courseCode 课程编码
      * @return 课程数据
      */
-    public Course findByCourseCode(String courseCode);
+    Course findByCourseCode(String courseCode);
+
+    List<Course> findByCourseCode(List<String> courseCode);
 }

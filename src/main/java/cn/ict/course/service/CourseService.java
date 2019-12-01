@@ -66,13 +66,13 @@ public interface CourseService {
      * @return 预选课退课结果
      */
     ResponseEntity DeleteCoursePreselected(String courseCode, String username);
-//
-//    /**
-//     * 查看学生预选课程
-//     * @param username 路径参数，学生用户名
-//     * @return 学生所有预选课程的信息
-//     */
-//    ResponseEntity getPreSelectedCourses(String username);
+
+    /**
+     * 查看学生预选课程
+     * @param username 路径参数，学生用户名
+     * @return 学生所有预选课程的信息
+     */
+    ResponseEntity getPreSelectedCourses(String username);
 //
 //    /**
 //     * 查看学生已选课程
