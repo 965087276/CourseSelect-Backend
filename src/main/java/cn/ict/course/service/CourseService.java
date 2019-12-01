@@ -15,18 +15,18 @@ public interface CourseService {
 
     List<CourseVO> getCourseList();
 
-//    /**
-//     * 学生添加预选课
-//     *
-//     * 结果：
-//     * 1. 预选课添加成功，保存记录到CoursePreselect表中
-//     * 2. 预选课添加失败，返回失败信息
-//     *
-//     * @param username 学生用户名
-//     * @param courseCode 课程编码
-//     * @return 预选课添加结果
-//     */
-//    ResponseEntity addPreselectCourse(String username, String courseCode);
+    /**
+     * 学生添加预选课
+     *
+     * 结果：
+     * 1. 预选课添加成功，保存记录到CoursePreselect表中
+     * 2. 预选课添加失败，返回失败信息
+     *
+     * @param username 学生用户名
+     * @param courseCode 课程编码
+     * @return 预选课添加结果
+     */
+    ResponseEntity addCoursePreselect(String username, String courseCode);
 //
 //    /**
 //     * 学生添加课程
@@ -42,7 +42,7 @@ public interface CourseService {
 //     * @param courseCode 课程编码
 //     * @return 选课添加结果
 //     */
-//    ResponseEntity addCourse(String username, String courseCode);
+//    ResponseEntity addCourseSelect(String username, String courseCode);
 //
 //    /**
 //     * 学生退课

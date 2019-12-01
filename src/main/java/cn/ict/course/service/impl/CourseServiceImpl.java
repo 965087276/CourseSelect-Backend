@@ -1,6 +1,7 @@
 package cn.ict.course.service.impl;
 
 import cn.ict.course.entity.db.Course;
+import cn.ict.course.entity.db.CoursePreSelect;
 import cn.ict.course.entity.db.CourseSchedule;
 import cn.ict.course.entity.dto.CourseDTO;
 import cn.ict.course.entity.dto.ScheduleDTO;
@@ -94,6 +95,35 @@ public class CourseServiceImpl implements CourseService {
         }
 
         return courses;
+    }
+
+    /**
+     * 学生添加预选课
+     * <p>
+     * 结果：
+     * 1. 预选课添加成功，保存记录到CoursePreselect表中
+     * 2. 预选课添加失败，返回失败信息
+     *
+     * @param username   学生用户名
+     * @param courseCode 课程编码
+     * @return 预选课添加结果
+     */
+
+    @Override
+    @Transactional
+    public ResponseEntity addCoursePreselect(String username, String courseCode) {
+        CoursePreSelect preSelect = new CoursePreSelect();
+        preSelect.setUsername(username);
+        preSelect.setCourseCode(courseCode);
+        coursePreSelectRepo.save(preSelect);
+
+        CoursePreSelect preselected = coursePreSelectRepo.findByCourseCode(courseCode);
+
+        if (preselected != null) {
+            return ResponseEntity.ok();
+        }
+
+        return ResponseEntity.error(HttpStatus.INTERNAL_SERVER_ERROR, "预选课添加失败");
     }
 
     private boolean conflictTeacher(List<CourseSchedule> schedulesCurrent, String teacherId) {

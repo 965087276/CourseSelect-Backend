@@ -5,12 +5,10 @@ import cn.ict.course.entity.vo.CourseSelectStatsVO;
 import cn.ict.course.service.CourseService;
 import cn.ict.course.service.StudentService;
 import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -36,6 +34,16 @@ public class StudentController {
     @ApiImplicitParam(name = "username", value = "学工号", required = true, dataType = "string", paramType = "path")
     public ResponseEntity<List<CourseSelectStatsVO>> getCourseSelectedStats(@PathVariable("username") String username) {
         return ResponseEntity.ok(studentService.getCoursesSelectedStats(username));
+    }
+
+    @PostMapping("/course_preselect")
+    @ApiOperation(value = "添加预选课")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "username", value = "学生用户名", required = true, dataType = "String"),
+            @ApiImplicitParam(name = "courseCode", value = "课程编码", required = true, dataType = "String")
+    })
+    public ResponseEntity addCoursePreselect(String username, String courseCode) {
+        return courseService.addCoursePreselect(username, courseCode);
     }
 
 }
