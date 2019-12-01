@@ -15,7 +15,7 @@ import java.util.List;
 public interface CourseService {
     ResponseEntity addCourse(CourseDTO courseDTO);
 
-    List<CourseVO> getCourseList();
+    List<CourseVO> getCourseList(String college, String courseType, String CourseName, Integer day, Integer time);
 
     /**
      * 学生添加预选课

@@ -17,6 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -81,7 +82,7 @@ public class CourseServiceImpl implements CourseService {
     }
 
     @Override
-    public List<CourseVO> getCourseList() {
+    public List<CourseVO> getCourseList(String college, String courseType, String CourseName, Integer day, Integer time) {
         List<Course> courseList = courseRepo.findAll();
         List<CourseVO> courses = courseList
                 .stream()
@@ -97,7 +98,24 @@ public class CourseServiceImpl implements CourseService {
             course.setSchedules(schedules);
         }
 
+        courses = courses
+                .stream()
+                .filter(course -> isOk(course, college, courseType, CourseName, day, time))
+                .collect(Collectors.toList());
+
         return courses;
+    }
+
+    private boolean isOk(CourseVO course, String college, String courseType, String courseName, int day, int time) {
+
+        if ((!college.equals("none") && !course.getCollege().equals(college))
+                || (!courseType.equals("none") && !course.getCourseType().equals(courseType))
+                || (!courseName.equals("none") && !course.getCourseName().contains(courseName))) {
+            return false;
+        }
+        return (day == -1 || course.getSchedules().stream().anyMatch(o -> o.getDay() == day))
+                && (time == -1 || course.getSchedules().stream().anyMatch(o -> o.getTime() == time));
+
     }
 
     /**
