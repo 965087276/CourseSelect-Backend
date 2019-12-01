@@ -1,9 +1,6 @@
 package cn.ict.course.service.impl;
 
-import cn.ict.course.entity.db.Course;
-import cn.ict.course.entity.db.CoursePreSelect;
-import cn.ict.course.entity.db.CourseSchedule;
-import cn.ict.course.entity.db.SelectionControl;
+import cn.ict.course.entity.db.*;
 import cn.ict.course.entity.dto.CourseDTO;
 import cn.ict.course.entity.dto.ScheduleDTO;
 import cn.ict.course.entity.http.ResponseEntity;
@@ -34,17 +31,20 @@ public class CourseServiceImpl implements CourseService {
     private final CourseScheduleRepo scheduleRepo;
     private final CoursePreSelectRepo coursePreSelectRepo;
     private final SelectionControlRepo selectionControlRepo;
+    private final CourseSelectRepo courseSelectRepo;
 
     public CourseServiceImpl(Mapper mapper,
                              CourseRepo courseRepo,
                              CourseScheduleRepo scheduleRepo,
                              CoursePreSelectRepo coursePreSelectRepo,
-                             SelectionControlRepo selectionControlRepo) {
+                             SelectionControlRepo selectionControlRepo,
+                             CourseSelectRepo courseSelectRepo) {
         this.mapper = mapper;
         this.courseRepo = courseRepo;
         this.scheduleRepo = scheduleRepo;
         this.coursePreSelectRepo = coursePreSelectRepo;
         this.selectionControlRepo = selectionControlRepo;
+        this.courseSelectRepo = courseSelectRepo;
     }
 
     /**
@@ -130,6 +130,73 @@ public class CourseServiceImpl implements CourseService {
     }
 
     /**
+     * 学生添加课程
+     * <p>
+     * 需要判断以下情况：
+     * 1. 选课是否开始
+     * 2. 课程冲突
+     * 2. 选课人数
+     * <p>
+     * 结果：
+     * 1. 选课成功，保存记录到CourseSelect表中，课程已选人数加1
+     * 2. 选课失败，返回失败信息
+     *
+     * @param username   学生用户名
+     * @param courseCode 课程编码
+     * @return 选课添加结果
+     */
+    @Override
+    @Transactional
+    public ResponseEntity addCourseSelect(String username, String courseCode) {
+
+        // 该课程是否已经选择
+        CourseSelect courseSelect = courseSelectRepo.findByUsernameAndCourseCode(username, courseCode);
+        if (courseSelect != null) {
+            return ResponseEntity.error(HttpStatus.INTERNAL_SERVER_ERROR, "课程不可重复选择");
+        }
+        // 判断选课是否开放
+        SelectionControl selectionControl = selectionControlRepo.findById(1L).orElse(null);
+        if (selectionControl == null) {
+            return ResponseEntity.error(HttpStatus.INTERNAL_SERVER_ERROR, "管理员未定义选课时间");
+        }
+        Date startTime = selectionControl.getStartTime();
+        Date endTime = selectionControl.getEndTime();
+        if (startTime == null || !selectTimeAfterStart(startTime)) {
+            return ResponseEntity.error(HttpStatus.INTERNAL_SERVER_ERROR, "选课未开始");
+        }
+        if (endTime == null || !selectTimeBeforeEnd(endTime)) {
+            return ResponseEntity.error(HttpStatus.INTERNAL_SERVER_ERROR, "选课已结束");
+        }
+
+        // 学生课表冲突验证
+        if (conflictStudent(courseCode, username)) {
+            return ResponseEntity.error(HttpStatus.INTERNAL_SERVER_ERROR, "当前课程存在时间冲突");
+        }
+
+        // 选课人数限制
+        // to-do: 原子操作
+        Course courseCurrent = courseRepo.findByCourseCode(courseCode);
+        int limitNum = courseCurrent.getLimitNum();
+        int selectedNum = courseCurrent.getSelectedNum();
+
+        if (limitNum != 0 && selectedNum >= limitNum) {
+            return ResponseEntity.error(HttpStatus.INTERNAL_SERVER_ERROR, "当前课程选课人数已满");
+        }
+
+        // 选择课程
+        CourseSelect select = new CourseSelect();
+        select.setUsername(username);
+        select.setCourseCode(courseCode);
+        courseSelectRepo.save(select);
+
+        // 课程已选人数加1
+        courseCurrent.setSelectedNum(selectedNum + 1);
+        courseRepo.save(courseCurrent);
+
+        return ResponseEntity.ok();
+    }
+
+    /**
      * 学生退预选课
      * <p>
      * 结果：
@@ -197,6 +264,24 @@ public class CourseServiceImpl implements CourseService {
         return CourseConflictUtil.isConflict(schedulesPrevious, schedulesCurrent);
     }
 
+    /**
+     * 判断学生选课时间是否冲突
+     *
+     * 使用username查询CourseSelect中该学生选择的所有课
+     * 查询这些课的课程时间是否与当前所选课程的课程时间冲突
+     *
+     * @param courseCode 课程编码
+     * @param username 学生用户名
+     * @return 课程是否冲突
+     */
+    private boolean conflictStudent(String courseCode, String username) {
+        // 当前课程的时间表
+        List<CourseSchedule> schedulesCurrent = scheduleRepo.findByCourseCode(courseCode);
+        // 判断学生时间是否冲突
+        List<CourseSchedule> schedulesPrevious = scheduleRepo.findByUsername(username);
+        return CourseConflictUtil.isConflict(schedulesPrevious, schedulesCurrent);
+    }
+
     private boolean conflictClassroom(List<CourseSchedule> schedulesCurrent, List<String> classrooms) {
         List<CourseSchedule> schedulesPrevious = scheduleRepo.findByClassroom(classrooms);
 
@@ -227,13 +312,13 @@ public class CourseServiceImpl implements CourseService {
         return null;
     }
 
-    private boolean selectTimeAfterStart(Date startTime, Date endTime) {
+    private boolean selectTimeAfterStart(Date startTime) {
         Date currentTime = new Date();
 
         return currentTime.after(startTime);
     }
 
-    private boolean selectTimeBeforeEnd(Date startTime, Date endTime) {
+    private boolean selectTimeBeforeEnd(Date startTime) {
         Date currentTime = new Date();
 
         return currentTime.before(startTime);

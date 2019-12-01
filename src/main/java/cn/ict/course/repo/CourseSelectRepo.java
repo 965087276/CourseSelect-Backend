@@ -19,4 +19,6 @@ public interface CourseSelectRepo extends JpaRepository<CourseSelect, Long> {
 
     @Query(value = "select A from Course A inner join CourseSelect B on A.courseCode = B.courseCode and B.username = ?1 and B.finished = true and B.grade >= 60")
     List<Course> listPassedCoursesByUsername(String username);
+
+    CourseSelect findByUsernameAndCourseCode(String username, String courseCode);
 }
