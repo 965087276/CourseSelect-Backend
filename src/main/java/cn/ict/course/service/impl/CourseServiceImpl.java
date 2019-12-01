@@ -155,17 +155,8 @@ public class CourseServiceImpl implements CourseService {
             return ResponseEntity.error(HttpStatus.INTERNAL_SERVER_ERROR, "课程不可重复选择");
         }
         // 判断选课是否开放
-        SelectionControl selectionControl = selectionControlRepo.findById(1L).orElse(null);
-        if (selectionControl == null) {
-            return ResponseEntity.error(HttpStatus.INTERNAL_SERVER_ERROR, "管理员未定义选课时间");
-        }
-        Date startTime = selectionControl.getStartTime();
-        Date endTime = selectionControl.getEndTime();
-        if (startTime == null || !selectTimeAfterStart(startTime)) {
-            return ResponseEntity.error(HttpStatus.INTERNAL_SERVER_ERROR, "选课未开始");
-        }
-        if (endTime == null || !selectTimeBeforeEnd(endTime)) {
-            return ResponseEntity.error(HttpStatus.INTERNAL_SERVER_ERROR, "选课已结束");
+        if (selectCourseClosed()) {
+            return ResponseEntity.error(HttpStatus.INTERNAL_SERVER_ERROR, "选课未开放");
         }
 
         // 学生课表冲突验证
@@ -192,6 +183,38 @@ public class CourseServiceImpl implements CourseService {
         // 课程已选人数加1
         courseCurrent.setSelectedNum(selectedNum + 1);
         courseRepo.save(courseCurrent);
+
+        return ResponseEntity.ok();
+    }
+
+    /**
+     * 在选课时间内学生退课
+     * 结果：
+     * 1. 退课成功，保存记录到CourseSelect表中，课程已选人数减1
+     * 2. 退课失败，返回失败信息
+     *
+     * @param courseCode 路径参数，课程编码
+     * @param username   学生用户名
+     * @return 退课结果
+     */
+    @Override
+    @Transactional
+    public ResponseEntity deleteCourseSelected(String courseCode, String username) {
+        if (selectCourseClosed()) {
+            return ResponseEntity.error(HttpStatus.INTERNAL_SERVER_ERROR, "选课未开放");
+        }
+
+        CourseSelect courseSelect = courseSelectRepo.findByUsernameAndCourseCode(username, courseCode);
+        if (courseSelect == null) {
+            return ResponseEntity.error(HttpStatus.INTERNAL_SERVER_ERROR, "该课程未选择");
+        }
+
+        courseSelectRepo.deleteByUsernameAndCourseCode(username, courseCode);
+
+        Course course = courseRepo.findByCourseCode(courseCode);
+        int selectedNum = course.getSelectedNum();
+        course.setSelectedNum(selectedNum - 1);
+        courseRepo.save(course);
 
         return ResponseEntity.ok();
     }
@@ -258,6 +281,12 @@ public class CourseServiceImpl implements CourseService {
         return ResponseEntity.ok();
     }
 
+    /**
+     * 教师增加课程，时间是否冲突
+     * @param schedulesCurrent 当前课程的时刻表
+     * @param teacherId 教师用户名
+     * @return 如果时间冲突，返回true，否则false
+     */
     private boolean conflictTeacher(List<CourseSchedule> schedulesCurrent, String teacherId) {
         // 判断老师时间是否冲突
         List<CourseSchedule> schedulesPrevious = scheduleRepo.findByTeacherId(teacherId);
@@ -312,17 +341,18 @@ public class CourseServiceImpl implements CourseService {
         return null;
     }
 
-    private boolean selectTimeAfterStart(Date startTime) {
+    /**
+     * 判断选课是否开放
+     * @return 当前时间是否处于选课开放时间段
+     */
+    private boolean selectCourseClosed() {
+        SelectionControl selectionControl = selectionControlRepo.findById(1L).orElse(null);
+        if (selectionControl == null) {
+            return true;
+        }
+        Date startTime = selectionControl.getStartTime();
+        Date endTime = selectionControl.getEndTime();
         Date currentTime = new Date();
-
-        return currentTime.after(startTime);
+        return startTime == null || endTime == null || currentTime.before(startTime) || currentTime.after(endTime);
     }
-
-    private boolean selectTimeBeforeEnd(Date startTime) {
-        Date currentTime = new Date();
-
-        return currentTime.before(startTime);
-    }
-
-
 }

@@ -21,4 +21,6 @@ public interface CourseSelectRepo extends JpaRepository<CourseSelect, Long> {
     List<Course> listPassedCoursesByUsername(String username);
 
     CourseSelect findByUsernameAndCourseCode(String username, String courseCode);
+
+    void deleteByUsernameAndCourseCode(String username, String courseCode);
 }

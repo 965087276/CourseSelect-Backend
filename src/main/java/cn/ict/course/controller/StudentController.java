@@ -66,6 +66,16 @@ public class StudentController {
         return courseService.DeleteCoursePreselected(courseCode, username);
     }
 
+    @DeleteMapping("/course/{courseCode}")
+    @ApiOperation(value = "学生退课")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "courseCode", value = "课程编码", required = true, dataType = "String", paramType = "path"),
+            @ApiImplicitParam(name = "username", value = "学生用户名", required = true, dataType = "String")
+    })
+    public ResponseEntity DeleteCourseSelected(@PathVariable String courseCode, String username) {
+        return courseService.deleteCourseSelected(courseCode, username);
+    }
+
     @GetMapping("/pre_course/students/{username}")
     @ApiOperation(value = "查看所有预选课")
     @ApiImplicitParam(name = "username", value = "学生用户名", required = true, dataType = "String", paramType = "path")

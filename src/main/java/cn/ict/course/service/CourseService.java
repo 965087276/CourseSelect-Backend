@@ -46,17 +46,17 @@ public interface CourseService {
      * @return 选课添加结果
      */
     ResponseEntity addCourseSelect(String username, String courseCode);
-//
-//    /**
-//     * 学生退课
-//     * 结果：
-//     * 1. 退课成功，保存记录到CourseSelect表中，课程已选人数减1
-//     * 2. 退课失败，返回失败信息
-//     * @param courseCode 路径参数，课程编码
-//     * @param username 学生用户名
-//     * @return 退课结果
-//     */
-//    ResponseEntity dropCourse(String courseCode, String username);
+
+    /**
+     * 在选课时间内学生退课
+     * 结果：
+     * 1. 退课成功，保存记录到CourseSelect表中，课程已选人数减1
+     * 2. 退课失败，返回失败信息
+     * @param courseCode 路径参数，课程编码
+     * @param username 学生用户名
+     * @return 退课结果
+     */
+    ResponseEntity deleteCourseSelected(String courseCode, String username);
 
     /**
      * 学生退预选课
