@@ -14,4 +14,79 @@ public interface CourseService {
     ResponseEntity addCourse(CourseDTO courseDTO);
 
     List<CourseVO> getCourseList();
+
+//    /**
+//     * 学生添加预选课
+//     *
+//     * 结果：
+//     * 1. 预选课添加成功，保存记录到CoursePreselect表中
+//     * 2. 预选课添加失败，返回失败信息
+//     *
+//     * @param username 学生用户名
+//     * @param courseCode 课程编码
+//     * @return 预选课添加结果
+//     */
+//    ResponseEntity addPreselectCourse(String username, String courseCode);
+//
+//    /**
+//     * 学生添加课程
+//     *
+//     * 需要判断以下情况：
+//     * 1. 是否超过选课人数
+//     * 2. 选课冲突
+//     *
+//     * 结果：
+//     * 1. 选课成功，保存记录到CourseSelect表中，课程已选人数加1
+//     * 2. 选课失败，返回失败信息
+//     * @param username 学生用户名
+//     * @param courseCode 课程编码
+//     * @return 选课添加结果
+//     */
+//    ResponseEntity addCourse(String username, String courseCode);
+//
+//    /**
+//     * 学生退课
+//     * 结果：
+//     * 1. 退课成功，保存记录到CourseSelect表中，课程已选人数减1
+//     * 2. 退课失败，返回失败信息
+//     * @param courseCode 路径参数，课程编码
+//     * @param username 学生用户名
+//     * @return 退课结果
+//     */
+//    ResponseEntity dropCourse(String courseCode, String username);
+//
+//    /**
+//     * 学生退预选课
+//     *
+//     * 结果：
+//     * 1. 预选课退课成功，保存记录到CoursePreselect表中
+//     * 2. 预选课退课失败，返回失败信息
+//     * @param courseCode 路径参数，预选课课程编码
+//     * @param username 学生用户名
+//     * @return 预选课退课结果
+//     */
+//    ResponseEntity dropPreselectedCourse(String courseCode, String username);
+//
+//    /**
+//     * 查看学生预选课程
+//     * @param username 路径参数，学生用户名
+//     * @return 学生所有预选课程的信息
+//     */
+//    ResponseEntity getPreSelectedCourses(String username);
+//
+//    /**
+//     * 查看学生已选课程
+//     * @param username 路径参数，学生用户名
+//     * @return 学生所有已选课程的信息
+//     */
+//    ResponseEntity getSelectedCourses(String username);
+//
+//    /**
+//     * 获取课程的上课时间、教室信息
+//     * @param courseCode 路径参数，课程编码
+//     * @return 该课程的Schedule
+//     */
+//    ResponseEntity getCourseSchedules(String courseCode);
+//
+//    ResponseEntity getWeekSchedule(String username, Integer week);
 }

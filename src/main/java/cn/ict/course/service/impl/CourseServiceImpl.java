@@ -6,8 +6,10 @@ import cn.ict.course.entity.dto.CourseDTO;
 import cn.ict.course.entity.dto.ScheduleDTO;
 import cn.ict.course.entity.http.ResponseEntity;
 import cn.ict.course.entity.vo.CourseVO;
+import cn.ict.course.repo.CoursePreSelectRepo;
 import cn.ict.course.repo.CourseRepo;
 import cn.ict.course.repo.CourseScheduleRepo;
+import cn.ict.course.repo.UserRepo;
 import cn.ict.course.service.CourseService;
 import cn.ict.course.utils.CourseCodeUtil;
 import cn.ict.course.utils.CourseConflictUtil;
@@ -29,11 +31,16 @@ public class CourseServiceImpl implements CourseService {
     private final Mapper mapper;
     private final CourseRepo courseRepo;
     private final CourseScheduleRepo scheduleRepo;
+    private final CoursePreSelectRepo coursePreSelectRepo;
 
-    public CourseServiceImpl(Mapper mapper, CourseRepo courseRepo, CourseScheduleRepo scheduleRepo) {
+    public CourseServiceImpl(Mapper mapper,
+                             CourseRepo courseRepo,
+                             CourseScheduleRepo scheduleRepo,
+                             CoursePreSelectRepo coursePreSelectRepo) {
         this.mapper = mapper;
         this.courseRepo = courseRepo;
         this.scheduleRepo = scheduleRepo;
+        this.coursePreSelectRepo = coursePreSelectRepo;
     }
 
     /**

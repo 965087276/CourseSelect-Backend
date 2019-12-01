@@ -42,6 +42,7 @@ public class UserController {
         userService.save(user);
         return ResponseEntity.ok();
     }
+
     @RequiresRoles(value={"admin", "student", "teacher"},logical = Logical.OR)
     @GetMapping("/users/{username}")
     @ApiOperation(value = "获取登录用户信息", notes = "根据url的用户名来获取用户详细信息")
