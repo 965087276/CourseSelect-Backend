@@ -39,4 +39,12 @@ public interface CoursePreSelectService {
      */
     ResponseEntity getPreselectedCourses(String username);
 
+    /**
+     * 如果预选课程已经添加，则无法重复添加
+     * @param username 学生用户名
+     * @param courseCode 课程编码
+     * @return 是否重复添加
+     */
+    boolean repeatByUsernameAndCourseCode(String username, String courseCode);
+
 }

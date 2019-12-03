@@ -1,7 +1,7 @@
 package cn.ict.course.service.impl;
 
 import cn.ict.course.entity.bo.MyPreCourseBO;
-import cn.ict.course.entity.db.CoursePreSelect;
+import cn.ict.course.entity.db.CoursePreselect;
 import cn.ict.course.entity.http.ResponseEntity;
 import cn.ict.course.entity.vo.MyPreCourseVO;
 import cn.ict.course.mapper.CourseMapper;
@@ -23,7 +23,7 @@ import static java.util.stream.Collectors.groupingBy;
  * @author Jianyong Feng
  **/
 @Service
-public class CoursePreSelectImpl implements CoursePreSelectService {
+public class CoursePreselectImpl implements CoursePreSelectService {
 
     private final CoursePreselectRepo coursePreSelectRepo;
     private final CourseRepo courseRepo;
@@ -32,10 +32,10 @@ public class CoursePreSelectImpl implements CoursePreSelectService {
 
 
     @Autowired
-    public  CoursePreSelectImpl(CoursePreselectRepo coursePreSelectRepo,
-                                CourseRepo courseRepo,
-                                CourseMapper courseMapper,
-                                Mapper mapper) {
+    public CoursePreselectImpl(CoursePreselectRepo coursePreSelectRepo,
+                               CourseRepo courseRepo,
+                               CourseMapper courseMapper,
+                               Mapper mapper) {
         this.coursePreSelectRepo = coursePreSelectRepo;
         this.courseRepo = courseRepo;
         this.courseMapper = courseMapper;
@@ -58,12 +58,16 @@ public class CoursePreSelectImpl implements CoursePreSelectService {
     @Transactional
     public ResponseEntity addCoursePreselect(String username, String courseCode) {
 
-        CoursePreSelect preSelect = new CoursePreSelect();
+        if (repeatByUsernameAndCourseCode(username, courseCode)) {
+            return ResponseEntity.error(HttpStatus.INTERNAL_SERVER_ERROR, "该预选课已添加");
+        }
+
+        CoursePreselect preSelect = new CoursePreselect();
         preSelect.setUsername(username);
         preSelect.setCourseCode(courseCode);
         coursePreSelectRepo.save(preSelect);
 
-        CoursePreSelect preselected = coursePreSelectRepo.findByUsernameAndCourseCode(username, courseCode);
+        CoursePreselect preselected = coursePreSelectRepo.findByUsernameAndCourseCode(username, courseCode);
 
         if (preselected != null) {
             return ResponseEntity.ok();
@@ -87,7 +91,7 @@ public class CoursePreSelectImpl implements CoursePreSelectService {
     @Transactional
     public ResponseEntity DeleteCoursePreselected(String courseCode, String username) {
         coursePreSelectRepo.deleteByUsernameAndCourseCode(username, courseCode);
-        CoursePreSelect preSelected = coursePreSelectRepo.findByUsernameAndCourseCode(username, courseCode);
+        CoursePreselect preSelected = coursePreSelectRepo.findByUsernameAndCourseCode(username, courseCode);
         if(preSelected == null) {
             return ResponseEntity.ok();
         }
@@ -112,6 +116,19 @@ public class CoursePreSelectImpl implements CoursePreSelectService {
                     courseVOs.add(vo);
                 });
         return ResponseEntity.ok(courseVOs);
+    }
+
+    /**
+     * 如果预选课程已经添加，则无法重复添加
+     *
+     * @param username   学生用户名
+     * @param courseCode 课程编码
+     * @return 是否重复添加
+     */
+    @Override
+    public boolean repeatByUsernameAndCourseCode(String username, String courseCode) {
+        CoursePreselect coursePreselect = coursePreSelectRepo.findByUsernameAndCourseCode(username, courseCode);
+        return coursePreselect != null;
     }
 
 }

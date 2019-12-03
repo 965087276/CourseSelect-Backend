@@ -16,7 +16,7 @@ import javax.persistence.Table;
 @Entity
 @Table(name = "course_preselect")
 @Data
-public class CoursePreSelect extends BaseEntity{
+public class CoursePreselect extends BaseEntity{
     /**
      * 默认工号，如学工号/教师工号
      */
