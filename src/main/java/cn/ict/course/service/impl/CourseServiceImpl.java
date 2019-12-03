@@ -1,10 +1,13 @@
 package cn.ict.course.service.impl;
 
+import cn.ict.course.entity.bo.MyPreCourseBO;
 import cn.ict.course.entity.db.*;
 import cn.ict.course.entity.dto.CourseDTO;
 import cn.ict.course.entity.dto.ScheduleDTO;
 import cn.ict.course.entity.http.ResponseEntity;
 import cn.ict.course.entity.vo.CourseVO;
+import cn.ict.course.entity.vo.MyPreCourseVO;
+import cn.ict.course.mapper.CourseMapper;
 import cn.ict.course.repo.*;
 import cn.ict.course.service.CourseService;
 import cn.ict.course.utils.CourseCodeUtil;
@@ -15,11 +18,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
+
+import static java.util.stream.Collectors.groupingBy;
 
 /**
  * @author Jianyong Feng
@@ -33,19 +35,22 @@ public class CourseServiceImpl implements CourseService {
     private final CoursePreSelectRepo coursePreSelectRepo;
     private final SelectionControlRepo selectionControlRepo;
     private final CourseSelectRepo courseSelectRepo;
+    private final CourseMapper courseMapper;
 
     public CourseServiceImpl(Mapper mapper,
                              CourseRepo courseRepo,
                              CourseScheduleRepo scheduleRepo,
                              CoursePreSelectRepo coursePreSelectRepo,
                              SelectionControlRepo selectionControlRepo,
-                             CourseSelectRepo courseSelectRepo) {
+                             CourseSelectRepo courseSelectRepo,
+                             CourseMapper courseMapper) {
         this.mapper = mapper;
         this.courseRepo = courseRepo;
         this.scheduleRepo = scheduleRepo;
         this.coursePreSelectRepo = coursePreSelectRepo;
         this.selectionControlRepo = selectionControlRepo;
         this.courseSelectRepo = courseSelectRepo;
+        this.courseMapper = courseMapper;
     }
 
     /**
@@ -267,13 +272,16 @@ public class CourseServiceImpl implements CourseService {
      */
     @Override
     public ResponseEntity getPreSelectedCourses(String username) {
-        List<CoursePreSelect> preCourses = coursePreSelectRepo.findAllByUsername(username);
-        List<String> courseCodesPre = preCourses
+        List<MyPreCourseVO> courseVOs = new ArrayList<>();
+        courseMapper.listMyPreCourse(username)
                 .stream()
-                .map(CoursePreSelect::getCourseCode)
-                .collect(Collectors.toList());
-        List<Course> coursesPre = courseRepo.findByCourseCode(courseCodesPre);
-        return ResponseEntity.ok(coursesPre);
+                .collect(groupingBy(MyPreCourseBO::getCourseCode))
+                .forEach((courseCode, schedules) -> {
+                    MyPreCourseVO vo = mapper.map(schedules.get(0), MyPreCourseVO.class);
+                    schedules.forEach(vo::addSchedule);
+                    courseVOs.add(vo);
+                });
+        return ResponseEntity.ok(courseVOs);
     }
 
     /**
