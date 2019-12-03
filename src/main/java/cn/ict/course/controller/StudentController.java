@@ -1,5 +1,7 @@
 package cn.ict.course.controller;
 
+import cn.ict.course.entity.db.CoursePreselect;
+import cn.ict.course.entity.db.CourseSelect;
 import cn.ict.course.entity.http.ResponseEntity;
 import cn.ict.course.entity.vo.CourseSelectStatsVO;
 import cn.ict.course.service.CoursePreSelectService;
@@ -44,21 +46,19 @@ public class StudentController {
 
     @PostMapping("/course_preselect")
     @ApiOperation(value = "添加预选课")
-    @ApiImplicitParams({
-            @ApiImplicitParam(name = "username", value = "学生用户名", required = true, dataType = "String"),
-            @ApiImplicitParam(name = "courseCode", value = "课程编码", required = true, dataType = "String")
-    })
-    public ResponseEntity addCoursePreselect(String username, String courseCode) {
+    @ApiImplicitParam(name = "coursePreselect", value = "课程信息", required = true, dataType = "CoursePreselect")
+    public ResponseEntity addCoursePreselect(@RequestBody CoursePreselect coursePreselect) {
+        String username = coursePreselect.getUsername();
+        String courseCode = coursePreselect.getCourseCode();
         return coursePreSelectService.addCoursePreselect(username, courseCode);
     }
 
     @PostMapping("/course_select")
     @ApiOperation(value = "课程选择")
-    @ApiImplicitParams({
-            @ApiImplicitParam(name = "username", value = "学生用户名", required = true, dataType = "String"),
-            @ApiImplicitParam(name = "courseCode", value = "课程编码", required = true, dataType = "String")
-    })
-    public ResponseEntity addCourseSelect(String username, String courseCode) {
+    @ApiImplicitParam(name = "courseSelect", value = "课程信息", required = true, dataType = "CourseSelect")
+    public ResponseEntity addCourseSelect(@RequestBody CourseSelect courseSelect) {
+        String username = courseSelect.getUsername();
+        String courseCode = courseSelect.getCourseCode();
         return courseService.addCourseSelect(username, courseCode);
     }
 

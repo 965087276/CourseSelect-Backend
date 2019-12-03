@@ -274,3 +274,23 @@ List<CourseSchedule> findByClassroom(@Param(value = "classrooms") List<String> c
 1. 传入的课程时间表为一个List，如CourseCurrent，需要将CoursePrevious与CourseCurrent合并后比较是否存在冲突。
 2. 由于传入课程表为一个List，所有可能有多个教室，需要使用教室List进行查询。
 3. 判断冲突的代码过多，需要抽象出来。
+## 2019.12.3
+### git push冲突
+两个人同时修改后端代码，导致版本冲突。
+
+解决方法：我这边先git pull下来，然后解决代码提交冲突，重新push
+
+### 预选课程添加时出现抛出异常
+1. 检查添加的预选课程信息，发现之前已经添加过一次，可以推断出是重复添加课程导致存储异常。
+2. 修改代码，service层定义判断课程冲突的接口。并修改添加预选课程的代码。
+3. 重新运行，异常不再抛出，返回重复添加课程信息。
+### 添加预选课程使用PostMan调试参数错误
+最开始参数放在body中，后来发现springboot处理body参数需要在传入实例之前加上@RequestBody注解。
+
+如果我们只是简单地用String类型，那么默认是放在Query Params中，并绑定到request参数中。
+
+修改传入的对象为JSONObject，并加上@RequestBody注解，然后提取相关参数。
+
+参考[What is difference between @RequestBody and @RequestParam?](https://stackoverflow.com/questions/28039709/what-is-difference-between-requestbody-and-requestparam)
+### 
+
