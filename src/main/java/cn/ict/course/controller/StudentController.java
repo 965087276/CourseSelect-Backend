@@ -2,6 +2,7 @@ package cn.ict.course.controller;
 
 import cn.ict.course.entity.http.ResponseEntity;
 import cn.ict.course.entity.vo.CourseSelectStatsVO;
+import cn.ict.course.service.CoursePreSelectService;
 import cn.ict.course.service.CourseService;
 import cn.ict.course.service.StudentService;
 import io.swagger.annotations.ApiImplicitParam;
@@ -23,10 +24,15 @@ public class StudentController {
 
     private final StudentService studentService;
 
+    private final CoursePreSelectService coursePreSelectService;
+
     @Autowired
-    public StudentController(CourseService courseService, StudentService studentService) {
+    public StudentController(CourseService courseService,
+                             StudentService studentService,
+                             CoursePreSelectService coursePreSelectService) {
         this.courseService = courseService;
         this.studentService = studentService;
+        this.coursePreSelectService = coursePreSelectService;
     }
 
     @GetMapping("/course_stats/students/{username}")
@@ -43,7 +49,7 @@ public class StudentController {
             @ApiImplicitParam(name = "courseCode", value = "课程编码", required = true, dataType = "String")
     })
     public ResponseEntity addCoursePreselect(String username, String courseCode) {
-        return courseService.addCoursePreselect(username, courseCode);
+        return coursePreSelectService.addCoursePreselect(username, courseCode);
     }
 
     @PostMapping("/course_select")
@@ -63,7 +69,7 @@ public class StudentController {
             @ApiImplicitParam(name = "username", value = "学生用户名", required = true, dataType = "String")
     })
     public ResponseEntity DeleteCoursePreselected(@PathVariable String courseCode, String username) {
-        return courseService.DeleteCoursePreselected(courseCode, username);
+        return coursePreSelectService.DeleteCoursePreselected(courseCode, username);
     }
 
     @DeleteMapping("/course/{courseCode}")
@@ -80,6 +86,6 @@ public class StudentController {
     @ApiOperation(value = "查看所有预选课")
     @ApiImplicitParam(name = "username", value = "学生用户名", required = true, dataType = "String", paramType = "path")
     public ResponseEntity DeleteCoursePreselected(@PathVariable String username) {
-        return courseService.getPreSelectedCourses(username);
+        return coursePreSelectService.getPreSelectedCourses(username);
     }
 }
