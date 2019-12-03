@@ -37,6 +37,6 @@ public interface CoursePreSelectService {
      * @param username 路径参数，学生用户名
      * @return 学生所有预选课程的信息
      */
-    ResponseEntity getPreSelectedCourses(String username);
+    ResponseEntity getPreselectedCourses(String username);
 
 }

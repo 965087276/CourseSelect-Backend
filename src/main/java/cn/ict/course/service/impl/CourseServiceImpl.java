@@ -1,19 +1,16 @@
 package cn.ict.course.service.impl;
 
-import cn.ict.course.entity.bo.MyPreCourseBO;
 import cn.ict.course.entity.db.*;
 import cn.ict.course.entity.dto.CourseDTO;
 import cn.ict.course.entity.dto.ScheduleDTO;
 import cn.ict.course.entity.http.ResponseEntity;
 import cn.ict.course.entity.vo.CourseVO;
-import cn.ict.course.entity.vo.MyPreCourseVO;
 import cn.ict.course.mapper.CourseMapper;
 import cn.ict.course.repo.*;
 import cn.ict.course.service.CourseService;
 import cn.ict.course.utils.CourseCodeUtil;
 import cn.ict.course.utils.CourseConflictUtil;
 import com.github.dozermapper.core.Mapper;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -32,7 +29,7 @@ public class CourseServiceImpl implements CourseService {
     private final Mapper mapper;
     private final CourseRepo courseRepo;
     private final CourseScheduleRepo scheduleRepo;
-    private final CoursePreSelectRepo coursePreSelectRepo;
+    private final CoursePreselectRepo coursePreSelectRepo;
     private final SelectionControlRepo selectionControlRepo;
     private final CourseSelectRepo courseSelectRepo;
     private final CourseMapper courseMapper;
@@ -40,7 +37,7 @@ public class CourseServiceImpl implements CourseService {
     public CourseServiceImpl(Mapper mapper,
                              CourseRepo courseRepo,
                              CourseScheduleRepo scheduleRepo,
-                             CoursePreSelectRepo coursePreSelectRepo,
+                             CoursePreselectRepo coursePreSelectRepo,
                              SelectionControlRepo selectionControlRepo,
                              CourseSelectRepo courseSelectRepo,
                              CourseMapper courseMapper) {

@@ -5,7 +5,7 @@ import cn.ict.course.entity.db.CoursePreSelect;
 import cn.ict.course.entity.http.ResponseEntity;
 import cn.ict.course.entity.vo.MyPreCourseVO;
 import cn.ict.course.mapper.CourseMapper;
-import cn.ict.course.repo.CoursePreSelectRepo;
+import cn.ict.course.repo.CoursePreselectRepo;
 import cn.ict.course.repo.CourseRepo;
 import cn.ict.course.service.CoursePreSelectService;
 import com.github.dozermapper.core.Mapper;
@@ -25,15 +25,15 @@ import static java.util.stream.Collectors.groupingBy;
 @Service
 public class CoursePreSelectImpl implements CoursePreSelectService {
 
-    private final CoursePreSelectRepo coursePreSelectRepo;
+    private final CoursePreselectRepo coursePreSelectRepo;
     private final CourseRepo courseRepo;
     private final CourseMapper courseMapper;
     private final Mapper mapper;
 
 
     @Autowired
-    public  CoursePreSelectImpl(CoursePreSelectRepo coursePreSelectRepo,
-                                 CourseRepo courseRepo,
+    public  CoursePreSelectImpl(CoursePreselectRepo coursePreSelectRepo,
+                                CourseRepo courseRepo,
                                 CourseMapper courseMapper,
                                 Mapper mapper) {
         this.coursePreSelectRepo = coursePreSelectRepo;
@@ -57,6 +57,7 @@ public class CoursePreSelectImpl implements CoursePreSelectService {
     @Override
     @Transactional
     public ResponseEntity addCoursePreselect(String username, String courseCode) {
+
         CoursePreSelect preSelect = new CoursePreSelect();
         preSelect.setUsername(username);
         preSelect.setCourseCode(courseCode);
@@ -100,7 +101,7 @@ public class CoursePreSelectImpl implements CoursePreSelectService {
      * @return 学生所有预选课程的信息
      */
     @Override
-    public ResponseEntity getPreSelectedCourses(String username) {
+    public ResponseEntity getPreselectedCourses(String username) {
         List<MyPreCourseVO> courseVOs = new ArrayList<>();
         courseMapper.listMyPreCourse(username)
                 .stream()

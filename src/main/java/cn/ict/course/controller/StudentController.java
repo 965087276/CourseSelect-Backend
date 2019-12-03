@@ -86,6 +86,6 @@ public class StudentController {
     @ApiOperation(value = "查看所有预选课")
     @ApiImplicitParam(name = "username", value = "学生用户名", required = true, dataType = "String", paramType = "path")
     public ResponseEntity DeleteCoursePreselected(@PathVariable String username) {
-        return coursePreSelectService.getPreSelectedCourses(username);
+        return coursePreSelectService.getPreselectedCourses(username);
     }
 }

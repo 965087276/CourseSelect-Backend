@@ -11,7 +11,7 @@ import java.util.List;
  * @date 2019/11/9 18:16
  */
 @Repository
-public interface CoursePreSelectRepo extends JpaRepository<CoursePreSelect, Long> {
+public interface CoursePreselectRepo extends JpaRepository<CoursePreSelect, Long> {
     CoursePreSelect findByUsernameAndCourseCode(String username, String courseCode);
 
     void deleteByUsernameAndCourseCode(String username, String courseCode);
