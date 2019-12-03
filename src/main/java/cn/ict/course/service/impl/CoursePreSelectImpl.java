@@ -1,18 +1,23 @@
 package cn.ict.course.service.impl;
 
-import cn.ict.course.entity.db.Course;
+import cn.ict.course.entity.bo.MyPreCourseBO;
 import cn.ict.course.entity.db.CoursePreSelect;
 import cn.ict.course.entity.http.ResponseEntity;
+import cn.ict.course.entity.vo.MyPreCourseVO;
+import cn.ict.course.mapper.CourseMapper;
 import cn.ict.course.repo.CoursePreSelectRepo;
 import cn.ict.course.repo.CourseRepo;
 import cn.ict.course.service.CoursePreSelectService;
+import com.github.dozermapper.core.Mapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
+
+import static java.util.stream.Collectors.groupingBy;
 
 /**
  * @author Jianyong Feng
@@ -22,12 +27,19 @@ public class CoursePreSelectImpl implements CoursePreSelectService {
 
     private final CoursePreSelectRepo coursePreSelectRepo;
     private final CourseRepo courseRepo;
+    private final CourseMapper courseMapper;
+    private final Mapper mapper;
+
 
     @Autowired
     public  CoursePreSelectImpl(CoursePreSelectRepo coursePreSelectRepo,
-                                 CourseRepo courseRepo) {
+                                 CourseRepo courseRepo,
+                                CourseMapper courseMapper,
+                                Mapper mapper) {
         this.coursePreSelectRepo = coursePreSelectRepo;
         this.courseRepo = courseRepo;
+        this.courseMapper = courseMapper;
+        this.mapper = mapper;
     }
 
     /**
@@ -89,12 +101,16 @@ public class CoursePreSelectImpl implements CoursePreSelectService {
      */
     @Override
     public ResponseEntity getPreSelectedCourses(String username) {
-        List<CoursePreSelect> preCourses = coursePreSelectRepo.findAllByUsername(username);
-        List<String> courseCodesPre = preCourses
+        List<MyPreCourseVO> courseVOs = new ArrayList<>();
+        courseMapper.listMyPreCourse(username)
                 .stream()
-                .map(CoursePreSelect::getCourseCode)
-                .collect(Collectors.toList());
-        List<Course> coursesPre = courseRepo.findByCourseCode(courseCodesPre);
-        return ResponseEntity.ok(coursesPre);
+                .collect(groupingBy(MyPreCourseBO::getCourseCode))
+                .forEach((courseCode, schedules) -> {
+                    MyPreCourseVO vo = mapper.map(schedules.get(0), MyPreCourseVO.class);
+                    schedules.forEach(vo::addSchedule);
+                    courseVOs.add(vo);
+                });
+        return ResponseEntity.ok(courseVOs);
     }
+
 }
