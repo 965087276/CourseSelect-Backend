@@ -10,6 +10,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockHttpSession;
 import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
@@ -17,6 +18,7 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.context.WebApplicationContext;
 
+import static cn.ict.course.constants.TestConstants.TEST_USER_AND_PWD;
 import static cn.ict.course.constants.TestConstants.TEST_USER_INFO;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -25,8 +27,10 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 
 import static org.junit.Assert.*;
 
+@WebAppConfiguration
 @RunWith(SpringRunner.class)
 @SpringBootTest
+@Transactional //支持数据回滚，避免测试数据污染环境
 public class UserControllerTest {
 
     @Autowired
@@ -41,8 +45,12 @@ public class UserControllerTest {
     }
 
     @Test
-    public void login() {
-
+    public void login() throws Exception {
+        mvc.perform(post("/xk/api/login")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(TEST_USER_AND_PWD))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andDo(MockMvcResultHandlers.print());
     }
 
     @Test

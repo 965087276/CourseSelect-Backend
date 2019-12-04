@@ -1,5 +1,6 @@
 package cn.ict.course.shiro;
 
+import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.credential.HashedCredentialsMatcher;
 import org.apache.shiro.mgt.SecurityManager;
 import org.apache.shiro.session.mgt.SessionManager;
@@ -59,6 +60,7 @@ public class ShiroConfiguration {
         //自定义的shiro session 缓存管理器
         securityManager.setSessionManager(sessionManager());
         securityManager.setRealm(getRealm());
+        SecurityUtils.setSecurityManager(securityManager);
         return securityManager;
     }
 

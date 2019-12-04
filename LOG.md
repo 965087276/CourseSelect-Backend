@@ -292,5 +292,23 @@ List<CourseSchedule> findByClassroom(@Param(value = "classrooms") List<String> c
 修改传入的对象为JSONObject，并加上@RequestBody注解，然后提取相关参数。
 
 参考[What is difference between @RequestBody and @RequestParam?](https://stackoverflow.com/questions/28039709/what-is-difference-between-requestbody-and-requestparam)
-### 
-
+### 使用filter过滤查询课程信息（包括课程时间）
+## 2019.12.4
+### 单元测试用户登录shiro抛出异常
+描述：使用Swagger测试正常，但是在SpringBoot单元测试抛出异常：
+```
+org.springframework.web.util.NestedServletException: Request processing failed; nested exception is org.apache.shiro.UnavailableSecurityManagerException: No SecurityManager accessible to the calling code, either bound to the org.apache.shiro.util.ThreadContext or as a vm static singleton.  This is an invalid application configuration.
+...
+```
+原因：mock模拟请求不会加载web.xml，也就不会配置Shiro，但是SpringBoot需要配置shiroFilter（包含securityManager），导致mock请求的时候没有找到SecurityManager，解决办法是在securityManager()方法中设置securityManager：
+```java
+@Bean
+public SecurityManager securityManager() {
+    DefaultWebSecurityManager securityManager = new DefaultWebSecurityManager();
+    //自定义的shiro session 缓存管理器
+    securityManager.setSessionManager(sessionManager());
+    securityManager.setRealm(getRealm());
+    SecurityUtils.setSecurityManager(securityManager);
+    return securityManager;
+}
+```
