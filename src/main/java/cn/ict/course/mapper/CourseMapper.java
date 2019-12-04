@@ -25,8 +25,8 @@ public interface CourseMapper {
             "       B.end_week endWeek," +
             "       B.day day," +
             "       B.time time," +
-            "       B.add_to_table addToTable" +
-            "       B.classroom classroom" +
+            "       C.add_to_table addToTable," +
+            "       B.classroom classroom " +
             "FROM course_schedule B " +
             "LEFT JOIN course A on A.course_code = B.course_code " +
             "LEFT JOIN course_preselect C on C.course_code = B.course_code " +
