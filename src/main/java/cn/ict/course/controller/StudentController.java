@@ -53,6 +53,18 @@ public class StudentController {
         return coursePreSelectService.addCoursePreselect(username, courseCode);
     }
 
+    @PatchMapping("/pre_courses/{courseCode}")
+    @ApiOperation(value = "将预选课加入预选课课表/删除预选课课表")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "courseCode", value = "课程编码", required = true, dataType = "String", paramType = "path"),
+            @ApiImplicitParam(name = "username", value = "学生用户名", required = true, dataType = "String"),
+            @ApiImplicitParam(name = "addToTable", value = "是否加入预选课课表", required = true, dataType = "boolean")
+    })
+    public ResponseEntity DeleteCoursePreselected(@PathVariable String courseCode, String username, boolean addToTable) {
+        return coursePreSelectService.modifyAddToTable(courseCode, username, addToTable);
+    }
+
+
     @PostMapping("/course_select")
     @ApiOperation(value = "课程选择")
     @ApiImplicitParam(name = "courseSelect", value = "课程信息", required = true, dataType = "CourseSelect")

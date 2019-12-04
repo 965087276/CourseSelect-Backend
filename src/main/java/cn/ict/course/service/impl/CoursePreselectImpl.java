@@ -131,4 +131,10 @@ public class CoursePreselectImpl implements CoursePreSelectService {
         return coursePreselect != null;
     }
 
+    @Override
+    public ResponseEntity modifyAddToTable(String courseCode, String username, boolean addToTable) {
+        coursePreSelectRepo.modifyAddToTable(username, courseCode, addToTable);
+        return ResponseEntity.ok();
+    }
+
 }

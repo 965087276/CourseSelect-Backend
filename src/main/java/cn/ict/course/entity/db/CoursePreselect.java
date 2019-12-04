@@ -28,4 +28,10 @@ public class CoursePreselect extends BaseEntity{
      */
     @Column(name = "course_code", nullable = false)
     private String courseCode;
+
+    /**
+     * 是否加入预选课课表
+     */
+    @Column(name = "add_to_table", nullable = false)
+    private boolean addToTable;
 }

@@ -47,4 +47,12 @@ public interface CoursePreSelectService {
      */
     boolean repeatByUsernameAndCourseCode(String username, String courseCode);
 
+    /**
+     * 将预选课加入预选课课表/删除预选课课表
+     * @param courseCode 学号
+     * @param username 课程编码
+     * @param addToTable 是否加入课表
+     * @return
+     */
+    ResponseEntity modifyAddToTable(String courseCode, String username, boolean addToTable);
 }
