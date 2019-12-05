@@ -5,7 +5,7 @@ import cn.ict.course.entity.http.ResponseEntity;
 /**
  * @author Jianyong Feng
  **/
-public interface CoursePreSelectService {
+public interface CoursePreselectService {
     /**
      * 学生添加预选课
      *

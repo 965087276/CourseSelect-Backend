@@ -4,7 +4,7 @@ import cn.ict.course.entity.db.CoursePreselect;
 import cn.ict.course.entity.db.CourseSelect;
 import cn.ict.course.entity.http.ResponseEntity;
 import cn.ict.course.entity.vo.CourseSelectStatsVO;
-import cn.ict.course.service.CoursePreSelectService;
+import cn.ict.course.service.CoursePreselectService;
 import cn.ict.course.service.CourseService;
 import cn.ict.course.service.StudentService;
 import io.swagger.annotations.ApiImplicitParam;
@@ -26,12 +26,12 @@ public class StudentController {
 
     private final StudentService studentService;
 
-    private final CoursePreSelectService coursePreSelectService;
+    private final CoursePreselectService coursePreSelectService;
 
     @Autowired
     public StudentController(CourseService courseService,
                              StudentService studentService,
-                             CoursePreSelectService coursePreSelectService) {
+                             CoursePreselectService coursePreSelectService) {
         this.courseService = courseService;
         this.studentService = studentService;
         this.coursePreSelectService = coursePreSelectService;

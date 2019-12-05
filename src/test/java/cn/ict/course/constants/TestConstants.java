@@ -15,8 +15,12 @@ public class TestConstants {
             "  \"unit\": \"信息工程研究所\"," +
             "  \"username\": \"201903\"" +
             "}";
-    public static final String TEST_USER_AND_PWD = "{" +
+    public static final String TEST_USERNAME_AND_PWD_RIGHT = "{" +
             "  \"password\": \"123456\"," +
+            "  \"username\": \"201901\"" +
+            "}";
+    public static final String TEST_USERNAME_AND_PWD_ERROR = "{" +
+            "  \"password\": \"12345\"," +
             "  \"username\": \"201901\"" +
             "}";
 

@@ -1,6 +1,9 @@
 package cn.ict.course.service.impl;
 
-import cn.ict.course.entity.db.*;
+import cn.ict.course.entity.db.Course;
+import cn.ict.course.entity.db.CourseSchedule;
+import cn.ict.course.entity.db.CourseSelect;
+import cn.ict.course.entity.db.SelectionControl;
 import cn.ict.course.entity.dto.CourseDTO;
 import cn.ict.course.entity.dto.ScheduleDTO;
 import cn.ict.course.entity.http.ResponseEntity;
@@ -15,10 +18,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.*;
+import java.util.Date;
+import java.util.List;
 import java.util.stream.Collectors;
-
-import static java.util.stream.Collectors.groupingBy;
 
 /**
  * @author Jianyong Feng

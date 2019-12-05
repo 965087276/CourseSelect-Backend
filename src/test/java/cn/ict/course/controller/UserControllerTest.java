@@ -6,6 +6,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockHttpSession;
@@ -18,8 +19,7 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.context.WebApplicationContext;
 
-import static cn.ict.course.constants.TestConstants.TEST_USER_AND_PWD;
-import static cn.ict.course.constants.TestConstants.TEST_USER_INFO;
+import static cn.ict.course.constants.TestConstants.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
@@ -36,6 +36,9 @@ public class UserControllerTest {
     @Autowired
     private WebApplicationContext wac;
 
+    @Autowired
+    private UserController userController;
+
     private MockMvc mvc;
     private MockHttpSession mockHttpSession;
 
@@ -48,9 +51,14 @@ public class UserControllerTest {
     public void login() throws Exception {
         mvc.perform(post("/xk/api/login")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(TEST_USER_AND_PWD))
+                .content(TEST_USERNAME_AND_PWD_RIGHT))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andDo(MockMvcResultHandlers.print());
+//        mvc.perform(post("/xk/api/login")
+//                .contentType(MediaType.APPLICATION_JSON)
+//                .content(TEST_USERNAME_AND_PWD_ERROR))
+//                .andExpect(MockMvcResultMatchers.status().isInternalServerError())
+//                .andDo(MockMvcResultHandlers.print());
     }
 
     @Test

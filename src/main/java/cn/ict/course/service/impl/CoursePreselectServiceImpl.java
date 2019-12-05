@@ -7,7 +7,7 @@ import cn.ict.course.entity.vo.MyPreCourseVO;
 import cn.ict.course.mapper.CourseMapper;
 import cn.ict.course.repo.CoursePreselectRepo;
 import cn.ict.course.repo.CourseRepo;
-import cn.ict.course.service.CoursePreSelectService;
+import cn.ict.course.service.CoursePreselectService;
 import com.github.dozermapper.core.Mapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -23,7 +23,7 @@ import static java.util.stream.Collectors.groupingBy;
  * @author Jianyong Feng
  **/
 @Service
-public class CoursePreselectImpl implements CoursePreSelectService {
+public class CoursePreselectServiceImpl implements CoursePreselectService {
 
     private final CoursePreselectRepo coursePreSelectRepo;
     private final CourseRepo courseRepo;
@@ -32,10 +32,10 @@ public class CoursePreselectImpl implements CoursePreSelectService {
 
 
     @Autowired
-    public CoursePreselectImpl(CoursePreselectRepo coursePreSelectRepo,
-                               CourseRepo courseRepo,
-                               CourseMapper courseMapper,
-                               Mapper mapper) {
+    public CoursePreselectServiceImpl(CoursePreselectRepo coursePreSelectRepo,
+                                      CourseRepo courseRepo,
+                                      CourseMapper courseMapper,
+                                      Mapper mapper) {
         this.coursePreSelectRepo = coursePreSelectRepo;
         this.courseRepo = courseRepo;
         this.courseMapper = courseMapper;
