@@ -5,7 +5,7 @@ import cn.ict.course.entity.db.CourseSelect;
 import cn.ict.course.entity.http.ResponseEntity;
 import cn.ict.course.entity.vo.CourseSelectStatsVO;
 import cn.ict.course.service.CoursePreselectService;
-import cn.ict.course.service.CourseService;
+import cn.ict.course.service.CourseSelectService;
 import cn.ict.course.service.StudentService;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
@@ -22,19 +22,20 @@ import java.util.List;
 @RequestMapping(value = "/xk/api/student")
 public class StudentController {
 
-    private final CourseService courseService;
 
     private final StudentService studentService;
 
     private final CoursePreselectService coursePreSelectService;
 
+    private final CourseSelectService courseSelectService;
+
     @Autowired
-    public StudentController(CourseService courseService,
-                             StudentService studentService,
-                             CoursePreselectService coursePreSelectService) {
-        this.courseService = courseService;
+    public StudentController(StudentService studentService,
+                             CoursePreselectService coursePreSelectService,
+                             CourseSelectService courseSelectService) {
         this.studentService = studentService;
         this.coursePreSelectService = coursePreSelectService;
+        this.courseSelectService = courseSelectService;
     }
 
     @GetMapping("/course_stats/students/{username}")
@@ -71,7 +72,7 @@ public class StudentController {
     public ResponseEntity addCourseSelect(@RequestBody CourseSelect courseSelect) {
         String username = courseSelect.getUsername();
         String courseCode = courseSelect.getCourseCode();
-        return courseService.addCourseSelect(username, courseCode);
+        return courseSelectService.addCourseSelect(username, courseCode);
     }
 
     @DeleteMapping("/pre_courses/{courseCode}")
@@ -91,7 +92,7 @@ public class StudentController {
             @ApiImplicitParam(name = "username", value = "学生用户名", required = true, dataType = "String")
     })
     public ResponseEntity DeleteCourseSelected(@PathVariable String courseCode, String username) {
-        return courseService.deleteCourseSelected(courseCode, username);
+        return courseSelectService.deleteCourseSelected(courseCode, username);
     }
 
     @GetMapping("/pre_course/students/{username}")
