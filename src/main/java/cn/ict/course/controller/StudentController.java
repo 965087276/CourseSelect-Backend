@@ -110,6 +110,13 @@ public class StudentController {
         return coursePreSelectService.getPreselectedCourseCodeByUsername(username);
     }
 
+    @GetMapping("/course_code/students/{username}")
+    @ApiOperation(value = "获取所有已选课程的课程编码", notes = "该学生用户名对应的所有已选课程的课程编码")
+    @ApiImplicitParam(name = "username", value = "学生用户名", required = true, dataType = "String", paramType = "path")
+    public ResponseEntity<List<String>> getSelectedCourseCodesByUsername(@PathVariable String username) {
+        return courseSelectService.getSelectedCourseCodesByUsername(username);
+    }
+
     @GetMapping("/courses_table/students/{username}")
     @ApiOperation(value = "获取学生课表信息")
     @ApiImplicitParam(name = "username", value = "学生用户名", required = true, dataType = "String", paramType = "path")

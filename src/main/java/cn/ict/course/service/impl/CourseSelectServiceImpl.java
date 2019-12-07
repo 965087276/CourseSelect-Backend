@@ -1,9 +1,6 @@
 package cn.ict.course.service.impl;
 
-import cn.ict.course.entity.db.Course;
-import cn.ict.course.entity.db.CourseSchedule;
-import cn.ict.course.entity.db.CourseSelect;
-import cn.ict.course.entity.db.SelectionControl;
+import cn.ict.course.entity.db.*;
 import cn.ict.course.entity.http.ResponseEntity;
 import cn.ict.course.entity.vo.CurriculumVO;
 import cn.ict.course.entity.vo.EnableTimeVO;
@@ -21,6 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * @author Jianyong Feng
@@ -191,6 +189,22 @@ public class CourseSelectServiceImpl implements CourseSelectService {
     public ResponseEntity<List<CurriculumVO>> getCurriculum(String username) {
         List<CurriculumVO> curriculumList = courseMapper.getSelectedCourses(username);
         return ResponseEntity.ok(curriculumList);
+    }
+
+    /**
+     * 获取学生所有已选课程的课程编码
+     *
+     * @param username 学生用户名
+     * @return 所有已选课程的课程编码
+     */
+    @Override
+    public ResponseEntity<List<String>> getSelectedCourseCodesByUsername(String username) {
+        List<CourseSelect> courseList = courseSelectRepo.findAllByUsername(username);
+        List<String> courseCodeList = courseList
+                .stream()
+                .map(CourseSelect::getCourseCode)
+                .collect(Collectors.toList());
+        return ResponseEntity.ok(courseCodeList);
     }
 
     /**

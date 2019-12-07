@@ -59,4 +59,11 @@ public interface CourseSelectService {
      * @return 课表界面中该学生选的所有课程的课程信息
      */
     ResponseEntity<List<CurriculumVO>> getCurriculum(String username);
+
+    /**
+     * 获取学生所有已选课程的课程编码
+     * @param username 学生用户名
+     * @return 所有已选课程的课程编码
+     */
+    ResponseEntity<List<String>> getSelectedCourseCodesByUsername(String username);
 }
