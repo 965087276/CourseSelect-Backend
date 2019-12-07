@@ -19,7 +19,9 @@ public class CourseVO {
 
     private int limitNum;
 
-    private int seletedNum;
+    private int selectedNum;
+
+    private int courseHour;
 
     private float credit;
 
