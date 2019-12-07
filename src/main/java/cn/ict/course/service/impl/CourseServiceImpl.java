@@ -127,6 +127,18 @@ public class CourseServiceImpl implements CourseService {
         return ResponseEntity.ok(courseTables);
     }
 
+    /**
+     * 获取教师上课课程信息
+     *
+     * @param teacherId 教师用户名
+     * @return 课程信息
+     */
+    @Override
+    public ResponseEntity<List<Course>> getCoursesInfoByTeacherId(String teacherId) {
+        List<Course> courses = courseRepo.findByTeacherId(teacherId);
+        return ResponseEntity.ok(courses);
+    }
+
     private boolean isOk(CourseVO course, String college, String courseType, String courseName, int day, int time) {
 
         if ((!college.equals("none") && !course.getCollege().equals(college))

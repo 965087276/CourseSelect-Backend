@@ -39,10 +39,17 @@ public class TeacherController {
         return courseSelectService.getStudentInfoByCourseCode(courseCode);
     }
 
-    @GetMapping(value = "courseTable/{teacherId}")
+    @GetMapping(value = "/courseTable/{teacherId}")
     @ApiOperation(value = "获取教师课表中的课程信息")
     @ApiImplicitParam(name = "teacherId", value = "教师用户名", required = true, dataType = "String", paramType = "path")
     public ResponseEntity getTeacherCourseTable(@PathVariable String teacherId) {
         return courseService.getTeacherCourseTable(teacherId);
+    }
+
+    @GetMapping(value = "/courses/{teacherId}")
+    @ApiOperation(value = "获取教师上课课程信息")
+    @ApiImplicitParam(name = "teacherId", value = "教师用户名", required = true, dataType = "String", paramType = "path")
+    public ResponseEntity getCoursesInfoByTeacherId(@PathVariable String teacherId) {
+        return courseService.getCoursesInfoByTeacherId(teacherId);
     }
 }

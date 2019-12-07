@@ -1,5 +1,6 @@
 package cn.ict.course.service;
 
+import cn.ict.course.entity.db.Course;
 import cn.ict.course.entity.dto.CourseDTO;
 import cn.ict.course.entity.http.ResponseEntity;
 import cn.ict.course.entity.vo.CourseVO;
@@ -25,6 +26,13 @@ public interface CourseService {
 
 
     ResponseEntity<List<TeacherCourseTableVO>> getTeacherCourseTable(String teacherId);
+
+    /**
+     * 获取教师上课课程信息
+     * @param teacherId 教师用户名
+     * @return 课程信息
+     */
+    ResponseEntity<List<Course>> getCoursesInfoByTeacherId(String teacherId);
 
 
 //
