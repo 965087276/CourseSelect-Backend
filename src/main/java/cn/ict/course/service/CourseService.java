@@ -15,6 +15,13 @@ public interface CourseService {
 
     List<CourseVO> getCourseList(String college, String courseType, String CourseName, Integer day, Integer time);
 
+    /**
+     * 通过课程编码删除课程
+     * @param courseCode 课程编码
+     * @return 删除结果
+     */
+    ResponseEntity deleteCourseByCourseCode(String courseCode);
+
 
 
 

@@ -14,7 +14,9 @@ import cn.ict.course.service.CourseService;
 import cn.ict.course.utils.CourseCodeUtil;
 import cn.ict.course.utils.CourseConflictUtil;
 import com.github.dozermapper.core.Mapper;
+import org.hibernate.service.NullServiceException;
 import org.springframework.http.HttpStatus;
+import org.springframework.orm.jpa.JpaSystemException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -108,6 +110,25 @@ public class CourseServiceImpl implements CourseService {
                 .collect(Collectors.toList());
 
         return courses;
+    }
+
+    /**
+     * 通过课程编码删除课程
+     *
+     * @param courseCode 课程编码
+     * @return 删除结果
+     */
+    @Override
+    @Transactional
+    public ResponseEntity deleteCourseByCourseCode(String courseCode) {
+        try {
+            courseRepo.deleteByCourseCode(courseCode);
+            return ResponseEntity.ok();
+        } catch (JpaSystemException e) {
+            e.printStackTrace();
+            return ResponseEntity.error(HttpStatus.INTERNAL_SERVER_ERROR,
+                                          "删除失败，课程可能已被删除");
+        }
     }
 
     private boolean isOk(CourseVO course, String college, String courseType, String courseName, int day, int time) {
