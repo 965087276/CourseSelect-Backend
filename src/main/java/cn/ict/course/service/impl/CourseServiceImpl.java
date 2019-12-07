@@ -6,6 +6,7 @@ import cn.ict.course.entity.dto.CourseDTO;
 import cn.ict.course.entity.dto.ScheduleDTO;
 import cn.ict.course.entity.http.ResponseEntity;
 import cn.ict.course.entity.vo.CourseVO;
+import cn.ict.course.entity.vo.TeacherCourseTableVO;
 import cn.ict.course.mapper.CourseMapper;
 import cn.ict.course.repo.*;
 import cn.ict.course.service.CourseService;
@@ -29,14 +30,17 @@ public class CourseServiceImpl implements CourseService {
     private final Mapper mapper;
     private final CourseRepo courseRepo;
     private final CourseScheduleRepo scheduleRepo;
+    private final CourseMapper courseMapper;
 
 
     public CourseServiceImpl(Mapper mapper,
                              CourseRepo courseRepo,
-                             CourseScheduleRepo scheduleRepo) {
+                             CourseScheduleRepo scheduleRepo,
+                             CourseMapper courseMapper) {
         this.mapper = mapper;
         this.courseRepo = courseRepo;
         this.scheduleRepo = scheduleRepo;
+        this.courseMapper = courseMapper;
 
     }
 
@@ -115,6 +119,12 @@ public class CourseServiceImpl implements CourseService {
             return ResponseEntity.error(HttpStatus.INTERNAL_SERVER_ERROR,
                                           "删除失败，课程可能已被删除");
         }
+    }
+
+    @Override
+    public ResponseEntity<List<TeacherCourseTableVO>> getTeacherCourseTable(String teacherId) {
+        List<TeacherCourseTableVO> courseTables = courseMapper.getTeacherCourseTable(teacherId);
+        return ResponseEntity.ok(courseTables);
     }
 
     private boolean isOk(CourseVO course, String college, String courseType, String courseName, int day, int time) {

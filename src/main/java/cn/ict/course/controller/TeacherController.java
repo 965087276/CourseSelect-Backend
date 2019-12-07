@@ -38,4 +38,11 @@ public class TeacherController {
     public ResponseEntity getStudentInfoByCourseCode(@PathVariable String courseCode) {
         return courseSelectService.getStudentInfoByCourseCode(courseCode);
     }
+
+    @GetMapping(value = "courseTable/{teacherId}")
+    @ApiOperation(value = "获取教师课表中的课程信息")
+    @ApiImplicitParam(name = "teacherId", value = "教师用户名", required = true, dataType = "String", paramType = "path")
+    public ResponseEntity getTeacherCourseTable(@PathVariable String teacherId) {
+        return courseService.getTeacherCourseTable(teacherId);
+    }
 }
