@@ -66,4 +66,11 @@ public interface CourseSelectService {
      * @return 所有已选课程的课程编码
      */
     ResponseEntity<List<String>> getSelectedCourseCodesByUsername(String username);
+
+    /**
+     * 查看学生已选课程
+     * @param username 路径参数，学生用户名
+     * @return 学生所有已选课程的信息
+     */
+    ResponseEntity getSelectedCourses(String username);
 }
