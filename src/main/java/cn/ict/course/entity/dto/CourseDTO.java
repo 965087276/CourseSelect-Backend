@@ -30,4 +30,17 @@ public class CourseDTO {
     private String college;
 
     private List<ScheduleDTO> scheduleList;
+
+    public CourseDTO(String teacherId, String courseTeacher, String courseName, String courseType, Integer courseHour
+            , Integer credit, Integer limitNum, String college, List<ScheduleDTO> scheduleList) {
+        this.teacherId = teacherId;
+        this.courseTeacher = courseTeacher;
+        this.courseName = courseName;
+        this.courseType = courseType;
+        this.courseHour = courseHour;
+        this.credit = credit;
+        this.limitNum = limitNum;
+        this.college = college;
+        this.scheduleList = scheduleList;
+    }
 }

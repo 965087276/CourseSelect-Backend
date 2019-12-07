@@ -12,4 +12,12 @@ public class ScheduleDTO {
     private Integer day;
     private Integer time;
     private String classroom;
+
+    public ScheduleDTO(Integer startWeek, Integer endWeek, Integer day, Integer time, String classroom) {
+        this.startWeek = startWeek;
+        this.endWeek = endWeek;
+        this.day = day;
+        this.time = time;
+        this.classroom = classroom;
+    }
 }
