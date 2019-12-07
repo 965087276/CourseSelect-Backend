@@ -5,6 +5,7 @@ import cn.ict.course.entity.http.ResponseEntity;
 import cn.ict.course.entity.vo.CourseVO;
 import cn.ict.course.entity.vo.CurriculumVO;
 import cn.ict.course.entity.vo.EnableTimeVO;
+import cn.ict.course.entity.vo.MyCourseVO;
 import cn.ict.course.mapper.CourseMapper;
 import cn.ict.course.repo.CourseRepo;
 import cn.ict.course.repo.CourseScheduleRepo;
@@ -216,12 +217,8 @@ public class CourseSelectServiceImpl implements CourseSelectService {
      */
     @Override
     public ResponseEntity getSelectedCourses(String username) {
-        List<CourseSelect> coursesSelected = courseSelectRepo.findAllByUsername(username);
-        if (coursesSelected.size() == 0) {
-            return ResponseEntity.error(HttpStatus.INTERNAL_SERVER_ERROR,
-                                          "暂无已选课程");
-        }
-        return ResponseEntity.ok(coursesSelected);
+        List<MyCourseVO> courses = courseMapper.getMyCourses(username);
+        return ResponseEntity.ok(courses);
     }
 
 
