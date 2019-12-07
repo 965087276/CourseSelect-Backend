@@ -2,6 +2,8 @@ package cn.ict.course.service;
 
 import cn.ict.course.entity.http.ResponseEntity;
 
+import java.util.List;
+
 /**
  * @author Jianyong Feng
  **/
@@ -52,7 +54,14 @@ public interface CoursePreselectService {
      * @param courseCode 学号
      * @param username 课程编码
      * @param addToTable 是否加入课表
-     * @return
+     * @return 加入结果
      */
     ResponseEntity modifyAddToTable(String courseCode, String username, boolean addToTable);
+
+    /**
+     * 获取学生所有预选课程的课程编码
+     * @param username 学生用户名
+     * @return 所有预选课程的课程编码
+     */
+    ResponseEntity<List<String>> getPreselectedCourseCodeByUsername(String username);
 }

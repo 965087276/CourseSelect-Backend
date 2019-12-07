@@ -61,7 +61,7 @@ public class StudentController {
             @ApiImplicitParam(name = "username", value = "学生用户名", required = true, dataType = "String"),
             @ApiImplicitParam(name = "addToTable", value = "是否加入预选课课表", required = true, dataType = "boolean")
     })
-    public ResponseEntity DeleteCoursePreselected(@PathVariable String courseCode, String username, boolean addToTable) {
+    public ResponseEntity modifyAddToTable(@PathVariable String courseCode, String username, boolean addToTable) {
         return coursePreSelectService.modifyAddToTable(courseCode, username, addToTable);
     }
 
@@ -81,7 +81,7 @@ public class StudentController {
             @ApiImplicitParam(name = "courseCode", value = "课程编码", required = true, dataType = "String", paramType = "path"),
             @ApiImplicitParam(name = "username", value = "学生用户名", required = true, dataType = "String")
     })
-    public ResponseEntity DeleteCoursePreselected(@PathVariable String courseCode, String username) {
+    public ResponseEntity deleteCoursePreselected(@PathVariable String courseCode, String username) {
         return coursePreSelectService.DeleteCoursePreselected(courseCode, username);
     }
 
@@ -91,14 +91,21 @@ public class StudentController {
             @ApiImplicitParam(name = "courseCode", value = "课程编码", required = true, dataType = "String", paramType = "path"),
             @ApiImplicitParam(name = "username", value = "学生用户名", required = true, dataType = "String")
     })
-    public ResponseEntity DeleteCourseSelected(@PathVariable String courseCode, String username) {
+    public ResponseEntity deleteCourseSelected(@PathVariable String courseCode, String username) {
         return courseSelectService.deleteCourseSelected(courseCode, username);
     }
 
     @GetMapping("/pre_course/students/{username}")
     @ApiOperation(value = "查看所有预选课")
     @ApiImplicitParam(name = "username", value = "学生用户名", required = true, dataType = "String", paramType = "path")
-    public ResponseEntity DeleteCoursePreselected(@PathVariable String username) {
+    public ResponseEntity getPreselectedCourses(@PathVariable String username) {
         return coursePreSelectService.getPreselectedCourses(username);
+    }
+
+    @GetMapping("/pre_course_code/students/{username}")
+    @ApiOperation(value = "获取所有预选课程的课程编码", notes = "该学生用户名对应的所有预选课课程编码")
+    @ApiImplicitParam(name = "username", value = "学生用户名", required = true, dataType = "String", paramType = "path")
+    public ResponseEntity<List<String>> getPreselectedCourseCodeByUsername(@PathVariable String username) {
+        return coursePreSelectService.getPreselectedCourseCodeByUsername(username);
     }
 }
