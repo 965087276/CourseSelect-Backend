@@ -90,7 +90,7 @@ public class CoursePreselectServiceImpl implements CoursePreselectService {
      */
     @Override
     @Transactional
-    public ResponseEntity DeleteCoursePreselected(String courseCode, String username) {
+    public ResponseEntity deleteCoursePreselected(String courseCode, String username) {
         coursePreSelectRepo.deleteByUsernameAndCourseCode(username, courseCode);
         CoursePreselect preSelected = coursePreSelectRepo.findByUsernameAndCourseCode(username, courseCode);
         if(preSelected == null) {

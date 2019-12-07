@@ -4,6 +4,7 @@ import cn.ict.course.entity.db.CoursePreselect;
 import cn.ict.course.entity.db.CourseSelect;
 import cn.ict.course.entity.http.ResponseEntity;
 import cn.ict.course.entity.vo.CourseSelectStatsVO;
+import cn.ict.course.entity.vo.CurriculumVO;
 import cn.ict.course.service.CoursePreselectService;
 import cn.ict.course.service.CourseSelectService;
 import cn.ict.course.service.StudentService;
@@ -82,7 +83,7 @@ public class StudentController {
             @ApiImplicitParam(name = "username", value = "学生用户名", required = true, dataType = "String")
     })
     public ResponseEntity deleteCoursePreselected(@PathVariable String courseCode, String username) {
-        return coursePreSelectService.DeleteCoursePreselected(courseCode, username);
+        return coursePreSelectService.deleteCoursePreselected(courseCode, username);
     }
 
     @DeleteMapping("/course/{courseCode}")
@@ -107,5 +108,19 @@ public class StudentController {
     @ApiImplicitParam(name = "username", value = "学生用户名", required = true, dataType = "String", paramType = "path")
     public ResponseEntity<List<String>> getPreselectedCourseCodeByUsername(@PathVariable String username) {
         return coursePreSelectService.getPreselectedCourseCodeByUsername(username);
+    }
+
+    @GetMapping("/course_code/students/{username}")
+    @ApiOperation(value = "获取所有已选课程的课程编码", notes = "该学生用户名对应的所有已选课程的课程编码")
+    @ApiImplicitParam(name = "username", value = "学生用户名", required = true, dataType = "String", paramType = "path")
+    public ResponseEntity<List<String>> getSelectedCourseCodesByUsername(@PathVariable String username) {
+        return courseSelectService.getSelectedCourseCodesByUsername(username);
+    }
+
+    @GetMapping("/courses_table/students/{username}")
+    @ApiOperation(value = "获取学生课表信息")
+    @ApiImplicitParam(name = "username", value = "学生用户名", required = true, dataType = "String", paramType = "path")
+    public ResponseEntity<List<CurriculumVO>> getCurriculum(@PathVariable String username) {
+        return courseSelectService.getCurriculum(username);
     }
 }

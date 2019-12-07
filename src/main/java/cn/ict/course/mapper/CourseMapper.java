@@ -1,6 +1,7 @@
 package cn.ict.course.mapper;
 
 import cn.ict.course.entity.bo.MyPreCourseBO;
+import cn.ict.course.entity.vo.CurriculumVO;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
@@ -32,4 +33,18 @@ public interface CourseMapper {
             "LEFT JOIN course_preselect C on C.course_code = B.course_code " +
             "WHERE C.username = #{username}")
     List<MyPreCourseBO> listMyPreCourse(@Param("username") String username);
+
+    @Select("SELECT A.course_name courseName," +
+            " A.course_code courseCode," +
+            " A.course_teacher courseTeacher," +
+            " B.start_week startWeek," +
+            " B.end_week endWeek," +
+            " B.time time," +
+            " B.classroom classroom," +
+            " B.day day " +
+            "FROM course_schedule B " +
+            "LEFT JOIN course A on A.course_code = B.course_code " +
+            "LEFT JOIN course_select C on C.course_code = B.course_code " +
+            "WHERE C.username = #{username}")
+    List<CurriculumVO> getSelectedCourses(@Param("username") String username);
 }

@@ -1,9 +1,11 @@
 package cn.ict.course.service;
 
 import cn.ict.course.entity.http.ResponseEntity;
+import cn.ict.course.entity.vo.CurriculumVO;
 import cn.ict.course.entity.vo.EnableTimeVO;
 
 import java.util.Date;
+import java.util.List;
 
 /**
  * @author Jianyong Feng
@@ -50,4 +52,18 @@ public interface CourseSelectService {
      * @return 开放时间段
      */
     ResponseEntity<EnableTimeVO> getEnableTime();
+
+    /**
+     * 获取我的课表
+     * @param username 学生用户名
+     * @return 课表界面中该学生选的所有课程的课程信息
+     */
+    ResponseEntity<List<CurriculumVO>> getCurriculum(String username);
+
+    /**
+     * 获取学生所有已选课程的课程编码
+     * @param username 学生用户名
+     * @return 所有已选课程的课程编码
+     */
+    ResponseEntity<List<String>> getSelectedCourseCodesByUsername(String username);
 }
