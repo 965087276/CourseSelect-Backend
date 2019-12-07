@@ -29,25 +29,15 @@ public class CourseServiceImpl implements CourseService {
     private final Mapper mapper;
     private final CourseRepo courseRepo;
     private final CourseScheduleRepo scheduleRepo;
-    private final CoursePreselectRepo coursePreSelectRepo;
-    private final SelectionControlRepo selectionControlRepo;
-    private final CourseSelectRepo courseSelectRepo;
-    private final CourseMapper courseMapper;
+
 
     public CourseServiceImpl(Mapper mapper,
                              CourseRepo courseRepo,
-                             CourseScheduleRepo scheduleRepo,
-                             CoursePreselectRepo coursePreSelectRepo,
-                             SelectionControlRepo selectionControlRepo,
-                             CourseSelectRepo courseSelectRepo,
-                             CourseMapper courseMapper) {
+                             CourseScheduleRepo scheduleRepo) {
         this.mapper = mapper;
         this.courseRepo = courseRepo;
         this.scheduleRepo = scheduleRepo;
-        this.coursePreSelectRepo = coursePreSelectRepo;
-        this.selectionControlRepo = selectionControlRepo;
-        this.courseSelectRepo = courseSelectRepo;
-        this.courseMapper = courseMapper;
+
     }
 
     /**
