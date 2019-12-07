@@ -96,6 +96,12 @@ public class StudentController {
         return courseSelectService.deleteCourseSelected(courseCode, username);
     }
 
+    @GetMapping("/course/students/{username}")
+    @ApiOperation(value = "获取已选课程信息", notes = "使用学生用户名查询")
+    public ResponseEntity getSelectedCourses(@PathVariable String username) {
+        return courseSelectService.getSelectedCourses(username);
+    }
+
     @GetMapping("/pre_course/students/{username}")
     @ApiOperation(value = "查看所有预选课")
     @ApiImplicitParam(name = "username", value = "学生用户名", required = true, dataType = "String", paramType = "path")

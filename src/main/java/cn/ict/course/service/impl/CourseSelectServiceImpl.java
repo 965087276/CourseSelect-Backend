@@ -2,6 +2,7 @@ package cn.ict.course.service.impl;
 
 import cn.ict.course.entity.db.*;
 import cn.ict.course.entity.http.ResponseEntity;
+import cn.ict.course.entity.vo.CourseVO;
 import cn.ict.course.entity.vo.CurriculumVO;
 import cn.ict.course.entity.vo.EnableTimeVO;
 import cn.ict.course.mapper.CourseMapper;
@@ -206,6 +207,23 @@ public class CourseSelectServiceImpl implements CourseSelectService {
                 .collect(Collectors.toList());
         return ResponseEntity.ok(courseCodeList);
     }
+
+    /**
+     * 查看学生已选课程
+     *
+     * @param username 路径参数，学生用户名
+     * @return 学生所有已选课程的信息
+     */
+    @Override
+    public ResponseEntity getSelectedCourses(String username) {
+        List<CourseSelect> coursesSelected = courseSelectRepo.findAllByUsername(username);
+        if (coursesSelected.size() == 0) {
+            return ResponseEntity.error(HttpStatus.INTERNAL_SERVER_ERROR,
+                                          "暂无已选课程");
+        }
+        return ResponseEntity.ok(coursesSelected);
+    }
+
 
     /**
      * 判断选课是否开放
