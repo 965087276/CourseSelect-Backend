@@ -2,7 +2,9 @@ package cn.ict.course.controller;
 
 import cn.ict.course.entity.http.ResponseEntity;
 import cn.ict.course.entity.vo.CourseVO;
+import cn.ict.course.entity.vo.EnableTimeVO;
 import cn.ict.course.service.CollegeService;
+import cn.ict.course.service.CourseSelectService;
 import cn.ict.course.service.CourseService;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
@@ -26,11 +28,15 @@ public class PublicController {
 
     private final CollegeService collegeService;
     private final CourseService courseService;
+    private final CourseSelectService courseSelectService;
 
     @Autowired
-    public PublicController(CollegeService collegeService, CourseService courseService) {
+    public PublicController(CollegeService collegeService,
+                            CourseService courseService,
+                            CourseSelectService courseSelectService) {
         this.collegeService = collegeService;
         this.courseService = courseService;
+        this.courseSelectService = courseSelectService;
     }
 
     @GetMapping(value = "/colleges")
@@ -57,5 +63,11 @@ public class PublicController {
                                  ) {
         List<CourseVO> courses = courseService.getCourseList(college, courseType, courseName, day, time);
         return ResponseEntity.ok(courses);
+    }
+
+    @GetMapping(value = "/enabletimes")
+    @ApiOperation(value = "获取选课开放截止时间", notes = "两个时间")
+    ResponseEntity<EnableTimeVO> getEnableTime() {
+        return courseSelectService.getEnableTime();
     }
 }

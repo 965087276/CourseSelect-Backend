@@ -5,6 +5,7 @@ import cn.ict.course.entity.db.CourseSchedule;
 import cn.ict.course.entity.db.CourseSelect;
 import cn.ict.course.entity.db.SelectionControl;
 import cn.ict.course.entity.http.ResponseEntity;
+import cn.ict.course.entity.vo.EnableTimeVO;
 import cn.ict.course.repo.CourseRepo;
 import cn.ict.course.repo.CourseScheduleRepo;
 import cn.ict.course.repo.CourseSelectRepo;
@@ -155,6 +156,24 @@ public class CourseSelectServiceImpl implements CourseSelectService {
         selectionControl.setEndTime(endTime);
         selectionControlRepo.save(selectionControl);
         return ResponseEntity.ok();
+    }
+
+    /**
+     * 获取选课开放结束时间
+     *
+     * @return 开放时间段
+     */
+    @Override
+    public ResponseEntity<EnableTimeVO> getEnableTime() {
+        SelectionControl selectionControl = selectionControlRepo.findById(1L).orElse(null);
+        if (selectionControl == null) {
+            return ResponseEntity.error(HttpStatus.INTERNAL_SERVER_ERROR,
+                                          "管理员未设置选课开放截止时间");
+        }
+        Date startTime = selectionControl.getStartTime();
+        Date endTime = selectionControl.getEndTime();
+        EnableTimeVO enableTime = new EnableTimeVO(startTime, endTime);
+        return ResponseEntity.ok(enableTime);
     }
 
     /**

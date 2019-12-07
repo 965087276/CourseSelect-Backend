@@ -1,6 +1,7 @@
 package cn.ict.course.service;
 
 import cn.ict.course.entity.http.ResponseEntity;
+import cn.ict.course.entity.vo.EnableTimeVO;
 
 import java.util.Date;
 
@@ -43,4 +44,10 @@ public interface CourseSelectService {
      * @return 修改是否成功
      */
     ResponseEntity updateEnableTime(Date startTime, Date endTime);
+
+    /**
+     * 获取选课开放结束时间
+     * @return 开放时间段
+     */
+    ResponseEntity<EnableTimeVO> getEnableTime();
 }
