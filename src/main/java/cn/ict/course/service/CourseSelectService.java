@@ -1,6 +1,7 @@
 package cn.ict.course.service;
 
 import cn.ict.course.entity.http.ResponseEntity;
+import cn.ict.course.entity.vo.CourseStudentInfoVO;
 import cn.ict.course.entity.vo.CurriculumVO;
 import cn.ict.course.entity.vo.EnableTimeVO;
 
@@ -73,4 +74,11 @@ public interface CourseSelectService {
      * @return 学生所有已选课程的信息
      */
     ResponseEntity getSelectedCourses(String username);
+
+    /**
+     * 获取选择该课的学生信息
+     * @param courseCode 课程编码
+     * @return 学生信息
+     */
+    ResponseEntity<List<CourseStudentInfoVO>> getStudentInfoByCourseCode(String courseCode);
 }

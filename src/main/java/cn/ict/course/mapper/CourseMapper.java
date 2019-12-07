@@ -1,6 +1,7 @@
 package cn.ict.course.mapper;
 
 import cn.ict.course.entity.bo.MyPreCourseBO;
+import cn.ict.course.entity.vo.CourseStudentInfoVO;
 import cn.ict.course.entity.vo.CurriculumVO;
 import cn.ict.course.entity.vo.MyCourseVO;
 import org.apache.ibatis.annotations.Mapper;
@@ -59,4 +60,13 @@ public interface CourseMapper {
             "LEFT JOIN course B on A.course_code = B.course_code " +
             "WHERE A.username = #{username}")
     List<MyCourseVO> getMyCourses(@Param("username") String username);
+
+    @Select("SELECT B.username studentUsername, " +
+            "    B.real_name studentRealName, " +
+            "    B.college college, " +
+            "    A.grade grade " +
+            "FROM course_select A " +
+            "LEFT JOIN `user` B on A.username = B.username " +
+            "WHERE A.course_code = #{courseCode}")
+    List<CourseStudentInfoVO> getStudentInfoByCourseCode(@Param("courseCode") String courseCode);
 }

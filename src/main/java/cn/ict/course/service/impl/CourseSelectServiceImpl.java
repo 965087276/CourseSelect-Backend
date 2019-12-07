@@ -2,10 +2,7 @@ package cn.ict.course.service.impl;
 
 import cn.ict.course.entity.db.*;
 import cn.ict.course.entity.http.ResponseEntity;
-import cn.ict.course.entity.vo.CourseVO;
-import cn.ict.course.entity.vo.CurriculumVO;
-import cn.ict.course.entity.vo.EnableTimeVO;
-import cn.ict.course.entity.vo.MyCourseVO;
+import cn.ict.course.entity.vo.*;
 import cn.ict.course.mapper.CourseMapper;
 import cn.ict.course.repo.CourseRepo;
 import cn.ict.course.repo.CourseScheduleRepo;
@@ -219,6 +216,18 @@ public class CourseSelectServiceImpl implements CourseSelectService {
     public ResponseEntity getSelectedCourses(String username) {
         List<MyCourseVO> courses = courseMapper.getMyCourses(username);
         return ResponseEntity.ok(courses);
+    }
+
+    /**
+     * 获取选择该课的学生信息
+     *
+     * @param courseCode 课程编码
+     * @return 学生信息
+     */
+    @Override
+    public ResponseEntity<List<CourseStudentInfoVO>> getStudentInfoByCourseCode(String courseCode) {
+        List<CourseStudentInfoVO> students = courseMapper.getStudentInfoByCourseCode(courseCode);
+        return ResponseEntity.ok(students);
     }
 
 
