@@ -5,7 +5,9 @@ import cn.ict.course.entity.db.CourseSchedule;
 import cn.ict.course.entity.db.CourseSelect;
 import cn.ict.course.entity.db.SelectionControl;
 import cn.ict.course.entity.http.ResponseEntity;
+import cn.ict.course.entity.vo.CurriculumVO;
 import cn.ict.course.entity.vo.EnableTimeVO;
+import cn.ict.course.mapper.CourseMapper;
 import cn.ict.course.repo.CourseRepo;
 import cn.ict.course.repo.CourseScheduleRepo;
 import cn.ict.course.repo.CourseSelectRepo;
@@ -30,6 +32,7 @@ public class CourseSelectServiceImpl implements CourseSelectService {
     private final CourseSelectRepo courseSelectRepo;
     private final CourseRepo courseRepo;
     private final CourseScheduleRepo scheduleRepo;
+    private final CourseMapper courseMapper;
 
 
     @Autowired
@@ -37,13 +40,15 @@ public class CourseSelectServiceImpl implements CourseSelectService {
                              SelectionControlRepo selectionControlRepo,
                              CourseSelectRepo courseSelectRepo,
                              CourseRepo courseRepo,
-                             CourseScheduleRepo scheduleRepo
+                             CourseScheduleRepo scheduleRepo,
+                             CourseMapper courseMapper
                              ) {
 
         this.selectionControlRepo = selectionControlRepo;
         this.courseSelectRepo = courseSelectRepo;
         this.courseRepo = courseRepo;
         this.scheduleRepo = scheduleRepo;
+        this.courseMapper = courseMapper;
     }
     /**
      * 学生添加课程
@@ -174,6 +179,18 @@ public class CourseSelectServiceImpl implements CourseSelectService {
         Date endTime = selectionControl.getEndTime();
         EnableTimeVO enableTime = new EnableTimeVO(startTime, endTime);
         return ResponseEntity.ok(enableTime);
+    }
+
+    /**
+     * 获取我的课表
+     *
+     * @param username 学生用户名
+     * @return 课表界面中该学生选的所有课程的课程信息
+     */
+    @Override
+    public ResponseEntity<List<CurriculumVO>> getCurriculum(String username) {
+        List<CurriculumVO> curriculumList = courseMapper.getSelectedCourses(username);
+        return ResponseEntity.ok(curriculumList);
     }
 
     /**

@@ -31,6 +31,9 @@ public class CourseDTO {
 
     private List<ScheduleDTO> scheduleList;
 
+    public CourseDTO() {
+    }
+
     public CourseDTO(String teacherId, String courseTeacher, String courseName, String courseType, Integer courseHour
             , Integer credit, Integer limitNum, String college, List<ScheduleDTO> scheduleList) {
         this.teacherId = teacherId;

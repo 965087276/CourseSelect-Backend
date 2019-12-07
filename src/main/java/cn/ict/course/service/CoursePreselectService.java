@@ -31,7 +31,7 @@ public interface CoursePreselectService {
      * @param username 学生用户名
      * @return 预选课退课结果
      */
-    ResponseEntity DeleteCoursePreselected(String courseCode, String username);
+    ResponseEntity deleteCoursePreselected(String courseCode, String username);
 
 
     /**

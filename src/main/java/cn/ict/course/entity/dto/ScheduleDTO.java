@@ -13,6 +13,9 @@ public class ScheduleDTO {
     private Integer time;
     private String classroom;
 
+    public ScheduleDTO() {
+    }
+
     public ScheduleDTO(Integer startWeek, Integer endWeek, Integer day, Integer time, String classroom) {
         this.startWeek = startWeek;
         this.endWeek = endWeek;
