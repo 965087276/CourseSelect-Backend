@@ -21,4 +21,5 @@ public interface CourseRepo extends JpaRepository<Course, Long> {
     Course findByCourseCode(String courseCode);
 
     List<Course> findByCourseCode(List<String> courseCode);
+
 }
