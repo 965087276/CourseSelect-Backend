@@ -19,7 +19,7 @@ public class MyPreCourseVO {
     private String courseType;
     private String courseTeacher;
     private boolean addToTable;
-    List<Schedule> schedules = new ArrayList<>();
+    List<Schedule> courseSchedules = new ArrayList<>();
 
     @Data
     public class Schedule {
@@ -33,8 +33,6 @@ public class MyPreCourseVO {
     public void addSchedule(MyPreCourseBO bo) {
         Schedule schedule = new Schedule();
         BeanUtil.copyProperties(bo, schedule);
-        schedules.add(schedule);
+        courseSchedules.add(schedule);
     }
 }
-
-

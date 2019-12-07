@@ -16,6 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static java.util.stream.Collectors.groupingBy;
 
@@ -135,6 +136,22 @@ public class CoursePreselectServiceImpl implements CoursePreselectService {
     public ResponseEntity modifyAddToTable(String courseCode, String username, boolean addToTable) {
         coursePreSelectRepo.modifyAddToTable(username, courseCode, addToTable);
         return ResponseEntity.ok();
+    }
+
+    /**
+     * 获取学生所有预选课程的课程编码
+     *
+     * @param username 学生用户名
+     * @return 所有预选课程的课程编码
+     */
+    @Override
+    public ResponseEntity<List<String>> getPreselectedCourseCodeByUsername(String username) {
+        List<CoursePreselect> courseList = coursePreSelectRepo.findAllByUsername(username);
+        List<String> courseCodeList = courseList
+                .stream()
+                .map(CoursePreselect::getCourseCode)
+                .collect(Collectors.toList());
+        return ResponseEntity.ok(courseCodeList);
     }
 
 }
