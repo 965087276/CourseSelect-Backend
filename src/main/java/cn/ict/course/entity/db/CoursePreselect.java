@@ -16,7 +16,7 @@ import javax.persistence.Table;
 @Entity
 @Table(name = "course_preselect")
 @Data
-public class CoursePreSelect extends BaseEntity{
+public class CoursePreselect extends BaseEntity{
     /**
      * 默认工号，如学工号/教师工号
      */
@@ -28,4 +28,10 @@ public class CoursePreSelect extends BaseEntity{
      */
     @Column(name = "course_code", nullable = false)
     private String courseCode;
+
+    /**
+     * 是否加入预选课课表
+     */
+    @Column(name = "add_to_table", nullable = false)
+    private boolean addToTable;
 }

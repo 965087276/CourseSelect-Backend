@@ -1,5 +1,6 @@
 package cn.ict.course.shiro;
 
+import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.credential.HashedCredentialsMatcher;
 import org.apache.shiro.mgt.SecurityManager;
 import org.apache.shiro.session.mgt.SessionManager;
@@ -39,17 +40,17 @@ public class ShiroConfiguration {
          * 	—user 认证和自动登录可访问
          */
         Map<String, String> filterChainDefinitionMap = new LinkedHashMap<>();
-        filterChainDefinitionMap.put("/xk/api/login", "anon");
-        filterChainDefinitionMap.put("/xk/api/users", "anon");
-        filterChainDefinitionMap.put("/xk/api/logout", "anon");
+//        filterChainDefinitionMap.put("/xk/api/login", "anon");
+//        filterChainDefinitionMap.put("/xk/api/users", "anon");
+//        filterChainDefinitionMap.put("/xk/api/logout", "anon");
 //        filterChainDefinitionMap.put("/xk/api/teacher/courses", "anon");
 //        filterChainDefinitionMap.put("/xk/api/pub/colleges", "anon");
 //        filterChainDefinitionMap.put("/xk/api/pub/courses", "anon");
         // 拦截根目录下的所有路径，需要放行的路径必须在之前添加
 //        filterChainDefinitionMap.put("/xk/api/**", "userAuth");
 
-        shiroFilterFactoryBean.setFilterChainDefinitionMap(filterChainDefinitionMap);
-        shiroFilterFactoryBean.setLoginUrl("/xk/api/login");
+//        shiroFilterFactoryBean.setFilterChainDefinitionMap(filterChainDefinitionMap);
+//        shiroFilterFactoryBean.setLoginUrl("/xk/api/login");
         return shiroFilterFactoryBean;
     }
 
@@ -59,6 +60,7 @@ public class ShiroConfiguration {
         //自定义的shiro session 缓存管理器
         securityManager.setSessionManager(sessionManager());
         securityManager.setRealm(getRealm());
+        SecurityUtils.setSecurityManager(securityManager);
         return securityManager;
     }
 

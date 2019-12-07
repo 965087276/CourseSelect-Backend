@@ -274,3 +274,41 @@ List<CourseSchedule> findByClassroom(@Param(value = "classrooms") List<String> c
 1. 传入的课程时间表为一个List，如CourseCurrent，需要将CoursePrevious与CourseCurrent合并后比较是否存在冲突。
 2. 由于传入课程表为一个List，所有可能有多个教室，需要使用教室List进行查询。
 3. 判断冲突的代码过多，需要抽象出来。
+## 2019.12.3
+### git push冲突
+两个人同时修改后端代码，导致版本冲突。
+
+解决方法：我这边先git pull下来，然后解决代码提交冲突，重新push
+
+### 预选课程添加时出现抛出异常
+1. 检查添加的预选课程信息，发现之前已经添加过一次，可以推断出是重复添加课程导致存储异常。
+2. 修改代码，service层定义判断课程冲突的接口。并修改添加预选课程的代码。
+3. 重新运行，异常不再抛出，返回重复添加课程信息。
+### 添加预选课程使用PostMan调试参数错误
+最开始参数放在body中，后来发现springboot处理body参数需要在传入实例之前加上@RequestBody注解。
+
+如果我们只是简单地用String类型，那么默认是放在Query Params中，并绑定到request参数中。
+
+修改传入的对象为JSONObject，并加上@RequestBody注解，然后提取相关参数。
+
+参考[What is difference between @RequestBody and @RequestParam?](https://stackoverflow.com/questions/28039709/what-is-difference-between-requestbody-and-requestparam)
+### 使用filter过滤查询课程信息（包括课程时间）
+## 2019.12.4
+### 单元测试用户登录shiro抛出异常
+描述：使用Swagger测试正常，但是在SpringBoot单元测试抛出异常：
+```
+org.springframework.web.util.NestedServletException: Request processing failed; nested exception is org.apache.shiro.UnavailableSecurityManagerException: No SecurityManager accessible to the calling code, either bound to the org.apache.shiro.util.ThreadContext or as a vm static singleton.  This is an invalid application configuration.
+...
+```
+原因：mock模拟请求不会加载web.xml，也就不会配置Shiro，但是SpringBoot需要配置shiroFilter（包含securityManager），导致mock请求的时候没有找到SecurityManager，解决办法是在securityManager()方法中设置securityManager：
+```java
+@Bean
+public SecurityManager securityManager() {
+    DefaultWebSecurityManager securityManager = new DefaultWebSecurityManager();
+    //自定义的shiro session 缓存管理器
+    securityManager.setSessionManager(sessionManager());
+    securityManager.setRealm(getRealm());
+    SecurityUtils.setSecurityManager(securityManager);
+    return securityManager;
+}
+```

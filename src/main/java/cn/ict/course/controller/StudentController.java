@@ -1,8 +1,11 @@
 package cn.ict.course.controller;
 
+import cn.ict.course.entity.db.CoursePreselect;
+import cn.ict.course.entity.db.CourseSelect;
 import cn.ict.course.entity.http.ResponseEntity;
 import cn.ict.course.entity.vo.CourseSelectStatsVO;
-import cn.ict.course.service.CourseService;
+import cn.ict.course.service.CoursePreselectService;
+import cn.ict.course.service.CourseSelectService;
 import cn.ict.course.service.StudentService;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
@@ -19,14 +22,20 @@ import java.util.List;
 @RequestMapping(value = "/xk/api/student")
 public class StudentController {
 
-    private final CourseService courseService;
 
     private final StudentService studentService;
 
+    private final CoursePreselectService coursePreSelectService;
+
+    private final CourseSelectService courseSelectService;
+
     @Autowired
-    public StudentController(CourseService courseService, StudentService studentService) {
-        this.courseService = courseService;
+    public StudentController(StudentService studentService,
+                             CoursePreselectService coursePreSelectService,
+                             CourseSelectService courseSelectService) {
         this.studentService = studentService;
+        this.coursePreSelectService = coursePreSelectService;
+        this.courseSelectService = courseSelectService;
     }
 
     @GetMapping("/course_stats/students/{username}")
@@ -38,22 +47,32 @@ public class StudentController {
 
     @PostMapping("/course_preselect")
     @ApiOperation(value = "添加预选课")
-    @ApiImplicitParams({
-            @ApiImplicitParam(name = "username", value = "学生用户名", required = true, dataType = "String"),
-            @ApiImplicitParam(name = "courseCode", value = "课程编码", required = true, dataType = "String")
-    })
-    public ResponseEntity addCoursePreselect(String username, String courseCode) {
-        return courseService.addCoursePreselect(username, courseCode);
+    @ApiImplicitParam(name = "coursePreselect", value = "课程信息", required = true, dataType = "CoursePreselect")
+    public ResponseEntity addCoursePreselect(@RequestBody CoursePreselect coursePreselect) {
+        String username = coursePreselect.getUsername();
+        String courseCode = coursePreselect.getCourseCode();
+        return coursePreSelectService.addCoursePreselect(username, courseCode);
     }
+
+    @PatchMapping("/pre_courses/{courseCode}")
+    @ApiOperation(value = "将预选课加入预选课课表/删除预选课课表")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "courseCode", value = "课程编码", required = true, dataType = "String", paramType = "path"),
+            @ApiImplicitParam(name = "username", value = "学生用户名", required = true, dataType = "String"),
+            @ApiImplicitParam(name = "addToTable", value = "是否加入预选课课表", required = true, dataType = "boolean")
+    })
+    public ResponseEntity DeleteCoursePreselected(@PathVariable String courseCode, String username, boolean addToTable) {
+        return coursePreSelectService.modifyAddToTable(courseCode, username, addToTable);
+    }
+
 
     @PostMapping("/course_select")
     @ApiOperation(value = "课程选择")
-    @ApiImplicitParams({
-            @ApiImplicitParam(name = "username", value = "学生用户名", required = true, dataType = "String"),
-            @ApiImplicitParam(name = "courseCode", value = "课程编码", required = true, dataType = "String")
-    })
-    public ResponseEntity addCourseSelect(String username, String courseCode) {
-        return courseService.addCourseSelect(username, courseCode);
+    @ApiImplicitParam(name = "courseSelect", value = "课程信息", required = true, dataType = "CourseSelect")
+    public ResponseEntity addCourseSelect(@RequestBody CourseSelect courseSelect) {
+        String username = courseSelect.getUsername();
+        String courseCode = courseSelect.getCourseCode();
+        return courseSelectService.addCourseSelect(username, courseCode);
     }
 
     @DeleteMapping("/pre_courses/{courseCode}")
@@ -63,7 +82,7 @@ public class StudentController {
             @ApiImplicitParam(name = "username", value = "学生用户名", required = true, dataType = "String")
     })
     public ResponseEntity DeleteCoursePreselected(@PathVariable String courseCode, String username) {
-        return courseService.DeleteCoursePreselected(courseCode, username);
+        return coursePreSelectService.DeleteCoursePreselected(courseCode, username);
     }
 
     @DeleteMapping("/course/{courseCode}")
@@ -73,13 +92,13 @@ public class StudentController {
             @ApiImplicitParam(name = "username", value = "学生用户名", required = true, dataType = "String")
     })
     public ResponseEntity DeleteCourseSelected(@PathVariable String courseCode, String username) {
-        return courseService.deleteCourseSelected(courseCode, username);
+        return courseSelectService.deleteCourseSelected(courseCode, username);
     }
 
     @GetMapping("/pre_course/students/{username}")
     @ApiOperation(value = "查看所有预选课")
     @ApiImplicitParam(name = "username", value = "学生用户名", required = true, dataType = "String", paramType = "path")
     public ResponseEntity DeleteCoursePreselected(@PathVariable String username) {
-        return courseService.getPreSelectedCourses(username);
+        return coursePreSelectService.getPreselectedCourses(username);
     }
 }

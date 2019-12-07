@@ -22,7 +22,7 @@ public class MyPreCourseVO {
     List<Schedule> schedules = new ArrayList<>();
 
     @Data
-    class Schedule {
+    public class Schedule {
         private int startWeek;
         private int time;
         private int endWeek;
@@ -31,7 +31,8 @@ public class MyPreCourseVO {
     }
 
     public void addSchedule(MyPreCourseBO bo) {
-        Schedule schedule = BeanUtil.toBean(bo, Schedule.class);
+        Schedule schedule = new Schedule();
+        BeanUtil.copyProperties(bo, schedule);
         schedules.add(schedule);
     }
 }
