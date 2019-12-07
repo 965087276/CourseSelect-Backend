@@ -17,15 +17,15 @@ public class CourseVO {
 
     private String college;
 
-    private Integer limitNum;
+    private int limitNum;
 
-    private Integer seletedNum;
+    private int seletedNum;
 
-    private Integer credit;
+    private float credit;
 
     private String courseType;
 
     private String courseTeacher;
 
-    private List<ScheduleDTO> schedules;
+    private List<ScheduleDTO> courseSchedule;
 }
