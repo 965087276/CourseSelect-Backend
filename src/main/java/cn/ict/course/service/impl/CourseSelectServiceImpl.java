@@ -180,6 +180,22 @@ public class CourseSelectServiceImpl implements CourseSelectService {
     }
 
     /**
+     * 获取选课状态（是否开放）
+     *
+     * @return 选课状态
+     */
+    @Override
+    public ResponseEntity getCourseSelectStatus() {
+        SelectionControl selectionControl = selectionControlRepo.findById(1L).orElse(null);
+        if (selectionControl == null) {
+            return ResponseEntity.error(HttpStatus.INTERNAL_SERVER_ERROR,
+                                          "管理员未设置选课状态");
+        }
+        boolean status = selectionControl.getStart();
+        return ResponseEntity.ok(status);
+    }
+
+    /**
      * 获取我的课表
      *
      * @param username 学生用户名
