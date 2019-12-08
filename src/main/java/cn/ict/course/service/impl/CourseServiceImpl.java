@@ -78,7 +78,7 @@ public class CourseServiceImpl implements CourseService {
     }
 
     @Override
-    public List<CourseVO> getCourseList(String college, String courseType, String CourseName, Integer day, Integer time) {
+    public ResponseEntity<List<CourseVO>> getCourseList(String college, String courseType, String CourseName, Integer day, Integer time) {
         List<Course> courseList = courseRepo.findAll();
         List<CourseVO> courses = courseList
                 .stream()
@@ -99,7 +99,7 @@ public class CourseServiceImpl implements CourseService {
                 .filter(course -> isOk(course, college, courseType, CourseName, day, time))
                 .collect(Collectors.toList());
 
-        return courses;
+        return ResponseEntity.ok(courses);
     }
 
     /**
@@ -113,6 +113,7 @@ public class CourseServiceImpl implements CourseService {
     public ResponseEntity deleteCourseByCourseCode(String courseCode) {
         try {
             courseRepo.deleteByCourseCode(courseCode);
+            scheduleRepo.deleteByCourseCode(courseCode);
             return ResponseEntity.ok();
         } catch (JpaSystemException e) {
             e.printStackTrace();

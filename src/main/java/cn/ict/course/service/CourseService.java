@@ -6,7 +6,6 @@ import cn.ict.course.entity.http.ResponseEntity;
 import cn.ict.course.entity.vo.CourseVO;
 import cn.ict.course.entity.vo.TeacherCourseTableVO;
 
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -15,7 +14,7 @@ import java.util.List;
 public interface CourseService {
     ResponseEntity addCourse(CourseDTO courseDTO);
 
-    List<CourseVO> getCourseList(String college, String courseType, String CourseName, Integer day, Integer time);
+    ResponseEntity<List<CourseVO>> getCourseList(String college, String courseType, String CourseName, Integer day, Integer time);
 
     /**
      * 通过课程编码删除课程

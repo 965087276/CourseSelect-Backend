@@ -62,8 +62,7 @@ public class PublicController {
                                  @RequestParam(value = "day", required = false, defaultValue = "-1") Integer day,
                                  @RequestParam(value = "time", required = false, defaultValue = "-1") Integer time
                                  ) {
-        List<CourseVO> courses = courseService.getCourseList(college, courseType, courseName, day, time);
-        return ResponseEntity.ok(courses);
+        return courseService.getCourseList(college, courseType, courseName, day, time);
     }
 
     @GetMapping(value = "/enabletimes")
