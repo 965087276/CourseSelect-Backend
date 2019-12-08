@@ -230,6 +230,22 @@ public class CourseSelectServiceImpl implements CourseSelectService {
         return ResponseEntity.ok(students);
     }
 
+    /**
+     * 使用学生用户名获得学生的成绩
+     *
+     * @param username 学生用户名
+     * @return 学生成绩
+     */
+    @Override
+    public ResponseEntity<List<StudentGradesVO>> getStudentGradesByUsername(String username) {
+        List<StudentGradesVO> grades = courseMapper.getStudentGradesByUsername(username);
+        if (grades.size() == 0) {
+            return ResponseEntity.error(HttpStatus.INTERNAL_SERVER_ERROR,
+                                          "暂无课程成绩");
+        }
+        return ResponseEntity.ok(grades);
+    }
+
 
     /**
      * 判断选课是否开放

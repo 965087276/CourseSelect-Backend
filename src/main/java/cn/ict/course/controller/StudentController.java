@@ -129,4 +129,10 @@ public class StudentController {
     public ResponseEntity<List<CurriculumVO>> getCurriculum(@PathVariable String username) {
         return courseSelectService.getCurriculum(username);
     }
+    @GetMapping("/course_grade/students/{username}")
+    @ApiOperation(value = "获取学生成绩", notes = "使用学生用户名查询")
+    @ApiImplicitParam(name = "username", value = "学生用户名", required = true, dataType = "String", paramType = "path")
+    public ResponseEntity getStudentGradesByUsername(@PathVariable String username) {
+        return courseSelectService.getStudentGradesByUsername(username);
+    }
 }

@@ -4,6 +4,7 @@ import cn.ict.course.entity.http.ResponseEntity;
 import cn.ict.course.entity.vo.CourseStudentInfoVO;
 import cn.ict.course.entity.vo.CurriculumVO;
 import cn.ict.course.entity.vo.EnableTimeVO;
+import cn.ict.course.entity.vo.StudentGradesVO;
 
 import java.util.Date;
 import java.util.List;
@@ -81,4 +82,11 @@ public interface CourseSelectService {
      * @return 学生信息
      */
     ResponseEntity<List<CourseStudentInfoVO>> getStudentInfoByCourseCode(String courseCode);
+
+    /**
+     * 使用学生用户名获得学生的成绩
+     * @param username 学生用户名
+     * @return 学生成绩
+     */
+    ResponseEntity<List<StudentGradesVO>> getStudentGradesByUsername(String username);
 }
