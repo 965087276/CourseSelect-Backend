@@ -22,6 +22,8 @@ public interface CourseRepo extends JpaRepository<Course, Long> {
 
     List<Course> findByCourseCode(List<String> courseCode);
 
+    List<Course> findByTeacherId(String teacherId);
+
     /**
      * 通过课程编码删除课程
      * @param courseCode 课程编码

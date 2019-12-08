@@ -1,15 +1,14 @@
 package cn.ict.course.controller;
 
+import cn.ict.course.entity.bo.GradesInfoBO;
 import cn.ict.course.entity.dto.CourseDTO;
 import cn.ict.course.entity.http.ResponseEntity;
+import cn.ict.course.service.CourseSelectService;
 import cn.ict.course.service.CourseService;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * @author Jianyong Feng
@@ -19,10 +18,13 @@ import org.springframework.web.bind.annotation.RestController;
 public class TeacherController {
 
     private final CourseService courseService;
+    private final CourseSelectService courseSelectService;
 
     @Autowired
-    public TeacherController(CourseService courseService) {
+    public TeacherController(CourseService courseService,
+                             CourseSelectService courseSelectService) {
         this.courseService = courseService;
+        this.courseSelectService = courseSelectService;
     }
 
     @PostMapping(value = "/courses")
@@ -30,5 +32,32 @@ public class TeacherController {
     @ApiImplicitParam(name = "courseDTO", value = "课程信息", required = true, dataType = "CourseDTO")
     public ResponseEntity saveCourse(@RequestBody CourseDTO courseDTO) {
         return courseService.addCourse(courseDTO);
+    }
+
+    @GetMapping(value = "/students/{courseCode}")
+    @ApiOperation(value = "获取上该门课的学生信息")
+    public ResponseEntity getStudentInfoByCourseCode(@PathVariable String courseCode) {
+        return courseSelectService.getStudentInfoByCourseCode(courseCode);
+    }
+
+    @GetMapping(value = "/courseTable/{teacherId}")
+    @ApiOperation(value = "获取教师课表中的课程信息")
+    @ApiImplicitParam(name = "teacherId", value = "教师用户名", required = true, dataType = "String", paramType = "path")
+    public ResponseEntity getTeacherCourseTable(@PathVariable String teacherId) {
+        return courseService.getTeacherCourseTable(teacherId);
+    }
+
+    @GetMapping(value = "/courses/{teacherId}")
+    @ApiOperation(value = "获取教师上课课程信息")
+    @ApiImplicitParam(name = "teacherId", value = "教师用户名", required = true, dataType = "String", paramType = "path")
+    public ResponseEntity getCoursesInfoByTeacherId(@PathVariable String teacherId) {
+        return courseService.getCoursesInfoByTeacherId(teacherId);
+    }
+
+    @PatchMapping("/grades")
+    @ApiOperation(value = "录入成绩")
+    @ApiImplicitParam(name = "gradesInfo", value = "学生成绩信息", required = true, dataType = "GradesInfoBO")
+    public ResponseEntity updateStudentGrades(@RequestBody GradesInfoBO gradesInfo) {
+        return courseSelectService.updateStudentGrades(gradesInfo);
     }
 }

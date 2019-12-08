@@ -1,8 +1,10 @@
 package cn.ict.course.service;
 
+import cn.ict.course.entity.db.Course;
 import cn.ict.course.entity.dto.CourseDTO;
 import cn.ict.course.entity.http.ResponseEntity;
 import cn.ict.course.entity.vo.CourseVO;
+import cn.ict.course.entity.vo.TeacherCourseTableVO;
 
 import java.util.Date;
 import java.util.List;
@@ -23,7 +25,14 @@ public interface CourseService {
     ResponseEntity deleteCourseByCourseCode(String courseCode);
 
 
+    ResponseEntity<List<TeacherCourseTableVO>> getTeacherCourseTable(String teacherId);
 
+    /**
+     * 获取教师上课课程信息
+     * @param teacherId 教师用户名
+     * @return 课程信息
+     */
+    ResponseEntity<List<Course>> getCoursesInfoByTeacherId(String teacherId);
 
 
 //

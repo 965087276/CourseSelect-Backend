@@ -1,8 +1,7 @@
 package cn.ict.course.mapper;
 
 import cn.ict.course.entity.bo.MyPreCourseBO;
-import cn.ict.course.entity.vo.CurriculumVO;
-import cn.ict.course.entity.vo.MyCourseVO;
+import cn.ict.course.entity.vo.*;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
@@ -59,4 +58,36 @@ public interface CourseMapper {
             "LEFT JOIN course B on A.course_code = B.course_code " +
             "WHERE A.username = #{username}")
     List<MyCourseVO> getMyCourses(@Param("username") String username);
+
+    @Select("SELECT B.username studentUsername, " +
+            "    B.real_name studentRealName, " +
+            "    B.college college, " +
+            "    A.grade grade " +
+            "FROM course_select A " +
+            "LEFT JOIN `user` B on A.username = B.username " +
+            "WHERE A.course_code = #{courseCode}")
+    List<CourseStudentInfoVO> getStudentInfoByCourseCode(@Param("courseCode") String courseCode);
+    
+    @Select("SELECT A.course_code courseCode, " +
+            "    A.start_week startWeek, " +
+            "    A.end_week endWeek, " +
+            "    A.time time, " +
+            "    A.classroom classroom, " +
+            "    A.`day` day, " +
+            "    B.course_name courseName " +
+            "FROM course_schedule A " +
+            "LEFT JOIN course B on A.course_code = B.course_code " +
+            "WHERE B.teacher_id = #{teacherId}")
+    List<TeacherCourseTableVO> getTeacherCourseTable(@Param("teacherId") String teacherId);
+    
+    @Select("SELECT B.course_code courseCode, " +
+            "    B.course_name courseName, " +
+            "    B.credit credit, " +
+            "    B.course_type courseType, " +
+            "    B.course_teacher courseTeacher, " +
+            "    A.grade grade " +
+            "FROM course_select A " +
+            "LEFT JOIN course B on A.course_code = B.course_code " +
+            "WHERE A.username = #{username} AND A.is_finish = 1")
+    List<StudentGradesVO> getStudentGradesByUsername(@Param("username") String username);
 }

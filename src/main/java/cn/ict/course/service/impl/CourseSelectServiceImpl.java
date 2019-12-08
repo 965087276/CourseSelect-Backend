@@ -1,11 +1,9 @@
 package cn.ict.course.service.impl;
 
+import cn.ict.course.entity.bo.GradesInfoBO;
 import cn.ict.course.entity.db.*;
 import cn.ict.course.entity.http.ResponseEntity;
-import cn.ict.course.entity.vo.CourseVO;
-import cn.ict.course.entity.vo.CurriculumVO;
-import cn.ict.course.entity.vo.EnableTimeVO;
-import cn.ict.course.entity.vo.MyCourseVO;
+import cn.ict.course.entity.vo.*;
 import cn.ict.course.mapper.CourseMapper;
 import cn.ict.course.repo.CourseRepo;
 import cn.ict.course.repo.CourseScheduleRepo;
@@ -219,6 +217,57 @@ public class CourseSelectServiceImpl implements CourseSelectService {
     public ResponseEntity getSelectedCourses(String username) {
         List<MyCourseVO> courses = courseMapper.getMyCourses(username);
         return ResponseEntity.ok(courses);
+    }
+
+    /**
+     * 获取选择该课的学生信息
+     *
+     * @param courseCode 课程编码
+     * @return 学生信息
+     */
+    @Override
+    public ResponseEntity<List<CourseStudentInfoVO>> getStudentInfoByCourseCode(String courseCode) {
+        List<CourseStudentInfoVO> students = courseMapper.getStudentInfoByCourseCode(courseCode);
+        return ResponseEntity.ok(students);
+    }
+
+    /**
+     * 使用学生用户名获得学生的成绩
+     *
+     * @param username 学生用户名
+     * @return 学生成绩
+     */
+    @Override
+    public ResponseEntity<List<StudentGradesVO>> getStudentGradesByUsername(String username) {
+        List<StudentGradesVO> grades = courseMapper.getStudentGradesByUsername(username);
+        if (grades.size() == 0) {
+            return ResponseEntity.error(HttpStatus.INTERNAL_SERVER_ERROR,
+                                          "暂无课程成绩");
+        }
+        return ResponseEntity.ok(grades);
+    }
+
+    /**
+     * 录入成绩
+     *
+     * @param gradesInfoBO 成绩信息
+     * @return 录入结果
+     */
+    @Override
+    @Transactional
+    public ResponseEntity updateStudentGrades(GradesInfoBO gradesInfoBO) {
+        String username = gradesInfoBO.getStudentId();
+        String courseCode = gradesInfoBO.getCourseCode();
+        double grade = gradesInfoBO.getGrade();
+        CourseSelect courseSelect = courseSelectRepo.findByUsernameAndCourseCode(username, courseCode);
+        if (courseSelect == null) {
+            return ResponseEntity.error(HttpStatus.INTERNAL_SERVER_ERROR,
+                                          "无法查询到相关列表");
+        }
+        courseSelect.setFinished(true);
+        courseSelect.setGrade(grade);
+        courseSelectRepo.save(courseSelect);
+        return ResponseEntity.ok();
     }
 
 
