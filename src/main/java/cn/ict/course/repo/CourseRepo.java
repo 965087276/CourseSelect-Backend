@@ -2,8 +2,10 @@ package cn.ict.course.repo;
 
 import cn.ict.course.entity.db.Course;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Lock;
 import org.springframework.stereotype.Repository;
 
+import javax.persistence.LockModeType;
 import java.util.List;
 
 /**
@@ -18,6 +20,7 @@ public interface CourseRepo extends JpaRepository<Course, Long> {
      * @param courseCode 课程编码
      * @return 课程数据
      */
+    @Lock(value = LockModeType.PESSIMISTIC_WRITE)
     Course findByCourseCode(String courseCode);
 
     List<Course> findByCourseCode(List<String> courseCode);

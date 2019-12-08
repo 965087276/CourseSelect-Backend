@@ -27,4 +27,6 @@ public interface CourseScheduleRepo extends JpaRepository<CourseSchedule, Long> 
 
     @Query(value = "SELECT B.* FROM course_select A RIGHT JOIN course_schedule B on A.course_code = B.course_code WHERE A.username = :username", nativeQuery = true)
     List<CourseSchedule> findByUsername(@Param("username") String username);
+
+    void deleteByCourseCode(String courseCode);
 }

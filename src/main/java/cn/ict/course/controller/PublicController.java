@@ -6,6 +6,7 @@ import cn.ict.course.entity.vo.EnableTimeVO;
 import cn.ict.course.service.CollegeService;
 import cn.ict.course.service.CourseSelectService;
 import cn.ict.course.service.CourseService;
+import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
@@ -61,13 +62,18 @@ public class PublicController {
                                  @RequestParam(value = "day", required = false, defaultValue = "-1") Integer day,
                                  @RequestParam(value = "time", required = false, defaultValue = "-1") Integer time
                                  ) {
-        List<CourseVO> courses = courseService.getCourseList(college, courseType, courseName, day, time);
-        return ResponseEntity.ok(courses);
+        return courseService.getCourseList(college, courseType, courseName, day, time);
     }
 
     @GetMapping(value = "/enabletimes")
     @ApiOperation(value = "获取选课开放截止时间", notes = "两个时间")
     ResponseEntity<EnableTimeVO> getEnableTime() {
         return courseSelectService.getEnableTime();
+    }
+
+    @GetMapping(value = "/course_select_status")
+    @ApiOperation(value = "获取选课开放状态", notes = "是否开放")
+    ResponseEntity getCourseSelectStatus() {
+        return courseSelectService.getCourseSelectStatus();
     }
 }

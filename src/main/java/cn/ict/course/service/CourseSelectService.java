@@ -57,6 +57,12 @@ public interface CourseSelectService {
     ResponseEntity<EnableTimeVO> getEnableTime();
 
     /**
+     * 获取选课状态（是否开放）
+     * @return 选课状态
+     */
+    ResponseEntity getCourseSelectStatus();
+
+    /**
      * 获取我的课表
      * @param username 学生用户名
      * @return 课表界面中该学生选的所有课程的课程信息

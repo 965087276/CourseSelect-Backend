@@ -24,6 +24,24 @@ public class TestConstants {
             "  \"username\": \"201901\"" +
             "}";
     
-
+    private static final String TEST_COURSE_ADD = "{ " +
+            "  \"college\": \"计算机科学与技术学院\", " +
+            "  \"courseHour\": 60, " +
+            "  \"courseName\": \"模式识别与机器学习\", " +
+            "  \"courseTeacher\": \"黄\", " +
+            "  \"courseType\": \"专业核心课\", " +
+            "  \"credit\": 3, " +
+            "  \"limitNum\": 300, " +
+            "  \"scheduleList\": [ " +
+            "    { " +
+            "      \"classroom\": \"教1-102\", " +
+            "      \"day\": 2, " +
+            "      \"endWeek\": 20, " +
+            "      \"startWeek\": 2, " +
+            "      \"time\": 3 " +
+            "    } " +
+            "  ], " +
+            "  \"teacherId\": \"201904\" " +
+            "}";
 
 }
