@@ -1,5 +1,6 @@
 package cn.ict.course.controller;
 
+import cn.ict.course.entity.bo.GradesInfoBO;
 import cn.ict.course.entity.dto.CourseDTO;
 import cn.ict.course.entity.http.ResponseEntity;
 import cn.ict.course.service.CourseSelectService;
@@ -51,5 +52,12 @@ public class TeacherController {
     @ApiImplicitParam(name = "teacherId", value = "教师用户名", required = true, dataType = "String", paramType = "path")
     public ResponseEntity getCoursesInfoByTeacherId(@PathVariable String teacherId) {
         return courseService.getCoursesInfoByTeacherId(teacherId);
+    }
+
+    @PatchMapping("/grades")
+    @ApiOperation(value = "录入成绩")
+    @ApiImplicitParam(name = "gradesInfo", value = "学生成绩信息", required = true, dataType = "GradesInfoBO")
+    public ResponseEntity updateStudentGrades(@RequestBody GradesInfoBO gradesInfo) {
+        return courseSelectService.updateStudentGrades(gradesInfo);
     }
 }

@@ -1,5 +1,6 @@
 package cn.ict.course.service;
 
+import cn.ict.course.entity.bo.GradesInfoBO;
 import cn.ict.course.entity.http.ResponseEntity;
 import cn.ict.course.entity.vo.CourseStudentInfoVO;
 import cn.ict.course.entity.vo.CurriculumVO;
@@ -89,4 +90,11 @@ public interface CourseSelectService {
      * @return 学生成绩
      */
     ResponseEntity<List<StudentGradesVO>> getStudentGradesByUsername(String username);
+
+    /**
+     * 录入成绩
+     * @param gradesInfoBO 成绩信息
+     * @return 录入结果
+     */
+    ResponseEntity updateStudentGrades(GradesInfoBO gradesInfoBO);
 }
