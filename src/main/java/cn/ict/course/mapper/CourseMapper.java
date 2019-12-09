@@ -62,7 +62,8 @@ public interface CourseMapper {
     @Select("SELECT B.username studentUsername, " +
             "    B.real_name studentRealName, " +
             "    B.college college, " +
-            "    A.grade grade " +
+            "    A.grade grade, " +
+            "    A.is_finish finished " +
             "FROM course_select A " +
             "LEFT JOIN `user` B on A.username = B.username " +
             "WHERE A.course_code = #{courseCode}")

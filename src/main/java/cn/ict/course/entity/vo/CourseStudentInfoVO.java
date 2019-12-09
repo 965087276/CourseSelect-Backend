@@ -11,4 +11,5 @@ public class CourseStudentInfoVO {
     private String studentRealName;
     private String college;
     private double grade;
+    private boolean finished;
 }
