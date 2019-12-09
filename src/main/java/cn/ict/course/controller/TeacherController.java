@@ -54,7 +54,7 @@ public class TeacherController {
         return courseService.getCoursesInfoByTeacherId(teacherId);
     }
 
-    @PatchMapping("/grades")
+    @PostMapping("/grades")
     @ApiOperation(value = "录入成绩")
     @ApiImplicitParam(name = "gradesInfo", value = "学生成绩信息", required = true, dataType = "GradesInfoBO")
     public ResponseEntity updateStudentGrades(@RequestBody GradesInfoBO gradesInfo) {
