@@ -9,6 +9,9 @@ import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
 
 /**
  * @author Jianyong Feng
@@ -66,5 +69,15 @@ public class TeacherController {
     @ApiImplicitParam(name = "teacherId", value = "教师用户名", required = true, dataType = "String", paramType = "path")
     public ResponseEntity updateStudentGrades(@PathVariable String teacherId) {
         return courseService.getTeacherCourseInfoByTeacherId(teacherId);
+    }
+
+    @PostMapping(value = "excel_grade/courseCodes/{courseCode}")
+    @ApiOperation(value = "批量录入成绩", notes = "excel导入")
+    @ApiImplicitParam(name = "courseCode", value = "课程编码", required = true, dataType = "String", paramType = "path")
+    public ResponseEntity updateStudentGradesByFile(
+            @PathVariable String courseCode,
+            @RequestParam("file") MultipartFile file
+    ) throws IOException {
+        return courseSelectService.updateStudentGradesByFile(courseCode, file);
     }
 }
