@@ -1,11 +1,13 @@
 package cn.ict.course.controller;
 
+import cn.ict.course.entity.bo.UserUpdateInfo;
 import cn.ict.course.entity.db.SelectionControl;
 import cn.ict.course.entity.http.ResponseEntity;
 import cn.ict.course.service.CourseSelectService;
 import cn.ict.course.service.CourseService;
 import cn.ict.course.service.UserService;
 import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -55,6 +57,18 @@ public class AdminController {
     @ApiImplicitParam(name = "username", value = "学生用户名", required = true, dataType = "String", paramType = "path")
     public ResponseEntity deleteUserByUsername(@PathVariable String username) {
         return userService.deleteUserByUsername(username);
+    }
+
+
+    @PostMapping(value = "/users/{username}")
+    @ApiOperation(value =  "更新用户信息", notes = "使用用户名")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "username", value = "用户名", required = true, dataType = "Long", paramType = "path"),
+            @ApiImplicitParam(name = "userInfo", value = "用户信息", required = true, dataType = "UserUpdateInfo")
+    }
+    )
+    public ResponseEntity updateUserInfoByUsername(@PathVariable String username, @RequestBody UserUpdateInfo userInfo) {
+        return userService.updateUserInfo(username, userInfo);
     }
 
 }

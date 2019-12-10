@@ -1,5 +1,6 @@
 package cn.ict.course.service;
 
+import cn.ict.course.entity.bo.UserUpdateInfo;
 import cn.ict.course.entity.db.User;
 import cn.ict.course.entity.dto.LoginDTO;
 import cn.ict.course.entity.http.ResponseEntity;
@@ -23,4 +24,12 @@ public interface UserService {
      * @return 删除结果
      */
     ResponseEntity deleteUserByUsername(String username);
+
+    /**
+     * 更新用户信息
+     * @param username 用户名
+     * @param info 需要修改的用户信息
+     * @return 更新结果
+     */
+    ResponseEntity updateUserInfo(String username, UserUpdateInfo info);
 }

@@ -1,5 +1,6 @@
 package cn.ict.course.service.impl;
 
+import cn.ict.course.entity.bo.UserUpdateInfo;
 import cn.ict.course.entity.db.CoursePreselect;
 import cn.ict.course.entity.db.CourseSelect;
 import cn.ict.course.entity.db.User;
@@ -147,6 +148,34 @@ public class UserServiceImpl implements UserService {
         userRepo.deleteByUsername(username);
         courseSelectRepo.deleteAllByUsername(username);
         coursePreselectRepo.deleteAllByUsername(username);
+        return ResponseEntity.ok();
+    }
+
+    /**
+     * 更新用户信息
+     *
+     * @param info 需要修改的用户信息
+     * @return 更新结果
+     */
+    @Override
+    @Transactional
+    public ResponseEntity updateUserInfo(String username, UserUpdateInfo info) {
+        User user = userRepo.findByUsername(username);
+        if (user == null) {
+            return ResponseEntity.error(
+                    HttpStatus.INTERNAL_SERVER_ERROR,
+                    "该用户不存在"
+            );
+        }
+        String email = info.getEmail();
+        String phoneNumber = info.getPhoneNumber();
+        String college = info.getCollege();
+
+        user.setEmail(email);
+        user.setPhoneNumber(phoneNumber);
+        user.setCollege(college);
+        userRepo.save(user);
+
         return ResponseEntity.ok();
     }
 

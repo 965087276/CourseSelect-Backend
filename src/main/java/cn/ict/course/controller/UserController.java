@@ -1,5 +1,6 @@
 package cn.ict.course.controller;
 
+import cn.ict.course.entity.bo.UserUpdateInfo;
 import cn.ict.course.entity.db.User;
 import cn.ict.course.entity.dto.LoginDTO;
 import cn.ict.course.entity.http.ResponseEntity;
@@ -7,6 +8,7 @@ import cn.ict.course.entity.vo.LoginVO;
 import cn.ict.course.entity.vo.UserDetailVO;
 import cn.ict.course.service.UserService;
 import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import org.apache.shiro.authz.annotation.Logical;
 import org.apache.shiro.authz.annotation.RequiresRoles;
@@ -51,4 +53,5 @@ public class UserController {
         UserDetailVO detail = userService.detail(username);
         return ResponseEntity.ok(detail);
     }
+
 }
