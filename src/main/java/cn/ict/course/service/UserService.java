@@ -32,4 +32,21 @@ public interface UserService {
      * @return 更新结果
      */
     ResponseEntity updateUserInfo(String username, UserUpdateInfo info);
+
+    /**
+     * 获取所有教师
+     * @param username 用户名
+     * @param realName 真实姓名
+     * @param college 学院
+     * @param curPage 当前页
+     * @param pageSize 当前页条目数
+     * @return 教师
+     */
+    ResponseEntity getAllTeachers(
+            String username,
+            String realName,
+            String college,
+            int curPage,
+            int pageSize
+    );
 }

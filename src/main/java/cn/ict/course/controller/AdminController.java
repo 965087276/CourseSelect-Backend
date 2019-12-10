@@ -63,12 +63,37 @@ public class AdminController {
     @PostMapping(value = "/users/{username}")
     @ApiOperation(value =  "更新用户信息", notes = "使用用户名")
     @ApiImplicitParams({
-            @ApiImplicitParam(name = "username", value = "用户名", required = true, dataType = "Long", paramType = "path"),
+            @ApiImplicitParam(name = "username", value = "用户名", required = true, dataType = "String", paramType = "path"),
             @ApiImplicitParam(name = "userInfo", value = "用户信息", required = true, dataType = "UserUpdateInfo")
     }
     )
     public ResponseEntity updateUserInfoByUsername(@PathVariable String username, @RequestBody UserUpdateInfo userInfo) {
         return userService.updateUserInfo(username, userInfo);
+    }
+
+    @GetMapping(value = "/teachers")
+    @ApiOperation(value = "获取所有教师", notes = "可通过条件查询")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "username", value = "用户名", dataType = "String"),
+            @ApiImplicitParam(name = "realName", value = "真实姓名", dataType = "String"),
+            @ApiImplicitParam(name = "college", value = "学院", dataType = "String"),
+            @ApiImplicitParam(name = "curPage", value = "当前页", required = true, dataType = "Long"),
+            @ApiImplicitParam(name = "pageSize", value = "当前页条目数", required = true, dataType = "Long")
+    })
+    public ResponseEntity getAllTeachers(
+            String username,
+            String realName,
+            String college,
+            int curPage,
+            int pageSize
+    ) {
+        return userService.getAllTeachers(
+                username,
+                realName,
+                college,
+                curPage,
+                pageSize
+        );
     }
 
 }
