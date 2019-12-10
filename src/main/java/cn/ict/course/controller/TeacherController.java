@@ -60,4 +60,11 @@ public class TeacherController {
     public ResponseEntity updateStudentGrades(@RequestBody GradesInfoBO gradesInfo) {
         return courseSelectService.updateStudentGrades(gradesInfo);
     }
+
+    @GetMapping("/courseList/{teacherId}")
+    @ApiOperation(value = "获取教师课程列表", notes = "包含schedule")
+    @ApiImplicitParam(name = "teacherId", value = "教师用户名", required = true, dataType = "String", paramType = "path")
+    public ResponseEntity updateStudentGrades(@PathVariable String teacherId) {
+        return courseService.getTeacherCourseInfoByTeacherId(teacherId);
+    }
 }
