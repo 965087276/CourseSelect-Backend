@@ -1,10 +1,15 @@
 package cn.ict.course.service.impl;
 
+import cn.ict.course.entity.db.CoursePreselect;
+import cn.ict.course.entity.db.CourseSelect;
 import cn.ict.course.entity.db.User;
 import cn.ict.course.entity.dto.LoginDTO;
+import cn.ict.course.entity.http.ResponseEntity;
 import cn.ict.course.entity.vo.LoginVO;
 import cn.ict.course.entity.vo.UserDetailVO;
 import cn.ict.course.enums.ResultEnum;
+import cn.ict.course.repo.CoursePreselectRepo;
+import cn.ict.course.repo.CourseSelectRepo;
 import cn.ict.course.repo.UserRepo;
 import cn.ict.course.service.UserService;
 import com.github.dozermapper.core.Mapper;
@@ -16,7 +21,9 @@ import org.apache.shiro.authc.UsernamePasswordToken;
 import org.apache.shiro.crypto.SecureRandomNumberGenerator;
 import org.apache.shiro.crypto.hash.SimpleHash;
 import org.apache.shiro.subject.Subject;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
 import java.io.Serializable;
@@ -28,12 +35,21 @@ import java.io.Serializable;
 public class UserServiceImpl implements UserService {
 
     private final UserRepo userRepo;
+    private final CourseSelectRepo courseSelectRepo;
+    private final CoursePreselectRepo coursePreselectRepo;
 
     private final Mapper mapper;
 
-    public UserServiceImpl(Mapper mapper, UserRepo userRepo) {
+    public UserServiceImpl(
+            Mapper mapper,
+            UserRepo userRepo,
+            CourseSelectRepo courseSelectRepo,
+            CoursePreselectRepo coursePreselectRepo
+            ) {
         this.mapper = mapper;
         this.userRepo = userRepo;
+        this.courseSelectRepo = courseSelectRepo;
+        this.coursePreselectRepo = coursePreselectRepo;
     }
 
 
@@ -106,6 +122,32 @@ public class UserServiceImpl implements UserService {
     public UserDetailVO detail(String username) {
         User user = userRepo.findByUsername(username);
         return mapper.map(user, UserDetailVO.class);
+    }
+
+    /**
+     * 删除用户
+     *
+     * 删除用户表中的用户
+     * 删除course_select表中的记录
+     * 删除course_preselect表中的记录
+     *
+     * @param username 用户名
+     * @return 删除结果
+     */
+    @Override
+    @Transactional
+    public ResponseEntity deleteUserByUsername(String username) {
+        User user = userRepo.findByUsername(username);
+        if (user == null) {
+            return ResponseEntity.error(
+                    HttpStatus.INTERNAL_SERVER_ERROR,
+                    "该用户不存在"
+            );
+        }
+        userRepo.deleteByUsername(username);
+        courseSelectRepo.deleteAllByUsername(username);
+        coursePreselectRepo.deleteAllByUsername(username);
+        return ResponseEntity.ok();
     }
 
 }

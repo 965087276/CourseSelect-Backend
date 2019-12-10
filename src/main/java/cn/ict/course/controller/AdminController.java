@@ -4,6 +4,7 @@ import cn.ict.course.entity.db.SelectionControl;
 import cn.ict.course.entity.http.ResponseEntity;
 import cn.ict.course.service.CourseSelectService;
 import cn.ict.course.service.CourseService;
+import cn.ict.course.service.UserService;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
@@ -21,11 +22,17 @@ import java.util.Date;
 public class AdminController {
     private final CourseService courseService;
     private final CourseSelectService courseSelectService;
+    private final UserService userService;
 
     @Autowired
-    public AdminController(CourseService courseService, CourseSelectService courseSelectService) {
+    public AdminController(
+            CourseService courseService,
+            CourseSelectService courseSelectService,
+            UserService userService
+    ) {
         this.courseService = courseService;
         this.courseSelectService = courseSelectService;
+        this.userService = userService;
     }
 
     @PostMapping("/enabletimes_edit")
@@ -42,4 +49,12 @@ public class AdminController {
     public ResponseEntity deleteCourseByCourseCode(@PathVariable String courseCode) {
         return courseService.deleteCourseByCourseCode(courseCode);
     }
+
+    @DeleteMapping("/users/{username}")
+    @ApiOperation(value = "删除用户", notes = "使用用户名删除用户")
+    @ApiImplicitParam(name = "username", value = "学生用户名", required = true, dataType = "String", paramType = "path")
+    public ResponseEntity deleteUserByUsername(@PathVariable String username) {
+        return userService.deleteUserByUsername(username);
+    }
+
 }
