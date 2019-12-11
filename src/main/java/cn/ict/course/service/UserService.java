@@ -14,7 +14,7 @@ public interface UserService {
 
     LoginVO login(LoginDTO loginDTO);
 
-    void save(User user);
+    ResponseEntity save(User user);
 
     UserDetailVO detail(String username);
 
@@ -49,4 +49,11 @@ public interface UserService {
             int curPage,
             int pageSize
     );
+
+    /**
+     * 判断用户名是否重复
+     * @param username 用户名
+     * @return 验证结果
+     */
+    boolean repeatByUsername(String username);
 }

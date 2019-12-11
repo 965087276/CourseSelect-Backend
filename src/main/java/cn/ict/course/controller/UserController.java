@@ -41,8 +41,7 @@ public class UserController {
     @ApiOperation(value = "用户添加", notes = "测试添加用户")
     @ApiImplicitParam(name = "user", value = "用户登录信息", required = true, dataType = "User")
     public ResponseEntity save(@RequestBody User user) {
-        userService.save(user);
-        return ResponseEntity.ok();
+        return userService.save(user);
     }
 
     @RequiresRoles(value={"admin", "student", "teacher"},logical = Logical.OR)

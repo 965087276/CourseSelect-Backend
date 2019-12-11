@@ -23,7 +23,7 @@ public class CourseDTO {
 
     private int courseHour;
 
-    private int credit;
+    private double credit;
 
     private int limitNum;
 
