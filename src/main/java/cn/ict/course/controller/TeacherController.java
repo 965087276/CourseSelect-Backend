@@ -9,6 +9,9 @@ import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
 
 /**
  * @author Jianyong Feng
@@ -54,10 +57,27 @@ public class TeacherController {
         return courseService.getCoursesInfoByTeacherId(teacherId);
     }
 
-    @PatchMapping("/grades")
+    @PostMapping("/grades")
     @ApiOperation(value = "录入成绩")
     @ApiImplicitParam(name = "gradesInfo", value = "学生成绩信息", required = true, dataType = "GradesInfoBO")
     public ResponseEntity updateStudentGrades(@RequestBody GradesInfoBO gradesInfo) {
         return courseSelectService.updateStudentGrades(gradesInfo);
+    }
+
+    @GetMapping("/courseList/{teacherId}")
+    @ApiOperation(value = "获取教师课程列表", notes = "包含schedule")
+    @ApiImplicitParam(name = "teacherId", value = "教师用户名", required = true, dataType = "String", paramType = "path")
+    public ResponseEntity updateStudentGrades(@PathVariable String teacherId) {
+        return courseService.getTeacherCourseInfoByTeacherId(teacherId);
+    }
+
+    @PostMapping(value = "excel_grade/courseCodes/{courseCode}")
+    @ApiOperation(value = "批量录入成绩", notes = "excel导入")
+    @ApiImplicitParam(name = "courseCode", value = "课程编码", required = true, dataType = "String", paramType = "path")
+    public ResponseEntity updateStudentGradesByFile(
+            @PathVariable String courseCode,
+            @RequestParam("file") MultipartFile file
+    ) throws IOException {
+        return courseSelectService.updateStudentGradesByFile(courseCode, file);
     }
 }

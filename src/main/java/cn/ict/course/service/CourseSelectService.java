@@ -6,7 +6,9 @@ import cn.ict.course.entity.vo.CourseStudentInfoVO;
 import cn.ict.course.entity.vo.CurriculumVO;
 import cn.ict.course.entity.vo.EnableTimeVO;
 import cn.ict.course.entity.vo.StudentGradesVO;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.Date;
 import java.util.List;
 
@@ -103,4 +105,12 @@ public interface CourseSelectService {
      * @return 录入结果
      */
     ResponseEntity updateStudentGrades(GradesInfoBO gradesInfoBO);
+
+    /**
+     * 通过excel导入成绩
+     * @param courseCode 课程编码
+     * @param file excel文件
+     * @return 导入是否成功
+     */
+    ResponseEntity updateStudentGradesByFile(String courseCode, MultipartFile file) throws IOException;
 }

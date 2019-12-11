@@ -54,11 +54,6 @@ public class UserControllerTest {
                 .content(TEST_USERNAME_AND_PWD_RIGHT))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andDo(MockMvcResultHandlers.print());
-//        mvc.perform(post("/xk/api/login")
-//                .contentType(MediaType.APPLICATION_JSON)
-//                .content(TEST_USERNAME_AND_PWD_ERROR))
-//                .andExpect(MockMvcResultMatchers.status().isInternalServerError())
-//                .andDo(MockMvcResultHandlers.print());
     }
 
     @Test
@@ -72,5 +67,6 @@ public class UserControllerTest {
 
     @Test
     public void detail() {
+
     }
 }

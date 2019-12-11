@@ -33,6 +33,13 @@ public interface CourseService {
      */
     ResponseEntity<List<Course>> getCoursesInfoByTeacherId(String teacherId);
 
+    /**
+     * 获取教师所授课程列表
+     *
+     * @param teacherId 教师用户名
+     * @return 该教师教授的课程信息
+     */
+    ResponseEntity getTeacherCourseInfoByTeacherId(String teacherId);
 
 //
 //    /**

@@ -3,6 +3,7 @@ package cn.ict.course.controller;
 import cn.ict.course.entity.http.ResponseEntity;
 import cn.ict.course.entity.vo.CourseVO;
 import cn.ict.course.entity.vo.EnableTimeVO;
+import cn.ict.course.service.ClassroomService;
 import cn.ict.course.service.CollegeService;
 import cn.ict.course.service.CourseSelectService;
 import cn.ict.course.service.CourseService;
@@ -30,14 +31,19 @@ public class PublicController {
     private final CollegeService collegeService;
     private final CourseService courseService;
     private final CourseSelectService courseSelectService;
+    private final ClassroomService classroomService;
 
     @Autowired
-    public PublicController(CollegeService collegeService,
-                            CourseService courseService,
-                            CourseSelectService courseSelectService) {
+    public PublicController(
+            CollegeService collegeService,
+            CourseService courseService,
+            CourseSelectService courseSelectService,
+            ClassroomService classroomService
+    ) {
         this.collegeService = collegeService;
         this.courseService = courseService;
         this.courseSelectService = courseSelectService;
+        this.classroomService = classroomService;
     }
 
     @GetMapping(value = "/colleges")
@@ -75,5 +81,11 @@ public class PublicController {
     @ApiOperation(value = "获取选课开放状态", notes = "是否开放")
     ResponseEntity getCourseSelectStatus() {
         return courseSelectService.getCourseSelectStatus();
+    }
+
+    @GetMapping(value = "/classrooms")
+    @ApiOperation(value = "获取所有教室")
+    ResponseEntity getAllClassrooms() {
+        return classroomService.getAllClassrooms();
     }
 }

@@ -1,10 +1,13 @@
 package cn.ict.course.controller;
 
+import cn.ict.course.entity.bo.UserUpdateInfo;
 import cn.ict.course.entity.db.SelectionControl;
 import cn.ict.course.entity.http.ResponseEntity;
 import cn.ict.course.service.CourseSelectService;
 import cn.ict.course.service.CourseService;
+import cn.ict.course.service.UserService;
 import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,11 +24,17 @@ import java.util.Date;
 public class AdminController {
     private final CourseService courseService;
     private final CourseSelectService courseSelectService;
+    private final UserService userService;
 
     @Autowired
-    public AdminController(CourseService courseService, CourseSelectService courseSelectService) {
+    public AdminController(
+            CourseService courseService,
+            CourseSelectService courseSelectService,
+            UserService userService
+    ) {
         this.courseService = courseService;
         this.courseSelectService = courseSelectService;
+        this.userService = userService;
     }
 
     @PostMapping("/enabletimes_edit")
@@ -42,4 +51,49 @@ public class AdminController {
     public ResponseEntity deleteCourseByCourseCode(@PathVariable String courseCode) {
         return courseService.deleteCourseByCourseCode(courseCode);
     }
+
+    @DeleteMapping("/users/{username}")
+    @ApiOperation(value = "删除用户", notes = "使用用户名删除用户")
+    @ApiImplicitParam(name = "username", value = "学生用户名", required = true, dataType = "String", paramType = "path")
+    public ResponseEntity deleteUserByUsername(@PathVariable String username) {
+        return userService.deleteUserByUsername(username);
+    }
+
+
+    @PostMapping(value = "/users/{username}")
+    @ApiOperation(value =  "更新用户信息", notes = "使用用户名")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "username", value = "用户名", required = true, dataType = "String", paramType = "path"),
+            @ApiImplicitParam(name = "userInfo", value = "用户信息", required = true, dataType = "UserUpdateInfo")
+    }
+    )
+    public ResponseEntity updateUserInfoByUsername(@PathVariable String username, @RequestBody UserUpdateInfo userInfo) {
+        return userService.updateUserInfo(username, userInfo);
+    }
+
+    @GetMapping(value = "/teachers")
+    @ApiOperation(value = "获取所有教师", notes = "可通过条件查询")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "username", value = "用户名", dataType = "String"),
+            @ApiImplicitParam(name = "realName", value = "真实姓名", dataType = "String"),
+            @ApiImplicitParam(name = "college", value = "学院", dataType = "String"),
+            @ApiImplicitParam(name = "curPage", value = "当前页", required = true, dataType = "Long"),
+            @ApiImplicitParam(name = "pageSize", value = "当前页条目数", required = true, dataType = "Long")
+    })
+    public ResponseEntity getAllTeachers(
+            String username,
+            String realName,
+            String college,
+            int curPage,
+            int pageSize
+    ) {
+        return userService.getAllTeachers(
+                username,
+                realName,
+                college,
+                curPage,
+                pageSize
+        );
+    }
+
 }

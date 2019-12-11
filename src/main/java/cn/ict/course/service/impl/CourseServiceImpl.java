@@ -4,6 +4,7 @@ import cn.ict.course.entity.db.Course;
 import cn.ict.course.entity.db.CourseSchedule;
 import cn.ict.course.entity.dto.CourseDTO;
 import cn.ict.course.entity.dto.ScheduleDTO;
+import cn.ict.course.entity.dto.TeacherCourseInfoDTO;
 import cn.ict.course.entity.http.ResponseEntity;
 import cn.ict.course.entity.vo.CourseVO;
 import cn.ict.course.entity.vo.TeacherCourseTableVO;
@@ -102,6 +103,7 @@ public class CourseServiceImpl implements CourseService {
         return ResponseEntity.ok(courses);
     }
 
+
     /**
      * 通过课程编码删除课程
      *
@@ -139,6 +141,32 @@ public class CourseServiceImpl implements CourseService {
         List<Course> courses = courseRepo.findByTeacherId(teacherId);
         return ResponseEntity.ok(courses);
     }
+
+    /**
+     * 获取教师所授课程列表
+     *
+     * @param teacherId 教师用户名
+     * @return 该教师教授的课程信息
+     */
+    @Override
+    public ResponseEntity getTeacherCourseInfoByTeacherId(String teacherId) {
+        List<Course> courseList = courseRepo.findAllByTeacherId(teacherId);
+        List<CourseVO> courses = courseList
+                .stream()
+                .map(course -> mapper.map(course, CourseVO.class))
+                .collect(Collectors.toList());
+
+        for (CourseVO course:courses) {
+            List<CourseSchedule> scheduleList = scheduleRepo.findByCourseCode(course.getCourseCode());
+            List<ScheduleDTO> schedules = scheduleList
+                    .stream()
+                    .map(schedule -> mapper.map(schedule, ScheduleDTO.class))
+                    .collect(Collectors.toList());
+            course.setCourseSchedule(schedules);
+        }
+        return ResponseEntity.ok(courses);
+    }
+
 
     private boolean isOk(CourseVO course, String college, String courseType, String courseName, int day, int time) {
 

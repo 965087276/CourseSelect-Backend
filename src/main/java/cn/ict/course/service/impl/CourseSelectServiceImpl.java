@@ -1,7 +1,13 @@
 package cn.ict.course.service.impl;
 
+import cn.hutool.poi.excel.ExcelReader;
+import cn.hutool.poi.excel.ExcelUtil;
 import cn.ict.course.entity.bo.GradesInfoBO;
-import cn.ict.course.entity.db.*;
+import cn.ict.course.entity.bo.StudentGradesExcelBO;
+import cn.ict.course.entity.db.Course;
+import cn.ict.course.entity.db.CourseSchedule;
+import cn.ict.course.entity.db.CourseSelect;
+import cn.ict.course.entity.db.SelectionControl;
 import cn.ict.course.entity.http.ResponseEntity;
 import cn.ict.course.entity.vo.*;
 import cn.ict.course.mapper.CourseMapper;
@@ -11,18 +17,25 @@ import cn.ict.course.repo.CourseSelectRepo;
 import cn.ict.course.repo.SelectionControlRepo;
 import cn.ict.course.service.CourseSelectService;
 import cn.ict.course.utils.CourseConflictUtil;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
  * @author Jianyong Feng
  **/
+@Slf4j
 @Service
 public class CourseSelectServiceImpl implements CourseSelectService {
 
@@ -284,6 +297,48 @@ public class CourseSelectServiceImpl implements CourseSelectService {
         courseSelect.setGrade(grade);
         courseSelectRepo.save(courseSelect);
         return ResponseEntity.ok();
+    }
+
+    /**
+     * 通过excel导入成绩
+     *
+     * @param courseCode 课程编码
+     * @param file       excel文件
+     * @return 导入是否成功
+     */
+    @Override
+    @Transactional
+    public ResponseEntity updateStudentGradesByFile(String courseCode, MultipartFile file) throws IOException {
+        ExcelReader reader = ExcelUtil.getReader(file.getInputStream());
+        List<Map<String, Object>> readAll = reader.readAll();
+        Map<String, String> map = new HashMap<>();
+        map.put("学号", "username");
+        map.put("姓名", "realName");
+        map.put("学院", "college");
+        map.put("成绩", "grade");
+        List<Map<String, Object>> readTransformed = readAll.stream()
+                .map(list -> transform(list, map))
+                .collect(Collectors.toList());
+        ObjectMapper objectMapper = new ObjectMapper();
+        List<StudentGradesExcelBO> studentGrades = readTransformed.stream()
+                .map(list -> objectMapper.convertValue(list, StudentGradesExcelBO.class)).collect(Collectors.toList());
+        log.info(studentGrades.toString());
+        for (StudentGradesExcelBO studentGrade:studentGrades) {
+            CourseSelect courseSelect = courseSelectRepo.findByUsernameAndCourseCode(
+                    studentGrade.getUsername(),
+                    courseCode
+            );
+            courseSelect.setGrade(studentGrade.getGrade());
+            courseSelect.setFinished(true);
+            courseSelectRepo.save(courseSelect);
+        }
+        return ResponseEntity.ok();
+    }
+
+    private static Map<String, Object> transform(Map<String, Object> origin, Map<String, String> map) {
+        Map<String, Object> ans = new HashMap<>();
+        origin.forEach((key, value) -> ans.put(map.get(key), value));
+        return ans;
     }
 
 
