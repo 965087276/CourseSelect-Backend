@@ -7,16 +7,16 @@ import lombok.Data;
  **/
 @Data
 public class ScheduleDTO {
-    private Integer startWeek;
-    private Integer endWeek;
-    private Integer day;
-    private Integer time;
+    private int startWeek;
+    private int endWeek;
+    private int day;
+    private int time;
     private String classroom;
 
     public ScheduleDTO() {
     }
 
-    public ScheduleDTO(Integer startWeek, Integer endWeek, Integer day, Integer time, String classroom) {
+    public ScheduleDTO(int startWeek, int endWeek, int day, int time, String classroom) {
         this.startWeek = startWeek;
         this.endWeek = endWeek;
         this.day = day;

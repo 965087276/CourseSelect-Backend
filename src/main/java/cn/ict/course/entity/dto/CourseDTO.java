@@ -29,7 +29,7 @@ public class CourseDTO {
 
     private String college;
 
-    private List<ScheduleDTO> scheduleList;
+    private List<ScheduleDTO> schedules;
 
     public CourseDTO() {
     }
@@ -44,6 +44,6 @@ public class CourseDTO {
         this.credit = credit;
         this.limitNum = limitNum;
         this.college = college;
-        this.scheduleList = scheduleList;
+        this.schedules = scheduleList;
     }
 }

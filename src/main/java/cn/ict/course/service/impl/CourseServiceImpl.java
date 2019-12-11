@@ -57,7 +57,7 @@ public class CourseServiceImpl implements CourseService {
     @Override
     @Transactional
     public ResponseEntity addCourse(CourseDTO courseDTO) {
-        List<ScheduleDTO> schedulesDTO = courseDTO.getScheduleList();
+        List<ScheduleDTO> schedulesDTO = courseDTO.getSchedules();
         List<CourseSchedule> schedulesCurrent = schedulesDTO
                 .stream()
                 .map(schedule -> mapper.map(schedule, CourseSchedule.class))
@@ -197,13 +197,13 @@ public class CourseServiceImpl implements CourseService {
 
 
     private boolean conflictClassroom(List<CourseSchedule> schedulesCurrent, List<String> classrooms) {
-        List<CourseSchedule> schedulesPrevious = scheduleRepo.findByClassroom(classrooms);
+        List<CourseSchedule> schedulesPrevious = scheduleRepo.findByClassroomIn(classrooms);
 
         return CourseConflictUtil.isConflict(schedulesPrevious, schedulesCurrent);
     }
 
     private String timeConflict(CourseDTO coursesDTO) {
-        List<ScheduleDTO> schedulesDTO = coursesDTO.getScheduleList();
+        List<ScheduleDTO> schedulesDTO = coursesDTO.getSchedules();
         List<CourseSchedule> schedulesCurrent = schedulesDTO.stream()
                 .map(schedule -> mapper.map(schedule, CourseSchedule.class))
                 .collect(Collectors.toList());
