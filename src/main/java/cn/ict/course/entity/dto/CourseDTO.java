@@ -21,11 +21,11 @@ public class CourseDTO {
 
     private String courseType;
 
-    private Integer courseHour;
+    private int courseHour;
 
-    private Integer credit;
+    private int credit;
 
-    private Integer limitNum;
+    private int limitNum;
 
     private String college;
 
