@@ -113,19 +113,31 @@ public class UserServiceImpl implements UserService {
      * @param user 需要保存的用户信息
      */
     @Override
-    public void save(User user) {
+    @Transactional
+    public ResponseEntity save(User user) {
+
+        String username = user.getUsername();
+
+        if (repeatByUsername(username)) {
+            return ResponseEntity.error(HttpStatus.INTERNAL_SERVER_ERROR, "用户名重复");
+        }
 
         String salt = new SecureRandomNumberGenerator().nextBytes().toString();
         int times = 2;
         String algorithmName = "md5";
 
         String password = user.getPassword();
+        if (password == null) {
+            password = username.substring(username.length() - 6);
+        }
         String encodedPassword = new SimpleHash(algorithmName,password,salt,times).toString();
 
         user.setSalt(salt);
         user.setPassword(encodedPassword);
 
         userRepo.save(user);
+
+        return ResponseEntity.ok();
     }
 
     @Override
@@ -214,6 +226,17 @@ public class UserServiceImpl implements UserService {
                 .map(u -> mapper.map(u, TeacherInfoVO.class));
 
         return ResponseEntity.ok(teacherInfo);
+    }
+
+    /**
+     * 判断用户名是否重复
+     *
+     * @param username 用户名
+     * @return 验证结果
+     */
+    @Override
+    public boolean repeatByUsername(String username) {
+        return userRepo.findByUsername(username) != null;
     }
 
 }

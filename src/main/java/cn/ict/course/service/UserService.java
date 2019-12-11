@@ -14,7 +14,7 @@ public interface UserService {
 
     LoginVO login(LoginDTO loginDTO);
 
-    void save(User user);
+    ResponseEntity save(User user);
 
     UserDetailVO detail(String username);
 
