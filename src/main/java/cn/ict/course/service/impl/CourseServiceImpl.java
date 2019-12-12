@@ -1,9 +1,12 @@
 package cn.ict.course.service.impl;
 
+import cn.hutool.poi.excel.ExcelReader;
+import cn.hutool.poi.excel.ExcelUtil;
 import cn.ict.course.constants.CourseConflictConst;
 import cn.ict.course.entity.db.Course;
 import cn.ict.course.entity.db.CourseSchedule;
 import cn.ict.course.entity.dto.CourseDTO;
+import cn.ict.course.entity.dto.CourseExcelDTO;
 import cn.ict.course.entity.dto.ScheduleDTO;
 import cn.ict.course.entity.http.ResponseEntity;
 import cn.ict.course.entity.vo.CourseVO;
@@ -14,13 +17,17 @@ import cn.ict.course.repo.CourseScheduleRepo;
 import cn.ict.course.service.CourseService;
 import cn.ict.course.utils.CourseCodeUtil;
 import cn.ict.course.utils.CourseConflictUtil;
+import cn.ict.course.utils.ListMapUtil;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.dozermapper.core.Mapper;
 import org.springframework.http.HttpStatus;
 import org.springframework.orm.jpa.JpaSystemException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
-import java.util.List;
+import java.io.IOException;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -166,6 +173,52 @@ public class CourseServiceImpl implements CourseService {
             course.setCourseSchedule(schedules);
         }
         return ResponseEntity.ok(courses);
+    }
+
+    /**
+     * 通过excel文件批量导入课程
+     *
+     * @param file excel文件
+     * @return 是否导入成功
+     */
+    @Override
+    public ResponseEntity addCoursesByExcel(MultipartFile file) throws IOException {
+        ExcelReader excelReader = ExcelUtil.getReader(file.getInputStream());
+        List<Map<String, Object>> reader = excelReader.readAll();
+        Map<String, String> map = ListMapUtil.getCourseExcelMap();
+
+        List<Map<String, Object>> readerTransformed = reader.stream()
+                .map(list -> ListMapUtil.mapTransform(list, map))
+                .collect(Collectors.toList());
+
+        ObjectMapper objectMapper = new ObjectMapper();
+
+        List<CourseExcelDTO> coursesDTOExcel = readerTransformed.stream()
+                .map(course -> objectMapper.convertValue(course, CourseExcelDTO.class))
+                .collect(Collectors.toList());
+
+        List<CourseSchedule> schedulesExcel = coursesDTOExcel.stream()
+                .map(course -> mapper.map(course, CourseSchedule.class))
+                .collect(Collectors.toList());
+
+        List<Course> coursesExcel = coursesDTOExcel.stream()
+                .map(course -> mapper.map(course, Course.class))
+                .collect(
+                        Collectors.collectingAndThen(
+                                Collectors.toCollection(
+                                        () -> new TreeSet<>(
+                                                Comparator.comparing(Course::getCourseCode)
+                                        )
+                                ), ArrayList::new
+                        )
+                );
+
+        List<String> excelClassrooms = coursesDTOExcel.stream()
+                .map(CourseExcelDTO::getClassroom)
+                .collect(Collectors.toList());
+
+
+        return null;
     }
 
 

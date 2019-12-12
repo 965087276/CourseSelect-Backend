@@ -8,6 +8,7 @@ import cn.ict.course.entity.db.QUser;
 import cn.ict.course.entity.db.User;
 import cn.ict.course.entity.dto.LoginDTO;
 import cn.ict.course.entity.dto.UserDTO;
+import cn.ict.course.entity.dto.UserUpdateDTO;
 import cn.ict.course.entity.http.ResponseEntity;
 import cn.ict.course.entity.vo.LoginVO;
 import cn.ict.course.entity.vo.TeacherInfoVO;
@@ -43,7 +44,6 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -271,11 +271,12 @@ public class UserServiceImpl implements UserService {
             );
         }
         List<Map<String, Object>> readTransformed = readAll.stream()
-                .map(list -> transform(list, map))
+                .map(list -> ListMapUtil.mapTransform(list, map))
                 .collect(Collectors.toList());
         ObjectMapper objectMapper = new ObjectMapper();
         List<UserDTO> usersInfo = readTransformed.stream()
-                .map(list -> objectMapper.convertValue(list, UserDTO.class)).collect(Collectors.toList());
+                .map(list -> objectMapper.convertValue(list, UserDTO.class))
+                .collect(Collectors.toList());
         List<User> users = new ArrayList<>();
         for (UserDTO userInfo:usersInfo) {
             User user = mapper.map(userInfo, User.class);
@@ -303,10 +304,36 @@ public class UserServiceImpl implements UserService {
         return ResponseEntity.ok();
     }
 
-    private static Map<String, Object> transform(Map<String, Object> origin, Map<String, String> map) {
-        Map<String, Object> ans = new HashMap<>();
-        origin.forEach((key, value) -> ans.put(map.get(key), value));
-        return ans;
+    /**
+     * 修改用户信息
+     *
+     * @param userUpdate 更新的用户信息
+     * @return 更新结果
+     */
+    @Override
+    @Transactional
+    public ResponseEntity updateUser(UserUpdateDTO userUpdate) {
+        String username = userUpdate.getUsername();
+        User user = userRepo.findByUsername(username);
+        user.setCollege(userUpdate.getCollege());
+        user.setRealName(userUpdate.getRealName());
+        user.setEmail(userUpdate.getEmail());
+        user.setPhoneNumber(userUpdate.getPhoneNumber());
+        String oldPassword = userUpdate.getOldPassword();
+        String oldPasswordEncoded = PasswordUtil.passwordEncode(oldPassword, user.getSalt());
+        if(!oldPasswordEncoded.equals(user.getPassword())) {
+            return ResponseEntity.error(
+                    HttpStatus.INTERNAL_SERVER_ERROR,
+                    "历史密码输入错误"
+            );
+        }
+        String newSalt = PasswordUtil.saltGenerate();
+        String passwordEncoded = PasswordUtil.passwordEncode(userUpdate.getPassword(), newSalt);
+        user.setSalt(newSalt);
+        user.setPassword(passwordEncoded);
+        userRepo.save(user);
+        return ResponseEntity.ok();
     }
+
 
 }

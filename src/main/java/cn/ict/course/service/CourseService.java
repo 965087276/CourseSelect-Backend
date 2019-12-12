@@ -5,7 +5,9 @@ import cn.ict.course.entity.dto.CourseDTO;
 import cn.ict.course.entity.http.ResponseEntity;
 import cn.ict.course.entity.vo.CourseVO;
 import cn.ict.course.entity.vo.TeacherCourseTableVO;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 
 /**
@@ -40,6 +42,13 @@ public interface CourseService {
      * @return 该教师教授的课程信息
      */
     ResponseEntity getTeacherCourseInfoByTeacherId(String teacherId);
+
+    /**
+     * 通过excel文件批量导入课程
+     * @param file excel文件
+     * @return 是否导入成功
+     */
+    ResponseEntity addCoursesByExcel(MultipartFile file) throws IOException;
 
 //
 //    /**
