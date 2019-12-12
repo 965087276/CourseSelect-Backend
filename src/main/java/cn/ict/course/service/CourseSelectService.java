@@ -113,4 +113,12 @@ public interface CourseSelectService {
      * @return 导入是否成功
      */
     ResponseEntity updateStudentGradesByFile(String courseCode, MultipartFile file) throws IOException;
+
+    /**
+     * 获得与当前课程冲突的课程编码
+     * @param courseCode 要添加课程的课程编码
+     * @param username 学生用户名
+     * @return 存在冲突的课程的课程编码
+     */
+    String getConflictedCourseCode(String courseCode, String username);
 }

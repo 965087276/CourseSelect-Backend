@@ -2,7 +2,7 @@ package cn.ict.course.service.impl;
 
 import cn.hutool.poi.excel.ExcelReader;
 import cn.hutool.poi.excel.ExcelUtil;
-import cn.ict.course.constants.PasswordConstant;
+import cn.ict.course.constants.PasswordConst;
 import cn.ict.course.entity.bo.UserUpdateInfo;
 import cn.ict.course.entity.db.QUser;
 import cn.ict.course.entity.db.User;
@@ -38,7 +38,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
-import org.springframework.web.client.ResponseErrorHandler;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -292,8 +291,8 @@ public class UserServiceImpl implements UserService {
             password = PasswordUtil.passwordEncode(
                     password,
                     salt,
-                    PasswordConstant.PASSWORD_EGYPT_NAME,
-                    PasswordConstant.PASSWORD_EGYPT_TIMES
+                    PasswordConst.PASSWORD_EGYPT_NAME,
+                    PasswordConst.PASSWORD_EGYPT_TIMES
             );
             user.setPassword(password);
             user.setSalt(salt);
