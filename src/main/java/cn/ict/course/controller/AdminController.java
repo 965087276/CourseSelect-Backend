@@ -2,6 +2,7 @@ package cn.ict.course.controller;
 
 import cn.ict.course.entity.bo.UserUpdateInfo;
 import cn.ict.course.entity.db.SelectionControl;
+import cn.ict.course.entity.db.User;
 import cn.ict.course.entity.http.ResponseEntity;
 import cn.ict.course.service.CourseSelectService;
 import cn.ict.course.service.CourseService;
@@ -94,6 +95,13 @@ public class AdminController {
                 curPage,
                 pageSize
         );
+    }
+
+    @PostMapping("/users")
+    @ApiOperation(value = "用户添加")
+    @ApiImplicitParam(name = "user", value = "用户登录信息", required = true, dataType = "User")
+    public ResponseEntity save(@RequestBody User user) {
+        return userService.save(user);
     }
 
 }
