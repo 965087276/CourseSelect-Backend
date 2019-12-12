@@ -6,6 +6,9 @@ import cn.ict.course.entity.dto.LoginDTO;
 import cn.ict.course.entity.http.ResponseEntity;
 import cn.ict.course.entity.vo.LoginVO;
 import cn.ict.course.entity.vo.UserDetailVO;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
 
 /**
  * @author Jianyong Feng
@@ -56,4 +59,12 @@ public interface UserService {
      * @return 验证结果
      */
     boolean repeatByUsername(String username);
+
+    /**
+     * Excel批量导入用户
+     * @param role 用户角色
+     * @param file 用户文件
+     * @return 导入是否成功
+     */
+    ResponseEntity addUsersByExcel(String role, MultipartFile file) throws IOException;
 }

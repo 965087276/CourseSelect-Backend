@@ -1,11 +1,13 @@
 package cn.ict.course.service.impl;
 
+import cn.hutool.poi.excel.ExcelReader;
+import cn.hutool.poi.excel.ExcelUtil;
+import cn.ict.course.constants.PasswordConstant;
 import cn.ict.course.entity.bo.UserUpdateInfo;
-import cn.ict.course.entity.db.CoursePreselect;
-import cn.ict.course.entity.db.CourseSelect;
 import cn.ict.course.entity.db.QUser;
 import cn.ict.course.entity.db.User;
 import cn.ict.course.entity.dto.LoginDTO;
+import cn.ict.course.entity.dto.UserDTO;
 import cn.ict.course.entity.http.ResponseEntity;
 import cn.ict.course.entity.vo.LoginVO;
 import cn.ict.course.entity.vo.TeacherInfoVO;
@@ -15,6 +17,9 @@ import cn.ict.course.repo.CoursePreselectRepo;
 import cn.ict.course.repo.CourseSelectRepo;
 import cn.ict.course.repo.UserRepo;
 import cn.ict.course.service.UserService;
+import cn.ict.course.utils.ListMapUtil;
+import cn.ict.course.utils.PasswordUtil;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.dozermapper.core.Mapper;
 import com.querydsl.core.types.ExpressionUtils;
 import com.querydsl.core.types.Predicate;
@@ -33,9 +38,15 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
+import org.springframework.web.client.ResponseErrorHandler;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
@@ -122,14 +133,13 @@ public class UserServiceImpl implements UserService {
             return ResponseEntity.error(HttpStatus.INTERNAL_SERVER_ERROR, "用户名重复");
         }
 
-        String salt = new SecureRandomNumberGenerator().nextBytes().toString();
-        int times = 2;
-        String algorithmName = "md5";
-
         String password = user.getPassword();
         if (password == null) {
             password = username.substring(username.length() - 6);
         }
+        String salt = new SecureRandomNumberGenerator().nextBytes().toString();
+        int times = 2;
+        String algorithmName = "md5";
         String encodedPassword = new SimpleHash(algorithmName,password,salt,times).toString();
 
         user.setSalt(salt);
@@ -237,6 +247,67 @@ public class UserServiceImpl implements UserService {
     @Override
     public boolean repeatByUsername(String username) {
         return userRepo.findByUsername(username) != null;
+    }
+
+    /**
+     * Excel批量导入用户
+     *
+     * @param role 用户角色
+     * @param file 用户文件
+     * @return 导入是否成功
+     */
+    @Override
+    public ResponseEntity addUsersByExcel(String role, MultipartFile file) throws IOException {
+        ExcelReader reader = ExcelUtil.getReader(file.getInputStream());
+        List<Map<String, Object>> readAll = reader.readAll();
+        Map<String, String> map;
+        if (role.equals("student")) {
+            map = ListMapUtil.getStudentUserMap();
+        } else if (role.equals("teacher")) {
+            map = ListMapUtil.getTeacherUserMap();
+        } else {
+            return ResponseEntity.error(
+                    HttpStatus.INTERNAL_SERVER_ERROR,
+                    "导入错误"
+            );
+        }
+        List<Map<String, Object>> readTransformed = readAll.stream()
+                .map(list -> transform(list, map))
+                .collect(Collectors.toList());
+        ObjectMapper objectMapper = new ObjectMapper();
+        List<UserDTO> usersInfo = readTransformed.stream()
+                .map(list -> objectMapper.convertValue(list, UserDTO.class)).collect(Collectors.toList());
+        List<User> users = new ArrayList<>();
+        for (UserDTO userInfo:usersInfo) {
+            User user = mapper.map(userInfo, User.class);
+            String username = userInfo.getUsername();
+            if (repeatByUsername(username)) {
+                return ResponseEntity.error(
+                        HttpStatus.INTERNAL_SERVER_ERROR,
+                        username + "用户名重复"
+                );
+            }
+            String password = PasswordUtil.passwordGenerateByUsername(username);
+            String salt = PasswordUtil.saltGenerate();
+            password = PasswordUtil.passwordEncode(
+                    password,
+                    salt,
+                    PasswordConstant.PASSWORD_EGYPT_NAME,
+                    PasswordConstant.PASSWORD_EGYPT_TIMES
+            );
+            user.setPassword(password);
+            user.setSalt(salt);
+            user.setRole(role);
+            users.add(user);
+        }
+        userRepo.saveAll(users);
+        return ResponseEntity.ok();
+    }
+
+    private static Map<String, Object> transform(Map<String, Object> origin, Map<String, String> map) {
+        Map<String, Object> ans = new HashMap<>();
+        origin.forEach((key, value) -> ans.put(map.get(key), value));
+        return ans;
     }
 
 }

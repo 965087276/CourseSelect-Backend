@@ -13,7 +13,9 @@ import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.Date;
 
 /**
@@ -102,6 +104,16 @@ public class AdminController {
     @ApiImplicitParam(name = "user", value = "用户登录信息", required = true, dataType = "User")
     public ResponseEntity save(@RequestBody User user) {
         return userService.save(user);
+    }
+
+    @PostMapping("/usersExcel/{role}")
+    @ApiOperation(value = "Excel批量导入用户", notes = "role为教师或学生")
+    @ApiImplicitParam(name = "role", value = "用户角色", required = true, dataType = "String", paramType = "path")
+    public ResponseEntity addUsersByExcel(
+            @PathVariable String role,
+            @RequestParam("file") MultipartFile file
+    ) throws IOException {
+        return userService.addUsersByExcel(role, file);
     }
 
 }
