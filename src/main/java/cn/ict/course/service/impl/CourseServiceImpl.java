@@ -4,7 +4,9 @@ import cn.hutool.poi.excel.ExcelReader;
 import cn.hutool.poi.excel.ExcelUtil;
 import cn.ict.course.constants.CourseConflictConst;
 import cn.ict.course.entity.db.Course;
+import cn.ict.course.entity.db.CoursePreselect;
 import cn.ict.course.entity.db.CourseSchedule;
+import cn.ict.course.entity.db.CourseSelect;
 import cn.ict.course.entity.dto.CourseDTO;
 import cn.ict.course.entity.dto.CourseExcelDTO;
 import cn.ict.course.entity.dto.ScheduleDTO;
@@ -12,14 +14,17 @@ import cn.ict.course.entity.http.ResponseEntity;
 import cn.ict.course.entity.vo.CourseVO;
 import cn.ict.course.entity.vo.TeacherCourseTableVO;
 import cn.ict.course.mapper.CourseMapper;
+import cn.ict.course.repo.CoursePreselectRepo;
 import cn.ict.course.repo.CourseRepo;
 import cn.ict.course.repo.CourseScheduleRepo;
+import cn.ict.course.repo.CourseSelectRepo;
 import cn.ict.course.service.CourseService;
 import cn.ict.course.utils.CourseCodeUtil;
 import cn.ict.course.utils.CourseConflictUtil;
 import cn.ict.course.utils.ListMapUtil;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.dozermapper.core.Mapper;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.orm.jpa.JpaSystemException;
 import org.springframework.stereotype.Service;
@@ -39,18 +44,25 @@ public class CourseServiceImpl implements CourseService {
     private final Mapper mapper;
     private final CourseRepo courseRepo;
     private final CourseScheduleRepo scheduleRepo;
+    private final CourseSelectRepo courseSelectRepo;
+    private final CoursePreselectRepo coursePreselectRepo;
     private final CourseMapper courseMapper;
 
 
+    @Autowired
     public CourseServiceImpl(Mapper mapper,
                              CourseRepo courseRepo,
                              CourseScheduleRepo scheduleRepo,
-                             CourseMapper courseMapper) {
+                             CourseMapper courseMapper,
+                             CourseSelectRepo courseSelectRepo,
+                             CoursePreselectRepo coursePreselectRepo
+    ) {
         this.mapper = mapper;
         this.courseRepo = courseRepo;
         this.scheduleRepo = scheduleRepo;
         this.courseMapper = courseMapper;
-
+        this.courseSelectRepo = courseSelectRepo;
+        this.coursePreselectRepo = coursePreselectRepo;
     }
 
     /**
@@ -124,6 +136,8 @@ public class CourseServiceImpl implements CourseService {
         try {
             courseRepo.deleteByCourseCode(courseCode);
             scheduleRepo.deleteByCourseCode(courseCode);
+            courseSelectRepo.deleteAllByCourseCode(courseCode);
+            coursePreselectRepo.deleteAllByUsername(courseCode);
             return ResponseEntity.ok();
         } catch (JpaSystemException e) {
             e.printStackTrace();
