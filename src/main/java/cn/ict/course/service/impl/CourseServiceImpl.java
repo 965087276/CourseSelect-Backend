@@ -22,6 +22,7 @@ import cn.ict.course.utils.CourseConflictUtil;
 import cn.ict.course.utils.ListMapUtil;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.dozermapper.core.Mapper;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.orm.jpa.JpaSystemException;
@@ -37,6 +38,7 @@ import java.util.stream.Collectors;
  * @author Jianyong Feng
  **/
 @Service
+@Slf4j
 public class CourseServiceImpl implements CourseService {
 
     private final Mapper mapper;
@@ -194,6 +196,7 @@ public class CourseServiceImpl implements CourseService {
      * @return 是否导入成功
      */
     @Override
+    @Transactional
     public ResponseEntity addCoursesByExcel(MultipartFile file) throws IOException {
         ExcelReader excelReader = ExcelUtil.getReader(file.getInputStream());
         List<Map<String, Object>> reader = excelReader.readAll();
@@ -243,12 +246,16 @@ public class CourseServiceImpl implements CourseService {
         for (String classroom : schedulesByClassroom.keySet()) {
             List<CourseSchedule> scheduleList = schedulesByClassroom.get(classroom);
             String conflictedCourseCode = CourseConflictUtil.getConflictedCourseCode(scheduleList);
+            log.info("courseCode: " + conflictedCourseCode);
             if (!conflictedCourseCode.equals(CourseConflictConst.NO_COURSE_SCHEDULE_CONFLICT)) {
-                String conflictedCourseName = courseRepo.findByCourseCode(conflictedCourseCode).getCourseName();
+                String conflictedCourseName = Objects.requireNonNull(courses.stream()
+                        .filter(course -> course.getCourseCode().equals(conflictedCourseCode))
+                        .findFirst()
+                        .orElse(null)).getCourseName();
                 return ResponseEntity.error(
                         HttpStatus.INTERNAL_SERVER_ERROR,
-                        "教室" + classroom + "中的课程" + conflictedCourseName
-                        + "存在时间冲突"
+                        "教室： " + classroom + " 中的课程 " + conflictedCourseName
+                        + " 存在时间冲突"
                 );
             }
         }
@@ -266,11 +273,14 @@ public class CourseServiceImpl implements CourseService {
                             .collect(Collectors.toList());
             String conflictedCourseCode = CourseConflictUtil.getConflictedCourseCode(scheduleList);
             if (!conflictedCourseCode.equals(CourseConflictConst.NO_COURSE_SCHEDULE_CONFLICT)) {
-                String conflictedCourseName = courseRepo.findByCourseCode(conflictedCourseCode).getCourseName();
+                String conflictedCourseName = Objects.requireNonNull(courseList.stream()
+                        .filter(course -> course.getCourseCode().equals(conflictedCourseCode))
+                        .findFirst()
+                        .orElse(null)).getCourseName();
                 return ResponseEntity.error(
                         HttpStatus.INTERNAL_SERVER_ERROR,
-                        "教师用户名：" + teacherId + "的课程："
-                        + conflictedCourseName + "存在课程冲突"
+                        "教师用户名：" + teacherId + " 的课程： "
+                        + conflictedCourseName + " 存在时间冲突"
                 );
             }
         }
