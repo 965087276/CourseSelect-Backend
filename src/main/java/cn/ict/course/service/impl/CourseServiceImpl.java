@@ -4,9 +4,7 @@ import cn.hutool.poi.excel.ExcelReader;
 import cn.hutool.poi.excel.ExcelUtil;
 import cn.ict.course.constants.CourseConflictConst;
 import cn.ict.course.entity.db.Course;
-import cn.ict.course.entity.db.CoursePreselect;
 import cn.ict.course.entity.db.CourseSchedule;
-import cn.ict.course.entity.db.CourseSelect;
 import cn.ict.course.entity.dto.CourseDTO;
 import cn.ict.course.entity.dto.CourseExcelDTO;
 import cn.ict.course.entity.dto.ScheduleDTO;
@@ -215,6 +213,7 @@ public class CourseServiceImpl implements CourseService {
                 .map(course -> mapper.map(course, CourseSchedule.class))
                 .collect(Collectors.toList());
 
+        // 根据CourseCode去重
         List<Course> coursesExcel = coursesDTOExcel.stream()
                 .map(course -> mapper.map(course, Course.class))
                 .collect(
@@ -231,8 +230,54 @@ public class CourseServiceImpl implements CourseService {
                 .map(CourseExcelDTO::getClassroom)
                 .collect(Collectors.toList());
 
+        List<Course> courses = courseRepo.findAll();
+        courses.addAll(coursesExcel);
 
-        return null;
+        List<CourseSchedule> schedules = scheduleRepo.findAll();
+
+        schedules.addAll(schedulesExcel);
+
+        Map<String, List<CourseSchedule>> schedulesByClassroom =
+            schedules.stream().collect(Collectors.groupingBy(CourseSchedule::getClassroom));
+
+        for (String classroom : schedulesByClassroom.keySet()) {
+            List<CourseSchedule> scheduleList = schedulesByClassroom.get(classroom);
+            String conflictedCourseCode = CourseConflictUtil.getConflictedCourseCode(scheduleList);
+            if (!conflictedCourseCode.equals(CourseConflictConst.NO_COURSE_SCHEDULE_CONFLICT)) {
+                String conflictedCourseName = courseRepo.findByCourseCode(conflictedCourseCode).getCourseName();
+                return ResponseEntity.error(
+                        HttpStatus.INTERNAL_SERVER_ERROR,
+                        "教室" + classroom + "中的课程" + conflictedCourseName
+                        + "存在时间冲突"
+                );
+            }
+        }
+
+        Map<String, List<Course>> courseByTeacherId =
+                courses.stream().collect(Collectors.groupingBy(Course::getTeacherId));
+
+        for (String teacherId : courseByTeacherId.keySet()) {
+            List<Course> courseList = courseByTeacherId.get(teacherId);
+            List<String> courseCodeList =
+                    courseList.stream().map(Course::getCourseCode).collect(Collectors.toList());
+            List<CourseSchedule> scheduleList =
+                    schedules.stream()
+                            .filter(schedule -> courseCodeList.contains(schedule.getCourseCode()))
+                            .collect(Collectors.toList());
+            String conflictedCourseCode = CourseConflictUtil.getConflictedCourseCode(scheduleList);
+            if (!conflictedCourseCode.equals(CourseConflictConst.NO_COURSE_SCHEDULE_CONFLICT)) {
+                String conflictedCourseName = courseRepo.findByCourseCode(conflictedCourseCode).getCourseName();
+                return ResponseEntity.error(
+                        HttpStatus.INTERNAL_SERVER_ERROR,
+                        "教师用户名：" + teacherId + "的课程："
+                        + conflictedCourseName + "存在课程冲突"
+                );
+            }
+        }
+
+        courseRepo.saveAll(courses);
+        scheduleRepo.saveAll(schedules);
+        return ResponseEntity.ok();
     }
 
 

@@ -7,6 +7,7 @@ import cn.ict.course.entity.http.ResponseEntity;
 import cn.ict.course.service.CourseSelectService;
 import cn.ict.course.service.CourseService;
 import cn.ict.course.service.UserService;
+import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.lang.reflect.Field;
 import java.util.Date;
 
 /**
@@ -114,6 +116,12 @@ public class AdminController {
             @RequestParam("file") MultipartFile file
     ) throws IOException {
         return userService.addUsersByExcel(role, file);
+    }
+
+    @PostMapping("/coursesExcel")
+    @ApiOperation(value = "管理员批量导入课程", notes = "使用excel")
+    public ResponseEntity addCoursesByExcel(@RequestParam("file") MultipartFile file) throws IOException {
+        return courseService.addCoursesByExcel(file);
     }
 
 }

@@ -57,4 +57,15 @@ public class CourseConflictUtil {
         return CourseConflictConst.NO_COURSE_SCHEDULE_CONFLICT;
     }
 
+    public static String getConflictedCourseCode(List<CourseSchedule> schedules) {
+        for (int i = 0; i < schedules.size(); i++) {
+            for (int j = i+1; j < schedules.size(); j++) {
+                if (isConflict(schedules.get(i), schedules.get(j))) {
+                    return schedules.get(i).getCourseCode();
+                }
+            }
+        }
+        return CourseConflictConst.NO_COURSE_SCHEDULE_CONFLICT;
+    }
+
 }
