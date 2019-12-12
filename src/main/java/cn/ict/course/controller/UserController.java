@@ -44,7 +44,7 @@ public class UserController {
         return userService.save(user);
     }
 
-    @RequiresRoles(value={"admin", "student", "teacher"},logical = Logical.OR)
+//    @RequiresRoles(value={"admin", "student", "teacher"},logical = Logical.OR)
     @GetMapping("/users/{username}")
     @ApiOperation(value = "获取登录用户信息", notes = "根据url的用户名来获取用户详细信息")
     @ApiImplicitParam(name = "username", value = "用户名", required = true, dataType = "Long", paramType = "path")

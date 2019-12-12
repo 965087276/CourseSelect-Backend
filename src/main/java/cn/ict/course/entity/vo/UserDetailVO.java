@@ -12,4 +12,7 @@ public class UserDetailVO {
     private String username;
     private String realName;
     private String role;
+    private String email;
+    private String phoneNumber;
+
 }
