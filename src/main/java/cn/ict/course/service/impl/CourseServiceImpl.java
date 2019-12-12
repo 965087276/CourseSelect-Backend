@@ -1,15 +1,16 @@
 package cn.ict.course.service.impl;
 
+import cn.ict.course.constants.CourseConflictConst;
 import cn.ict.course.entity.db.Course;
 import cn.ict.course.entity.db.CourseSchedule;
 import cn.ict.course.entity.dto.CourseDTO;
 import cn.ict.course.entity.dto.ScheduleDTO;
-import cn.ict.course.entity.dto.TeacherCourseInfoDTO;
 import cn.ict.course.entity.http.ResponseEntity;
 import cn.ict.course.entity.vo.CourseVO;
 import cn.ict.course.entity.vo.TeacherCourseTableVO;
 import cn.ict.course.mapper.CourseMapper;
-import cn.ict.course.repo.*;
+import cn.ict.course.repo.CourseRepo;
+import cn.ict.course.repo.CourseScheduleRepo;
 import cn.ict.course.service.CourseService;
 import cn.ict.course.utils.CourseCodeUtil;
 import cn.ict.course.utils.CourseConflictUtil;
@@ -180,28 +181,6 @@ public class CourseServiceImpl implements CourseService {
 
     }
 
-
-
-    /**
-     * 教师增加课程，时间是否冲突
-     * @param schedulesCurrent 当前课程的时刻表
-     * @param teacherId 教师用户名
-     * @return 如果时间冲突，返回true，否则false
-     */
-    private boolean conflictTeacher(List<CourseSchedule> schedulesCurrent, String teacherId) {
-        // 判断老师时间是否冲突
-        List<CourseSchedule> schedulesPrevious = scheduleRepo.findByTeacherId(teacherId);
-        return CourseConflictUtil.isConflict(schedulesPrevious, schedulesCurrent);
-    }
-
-
-
-    private boolean conflictClassroom(List<CourseSchedule> schedulesCurrent, List<String> classrooms) {
-        List<CourseSchedule> schedulesPrevious = scheduleRepo.findByClassroomIn(classrooms);
-
-        return CourseConflictUtil.isConflict(schedulesPrevious, schedulesCurrent);
-    }
-
     private String timeConflict(CourseDTO coursesDTO) {
         List<ScheduleDTO> schedulesDTO = coursesDTO.getSchedules();
         List<CourseSchedule> schedulesCurrent = schedulesDTO.stream()
@@ -209,8 +188,14 @@ public class CourseServiceImpl implements CourseService {
                 .collect(Collectors.toList());
 
         String teacherId = coursesDTO.getTeacherId();
-        if (conflictTeacher(schedulesCurrent, teacherId)) {
-            return "教师时间冲突";
+        List<CourseSchedule> schedulesPrevious = scheduleRepo.findByTeacherId(teacherId);
+        String CourseCodeScheduleConflicted = CourseConflictUtil.getConflictedCourseCode(
+                schedulesPrevious,
+                schedulesCurrent
+        );
+        if (!CourseCodeScheduleConflicted.equals(CourseConflictConst.NO_COURSE_SCHEDULE_CONFLICT)) {
+            String conflictedCourseName = courseRepo.findByCourseCode(CourseCodeScheduleConflicted).getCourseName();
+            return "当前添加的课程与" + conflictedCourseName + "冲突";
         }
 
         // 判断教室时间是否冲突
@@ -218,9 +203,14 @@ public class CourseServiceImpl implements CourseService {
                 .stream()
                 .map(ScheduleDTO::getClassroom)
                 .collect(Collectors.toList());
-
-        if (conflictClassroom(schedulesCurrent, classrooms)) {
-            return "教室时间冲突";
+        List<CourseSchedule> schedulesPreviousByClassrooms = scheduleRepo.findByClassroomIn(classrooms);
+        CourseCodeScheduleConflicted = CourseConflictUtil.getConflictedCourseCode(
+                schedulesPreviousByClassrooms,
+                schedulesCurrent
+        );
+        if (!CourseCodeScheduleConflicted.equals(CourseConflictConst.NO_COURSE_SCHEDULE_CONFLICT)) {
+            String conflictedCourseName = courseRepo.findByCourseCode(CourseCodeScheduleConflicted).getCourseName();
+            return "当前添加的课程与" + conflictedCourseName + "冲突";
         }
 
         return null;
