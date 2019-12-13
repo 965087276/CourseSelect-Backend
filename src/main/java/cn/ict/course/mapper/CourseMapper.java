@@ -1,6 +1,7 @@
 package cn.ict.course.mapper;
 
 import cn.ict.course.entity.bo.MyPreCourseBO;
+import cn.ict.course.entity.dto.CourseWithScheduleDTO;
 import cn.ict.course.entity.dto.TeacherCourseInfoDTO;
 import cn.ict.course.entity.vo.*;
 import org.apache.ibatis.annotations.Mapper;
@@ -112,4 +113,21 @@ public interface CourseMapper {
             "WHERE B.teacher_id = #{teacherId} " +
             "ORDER BY A.course_code")
     List<TeacherCourseInfoDTO> getTeacherCourseInfoByTeacherId(@Param("teacherId") String teacherId);
+
+    @Select("SELECT A.start_week startWeek, " +
+            "    A.end_week endWeek, " +
+            "    A.`day` `day`, " +
+            "    A.time time, " +
+            "    B.course_code courseCode, " +
+            "    B.course_name courseName, " +
+            "    B.college college, " +
+            "    B.limit_num limitNum, " +
+            "    B.selected_num selectedNum, " +
+            "    B.course_hour courseHour, " +
+            "    B.credit credit, " +
+            "    B.course_type courseType, " +
+            "    B.course_teacher courseTeacher " +
+            "FROM course_schedule A " +
+            "LEFT JOIN course B on A.course_code = B.course_code")
+    List<CourseWithScheduleDTO> getAllCourseWithSchedule();
 }

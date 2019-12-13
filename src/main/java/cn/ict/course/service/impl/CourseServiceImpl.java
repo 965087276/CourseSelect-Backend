@@ -7,6 +7,7 @@ import cn.ict.course.entity.db.Course;
 import cn.ict.course.entity.db.CourseSchedule;
 import cn.ict.course.entity.dto.CourseDTO;
 import cn.ict.course.entity.dto.CourseExcelDTO;
+import cn.ict.course.entity.dto.CourseWithScheduleDTO;
 import cn.ict.course.entity.dto.ScheduleDTO;
 import cn.ict.course.entity.http.ResponseEntity;
 import cn.ict.course.entity.vo.CourseVO;
@@ -100,19 +101,19 @@ public class CourseServiceImpl implements CourseService {
 
     @Override
     public ResponseEntity<List<CourseVO>> getCourseList(String college, String courseType, String CourseName, Integer day, Integer time) {
-        List<Course> courseList = courseRepo.findAll();
-        List<CourseVO> courses = courseList
-                .stream()
-                .map(course -> mapper.map(course, CourseVO.class))
-                .collect(Collectors.toList());
-
-        for (CourseVO course:courses) {
-            List<CourseSchedule> scheduleList = scheduleRepo.findByCourseCode(course.getCourseCode());
-            List<ScheduleDTO> schedules = scheduleList
-                    .stream()
+        List<CourseWithScheduleDTO> courseWithSchedule = courseMapper.getAllCourseWithSchedule();
+        Map<String, List<CourseWithScheduleDTO>> courseByCourseCode =
+                courseWithSchedule.stream().collect(Collectors.groupingBy(CourseWithScheduleDTO::getCourseCode));
+        List<CourseVO> courses = new ArrayList<>();
+        for (String courseCode : courseByCourseCode.keySet()) {
+            List<CourseWithScheduleDTO> courseByCourseCodeList = courseByCourseCode.get(courseCode);
+            List<ScheduleDTO> schedules =
+                    courseByCourseCodeList.stream()
                     .map(schedule -> mapper.map(schedule, ScheduleDTO.class))
                     .collect(Collectors.toList());
+            CourseVO course = mapper.map(courseByCourseCodeList.get(0), CourseVO.class);
             course.setCourseSchedule(schedules);
+            courses.add(course);
         }
 
         courses = courses
@@ -228,10 +229,6 @@ public class CourseServiceImpl implements CourseService {
                                 ), ArrayList::new
                         )
                 );
-
-        List<String> excelClassrooms = coursesDTOExcel.stream()
-                .map(CourseExcelDTO::getClassroom)
-                .collect(Collectors.toList());
 
         List<Course> courses = courseRepo.findAll();
         courses.addAll(coursesExcel);
