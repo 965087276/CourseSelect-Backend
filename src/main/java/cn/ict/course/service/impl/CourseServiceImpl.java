@@ -1,48 +1,68 @@
 package cn.ict.course.service.impl;
 
+import cn.hutool.poi.excel.ExcelReader;
+import cn.hutool.poi.excel.ExcelUtil;
+import cn.ict.course.constants.CourseConflictConst;
 import cn.ict.course.entity.db.Course;
 import cn.ict.course.entity.db.CourseSchedule;
 import cn.ict.course.entity.dto.CourseDTO;
+import cn.ict.course.entity.dto.CourseExcelDTO;
 import cn.ict.course.entity.dto.ScheduleDTO;
-import cn.ict.course.entity.dto.TeacherCourseInfoDTO;
 import cn.ict.course.entity.http.ResponseEntity;
 import cn.ict.course.entity.vo.CourseVO;
 import cn.ict.course.entity.vo.TeacherCourseTableVO;
 import cn.ict.course.mapper.CourseMapper;
-import cn.ict.course.repo.*;
+import cn.ict.course.repo.CoursePreselectRepo;
+import cn.ict.course.repo.CourseRepo;
+import cn.ict.course.repo.CourseScheduleRepo;
+import cn.ict.course.repo.CourseSelectRepo;
 import cn.ict.course.service.CourseService;
 import cn.ict.course.utils.CourseCodeUtil;
 import cn.ict.course.utils.CourseConflictUtil;
+import cn.ict.course.utils.ListMapUtil;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.dozermapper.core.Mapper;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.orm.jpa.JpaSystemException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
-import java.util.List;
+import java.io.IOException;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
  * @author Jianyong Feng
  **/
 @Service
+@Slf4j
 public class CourseServiceImpl implements CourseService {
 
     private final Mapper mapper;
     private final CourseRepo courseRepo;
     private final CourseScheduleRepo scheduleRepo;
+    private final CourseSelectRepo courseSelectRepo;
+    private final CoursePreselectRepo coursePreselectRepo;
     private final CourseMapper courseMapper;
 
 
+    @Autowired
     public CourseServiceImpl(Mapper mapper,
                              CourseRepo courseRepo,
                              CourseScheduleRepo scheduleRepo,
-                             CourseMapper courseMapper) {
+                             CourseMapper courseMapper,
+                             CourseSelectRepo courseSelectRepo,
+                             CoursePreselectRepo coursePreselectRepo
+    ) {
         this.mapper = mapper;
         this.courseRepo = courseRepo;
         this.scheduleRepo = scheduleRepo;
         this.courseMapper = courseMapper;
-
+        this.courseSelectRepo = courseSelectRepo;
+        this.coursePreselectRepo = coursePreselectRepo;
     }
 
     /**
@@ -116,6 +136,8 @@ public class CourseServiceImpl implements CourseService {
         try {
             courseRepo.deleteByCourseCode(courseCode);
             scheduleRepo.deleteByCourseCode(courseCode);
+            courseSelectRepo.deleteAllByCourseCode(courseCode);
+            coursePreselectRepo.deleteAllByUsername(courseCode);
             return ResponseEntity.ok();
         } catch (JpaSystemException e) {
             e.printStackTrace();
@@ -167,6 +189,107 @@ public class CourseServiceImpl implements CourseService {
         return ResponseEntity.ok(courses);
     }
 
+    /**
+     * 通过excel文件批量导入课程
+     *
+     * @param file excel文件
+     * @return 是否导入成功
+     */
+    @Override
+    @Transactional
+    public ResponseEntity addCoursesByExcel(MultipartFile file) throws IOException {
+        ExcelReader excelReader = ExcelUtil.getReader(file.getInputStream());
+        List<Map<String, Object>> reader = excelReader.readAll();
+        Map<String, String> map = ListMapUtil.getCourseExcelMap();
+
+        List<Map<String, Object>> readerTransformed = reader.stream()
+                .map(list -> ListMapUtil.mapTransform(list, map))
+                .collect(Collectors.toList());
+
+        ObjectMapper objectMapper = new ObjectMapper();
+
+        List<CourseExcelDTO> coursesDTOExcel = readerTransformed.stream()
+                .map(course -> objectMapper.convertValue(course, CourseExcelDTO.class))
+                .collect(Collectors.toList());
+
+        List<CourseSchedule> schedulesExcel = coursesDTOExcel.stream()
+                .map(course -> mapper.map(course, CourseSchedule.class))
+                .collect(Collectors.toList());
+
+        // 根据CourseCode去重
+        List<Course> coursesExcel = coursesDTOExcel.stream()
+                .map(course -> mapper.map(course, Course.class))
+                .collect(
+                        Collectors.collectingAndThen(
+                                Collectors.toCollection(
+                                        () -> new TreeSet<>(
+                                                Comparator.comparing(Course::getCourseCode)
+                                        )
+                                ), ArrayList::new
+                        )
+                );
+
+        List<String> excelClassrooms = coursesDTOExcel.stream()
+                .map(CourseExcelDTO::getClassroom)
+                .collect(Collectors.toList());
+
+        List<Course> courses = courseRepo.findAll();
+        courses.addAll(coursesExcel);
+
+        List<CourseSchedule> schedules = scheduleRepo.findAll();
+
+        schedules.addAll(schedulesExcel);
+
+        Map<String, List<CourseSchedule>> schedulesByClassroom =
+            schedules.stream().collect(Collectors.groupingBy(CourseSchedule::getClassroom));
+
+        for (String classroom : schedulesByClassroom.keySet()) {
+            List<CourseSchedule> scheduleList = schedulesByClassroom.get(classroom);
+            String conflictedCourseCode = CourseConflictUtil.getConflictedCourseCode(scheduleList);
+            log.info("courseCode: " + conflictedCourseCode);
+            if (!conflictedCourseCode.equals(CourseConflictConst.NO_COURSE_SCHEDULE_CONFLICT)) {
+                String conflictedCourseName = Objects.requireNonNull(courses.stream()
+                        .filter(course -> course.getCourseCode().equals(conflictedCourseCode))
+                        .findFirst()
+                        .orElse(null)).getCourseName();
+                return ResponseEntity.error(
+                        HttpStatus.INTERNAL_SERVER_ERROR,
+                        "教室： " + classroom + " 中的课程 " + conflictedCourseName
+                        + " 存在时间冲突"
+                );
+            }
+        }
+
+        Map<String, List<Course>> courseByTeacherId =
+                courses.stream().collect(Collectors.groupingBy(Course::getTeacherId));
+
+        for (String teacherId : courseByTeacherId.keySet()) {
+            List<Course> courseList = courseByTeacherId.get(teacherId);
+            List<String> courseCodeList =
+                    courseList.stream().map(Course::getCourseCode).collect(Collectors.toList());
+            List<CourseSchedule> scheduleList =
+                    schedules.stream()
+                            .filter(schedule -> courseCodeList.contains(schedule.getCourseCode()))
+                            .collect(Collectors.toList());
+            String conflictedCourseCode = CourseConflictUtil.getConflictedCourseCode(scheduleList);
+            if (!conflictedCourseCode.equals(CourseConflictConst.NO_COURSE_SCHEDULE_CONFLICT)) {
+                String conflictedCourseName = Objects.requireNonNull(courseList.stream()
+                        .filter(course -> course.getCourseCode().equals(conflictedCourseCode))
+                        .findFirst()
+                        .orElse(null)).getCourseName();
+                return ResponseEntity.error(
+                        HttpStatus.INTERNAL_SERVER_ERROR,
+                        "教师用户名：" + teacherId + " 的课程： "
+                        + conflictedCourseName + " 存在时间冲突"
+                );
+            }
+        }
+
+        courseRepo.saveAll(courses);
+        scheduleRepo.saveAll(schedules);
+        return ResponseEntity.ok();
+    }
+
 
     private boolean isOk(CourseVO course, String college, String courseType, String courseName, int day, int time) {
 
@@ -180,28 +303,6 @@ public class CourseServiceImpl implements CourseService {
 
     }
 
-
-
-    /**
-     * 教师增加课程，时间是否冲突
-     * @param schedulesCurrent 当前课程的时刻表
-     * @param teacherId 教师用户名
-     * @return 如果时间冲突，返回true，否则false
-     */
-    private boolean conflictTeacher(List<CourseSchedule> schedulesCurrent, String teacherId) {
-        // 判断老师时间是否冲突
-        List<CourseSchedule> schedulesPrevious = scheduleRepo.findByTeacherId(teacherId);
-        return CourseConflictUtil.isConflict(schedulesPrevious, schedulesCurrent);
-    }
-
-
-
-    private boolean conflictClassroom(List<CourseSchedule> schedulesCurrent, List<String> classrooms) {
-        List<CourseSchedule> schedulesPrevious = scheduleRepo.findByClassroomIn(classrooms);
-
-        return CourseConflictUtil.isConflict(schedulesPrevious, schedulesCurrent);
-    }
-
     private String timeConflict(CourseDTO coursesDTO) {
         List<ScheduleDTO> schedulesDTO = coursesDTO.getSchedules();
         List<CourseSchedule> schedulesCurrent = schedulesDTO.stream()
@@ -209,8 +310,14 @@ public class CourseServiceImpl implements CourseService {
                 .collect(Collectors.toList());
 
         String teacherId = coursesDTO.getTeacherId();
-        if (conflictTeacher(schedulesCurrent, teacherId)) {
-            return "教师时间冲突";
+        List<CourseSchedule> schedulesPrevious = scheduleRepo.findByTeacherId(teacherId);
+        String CourseCodeScheduleConflicted = CourseConflictUtil.getConflictedCourseCode(
+                schedulesPrevious,
+                schedulesCurrent
+        );
+        if (!CourseCodeScheduleConflicted.equals(CourseConflictConst.NO_COURSE_SCHEDULE_CONFLICT)) {
+            String conflictedCourseName = courseRepo.findByCourseCode(CourseCodeScheduleConflicted).getCourseName();
+            return "当前添加的课程与" + conflictedCourseName + "冲突";
         }
 
         // 判断教室时间是否冲突
@@ -218,9 +325,14 @@ public class CourseServiceImpl implements CourseService {
                 .stream()
                 .map(ScheduleDTO::getClassroom)
                 .collect(Collectors.toList());
-
-        if (conflictClassroom(schedulesCurrent, classrooms)) {
-            return "教室时间冲突";
+        List<CourseSchedule> schedulesPreviousByClassrooms = scheduleRepo.findByClassroomIn(classrooms);
+        CourseCodeScheduleConflicted = CourseConflictUtil.getConflictedCourseCode(
+                schedulesPreviousByClassrooms,
+                schedulesCurrent
+        );
+        if (!CourseCodeScheduleConflicted.equals(CourseConflictConst.NO_COURSE_SCHEDULE_CONFLICT)) {
+            String conflictedCourseName = courseRepo.findByCourseCode(CourseCodeScheduleConflicted).getCourseName();
+            return "当前添加的课程与" + conflictedCourseName + "冲突";
         }
 
         return null;

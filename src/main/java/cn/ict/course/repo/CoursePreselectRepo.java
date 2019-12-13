@@ -22,6 +22,8 @@ public interface CoursePreselectRepo extends JpaRepository<CoursePreselect, Long
 
     void deleteAllByUsername(String username);
 
+    void deleteAllByCourseCode(String courseCode);
+
     List<CoursePreselect> findAllByUsername(String username);
 
     @Transactional

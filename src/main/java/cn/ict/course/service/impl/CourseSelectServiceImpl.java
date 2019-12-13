@@ -2,6 +2,7 @@ package cn.ict.course.service.impl;
 
 import cn.hutool.poi.excel.ExcelReader;
 import cn.hutool.poi.excel.ExcelUtil;
+import cn.ict.course.constants.CourseConflictConst;
 import cn.ict.course.entity.bo.GradesInfoBO;
 import cn.ict.course.entity.bo.StudentGradesExcelBO;
 import cn.ict.course.entity.db.Course;
@@ -92,8 +93,13 @@ public class CourseSelectServiceImpl implements CourseSelectService {
         }
 
         // 学生课表冲突验证
-        if (conflictStudent(courseCode, username)) {
-            return ResponseEntity.error(HttpStatus.INTERNAL_SERVER_ERROR, "当前课程存在时间冲突");
+        String conflictedCourseCode = getConflictedCourseCode(courseCode, username);
+        if (!conflictedCourseCode.equals(CourseConflictConst.NO_COURSE_SCHEDULE_CONFLICT)) {
+            String conflictedCourseName = courseRepo.findByCourseCode(conflictedCourseCode).getCourseName();
+            return ResponseEntity.error(
+                    HttpStatus.INTERNAL_SERVER_ERROR,
+                    "当前课程与" + conflictedCourseName + "的上课时间冲突"
+            );
         }
 
         // 选课人数限制
@@ -335,6 +341,21 @@ public class CourseSelectServiceImpl implements CourseSelectService {
         return ResponseEntity.ok();
     }
 
+    /**
+     * 获得与当前课程冲突的课程编码
+     * @param courseCode 要添加课程的课程编码
+     * @param username 学生用户名
+     * @return 存在冲突的课程的课程编码
+     */
+    @Override
+    public String getConflictedCourseCode(String courseCode, String username) {
+        // 当前课程的时间表
+        List<CourseSchedule> schedulesCurrent = scheduleRepo.findByCourseCode(courseCode);
+        // 判断学生时间是否冲突
+        List<CourseSchedule> schedulesPrevious = scheduleRepo.findByUsername(username);
+        return CourseConflictUtil.getConflictedCourseCode(schedulesPrevious, schedulesCurrent);
+    }
+
     private static Map<String, Object> transform(Map<String, Object> origin, Map<String, String> map) {
         Map<String, Object> ans = new HashMap<>();
         origin.forEach((key, value) -> ans.put(map.get(key), value));
@@ -374,4 +395,6 @@ public class CourseSelectServiceImpl implements CourseSelectService {
         List<CourseSchedule> schedulesPrevious = scheduleRepo.findByUsername(username);
         return CourseConflictUtil.isConflict(schedulesPrevious, schedulesCurrent);
     }
+
+
 }

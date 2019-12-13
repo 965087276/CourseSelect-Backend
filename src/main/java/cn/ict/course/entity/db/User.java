@@ -59,12 +59,6 @@ public class User extends BaseEntity {
     private String college;
 
     /**
-     * 专业
-     */
-    @Column(name = "major", nullable = false)
-    private String major;
-
-    /**
      * 类型
      * student - 学生
      * admin - 管理员

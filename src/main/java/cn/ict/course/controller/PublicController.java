@@ -1,12 +1,10 @@
 package cn.ict.course.controller;
 
+import cn.ict.course.entity.dto.UserUpdateDTO;
 import cn.ict.course.entity.http.ResponseEntity;
 import cn.ict.course.entity.vo.CourseVO;
 import cn.ict.course.entity.vo.EnableTimeVO;
-import cn.ict.course.service.ClassroomService;
-import cn.ict.course.service.CollegeService;
-import cn.ict.course.service.CourseSelectService;
-import cn.ict.course.service.CourseService;
+import cn.ict.course.service.*;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
@@ -14,10 +12,7 @@ import io.swagger.annotations.ApiOperation;
 import org.apache.shiro.authz.annotation.Logical;
 import org.apache.shiro.authz.annotation.RequiresRoles;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -28,6 +23,7 @@ import java.util.List;
 @RequestMapping(value = "/xk/api/pub")
 public class PublicController {
 
+    private final UserService userService;
     private final CollegeService collegeService;
     private final CourseService courseService;
     private final CourseSelectService courseSelectService;
@@ -38,12 +34,14 @@ public class PublicController {
             CollegeService collegeService,
             CourseService courseService,
             CourseSelectService courseSelectService,
-            ClassroomService classroomService
+            ClassroomService classroomService,
+            UserService userService
     ) {
         this.collegeService = collegeService;
         this.courseService = courseService;
         this.courseSelectService = courseSelectService;
         this.classroomService = classroomService;
+        this.userService = userService;
     }
 
     @GetMapping(value = "/colleges")
@@ -87,5 +85,11 @@ public class PublicController {
     @ApiOperation(value = "获取所有教室")
     ResponseEntity getAllClassrooms() {
         return classroomService.getAllClassrooms();
+    }
+
+    @PutMapping("/users")
+    @ApiOperation(value = "修改用户信息")
+    ResponseEntity updateUser(@RequestBody UserUpdateDTO userUpdateDTO) {
+        return userService.updateUser(userUpdateDTO);
     }
 }
