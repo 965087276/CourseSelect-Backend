@@ -7,7 +7,6 @@ import cn.ict.course.entity.http.ResponseEntity;
 import cn.ict.course.service.CourseSelectService;
 import cn.ict.course.service.CourseService;
 import cn.ict.course.service.UserService;
-import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
@@ -17,7 +16,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.lang.reflect.Field;
 import java.util.Date;
 
 /**
@@ -77,25 +75,28 @@ public class AdminController {
     }
 
     @GetMapping(value = "/teachers")
-    @ApiOperation(value = "获取所有教师", notes = "可通过条件查询")
+    @ApiOperation(value = "获取所有用户", notes = "除了管理员之外的所有用户")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "username", value = "用户名", dataType = "String"),
             @ApiImplicitParam(name = "realName", value = "真实姓名", dataType = "String"),
             @ApiImplicitParam(name = "college", value = "学院", dataType = "String"),
+            @ApiImplicitParam(name = "role", value = "用户角色", required = true, dataType = "String"),
             @ApiImplicitParam(name = "curPage", value = "当前页", required = true, dataType = "Long"),
             @ApiImplicitParam(name = "pageSize", value = "当前页条目数", required = true, dataType = "Long")
     })
-    public ResponseEntity getAllTeachers(
+    public ResponseEntity getAllUsersExceptAdmin(
             String username,
             String realName,
             String college,
+            String role,
             int curPage,
             int pageSize
     ) {
-        return userService.getAllTeachers(
+        return userService.getAllUsersExceptAdmin(
                 username,
                 realName,
                 college,
+                role,
                 curPage,
                 pageSize
         );

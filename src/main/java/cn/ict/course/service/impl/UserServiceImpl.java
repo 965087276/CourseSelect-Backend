@@ -1,5 +1,6 @@
 package cn.ict.course.service.impl;
 
+import cn.hutool.core.util.StrUtil;
 import cn.hutool.poi.excel.ExcelReader;
 import cn.hutool.poi.excel.ExcelUtil;
 import cn.ict.course.constants.PasswordConst;
@@ -220,16 +221,22 @@ public class UserServiceImpl implements UserService {
      * @return 教师
      */
     @Override
-    public ResponseEntity<Page<TeacherInfoVO>> getAllTeachers(String username, String realName, String college, int curPage, int pageSize) {
+    public ResponseEntity<Page<TeacherInfoVO>> getAllUsersExceptAdmin(String username, String realName, String college, String role, int curPage, int pageSize) {
+        if (StrUtil.isBlank(role) || !(role.equals("student") || role.equals("teacher"))) {
+            return ResponseEntity.error(
+                    HttpStatus.INTERNAL_SERVER_ERROR,
+                    "用户角色输入错误"
+            );
+        }
         Pageable pageable = PageRequest.of(curPage-1, pageSize);
         QUser user = QUser.user;
 
         Predicate predicate = user.isNotNull().or(user.isNull());
 
-        predicate = ExpressionUtils.and(predicate, user.role.eq("teacher"));
-        predicate = username == null ? predicate : ExpressionUtils.and(predicate, user.username.eq(username));
-        predicate = realName == null ? predicate : ExpressionUtils.and(predicate, user.realName.eq(realName));
-        predicate = college == null ? predicate : ExpressionUtils.and(predicate, user.college.eq(college));
+        predicate = ExpressionUtils.and(predicate, user.role.eq(role));
+        predicate = StrUtil.isBlank(username) ? predicate : ExpressionUtils.and(predicate, user.username.eq(username));
+        predicate = StrUtil.isBlank(realName) ? predicate : ExpressionUtils.and(predicate, user.realName.eq(realName));
+        predicate = StrUtil.isBlank(college) ? predicate : ExpressionUtils.and(predicate, user.college.eq(college));
 
         Page<TeacherInfoVO> teacherInfo = userRepo.findAll(predicate, pageable)
                 .map(u -> mapper.map(u, TeacherInfoVO.class));

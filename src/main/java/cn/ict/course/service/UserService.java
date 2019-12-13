@@ -46,10 +46,11 @@ public interface UserService {
      * @param pageSize 当前页条目数
      * @return 教师
      */
-    ResponseEntity getAllTeachers(
+    ResponseEntity getAllUsersExceptAdmin(
             String username,
             String realName,
             String college,
+            String role,
             int curPage,
             int pageSize
     );
