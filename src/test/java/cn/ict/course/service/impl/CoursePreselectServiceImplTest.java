@@ -4,6 +4,7 @@ import cn.ict.course.entity.http.ResponseEntity;
 import cn.ict.course.service.CoursePreselectService;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,6 +28,11 @@ public class CoursePreselectServiceImplTest {
     private String testCourseCode = "UCAS6VY1U096628";
     private String testUsername = "201902";
 
+    @Before
+    public void beforeTest() {
+        coursePreselectService.deleteCoursePreselected(testCourseCode, testUsername);
+    }
+
     @Test
     @Transactional
     public void addCoursePreselect() {
@@ -39,6 +45,7 @@ public class CoursePreselectServiceImplTest {
     }
 
     @Test
+    @Transactional
     public void deleteCoursePreselected() {
         ResponseEntity response = coursePreselectService.addCoursePreselect(testUsername, testCourseCode);
         assertEquals(STATUS_OK, response.getStatus());
@@ -63,7 +70,14 @@ public class CoursePreselectServiceImplTest {
     }
 
     @Test
+    @Transactional
     public void modifyAddToTable() {
+        ResponseEntity response = coursePreselectService.modifyAddToTable(
+                testCourseCode,
+                testUsername,
+                true
+        );
+        assertEquals(STATUS_OK, response.getStatus());
     }
 
     @Test
