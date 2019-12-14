@@ -15,7 +15,7 @@ import java.util.List;
 public class MyPreCourseVO {
     private String courseCode;
     private String courseName;
-    private double predit;
+    private double credit;
     private String courseType;
     private String courseTeacher;
     private boolean addToTable;
