@@ -234,8 +234,8 @@ public class UserServiceImpl implements UserService {
         Predicate predicate = user.isNotNull().or(user.isNull());
 
         predicate = ExpressionUtils.and(predicate, user.role.eq(role));
-        predicate = StrUtil.isBlank(username) ? predicate : ExpressionUtils.and(predicate, user.username.eq(username));
-        predicate = StrUtil.isBlank(realName) ? predicate : ExpressionUtils.and(predicate, user.realName.eq(realName));
+        predicate = StrUtil.isBlank(username) ? predicate : ExpressionUtils.and(predicate, user.username.like('%' + username + '%'));
+        predicate = StrUtil.isBlank(realName) ? predicate : ExpressionUtils.and(predicate, user.realName.like('%' + realName + '%'));
         predicate = StrUtil.isBlank(college) ? predicate : ExpressionUtils.and(predicate, user.college.eq(college));
 
         Page<TeacherInfoVO> teacherInfo = userRepo.findAll(predicate, pageable)
