@@ -51,7 +51,7 @@ public class CourseSelectServiceImplTest {
     private final String endTime = "2019-12-14T07:40:05.052Z";
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp() {
         log.info("Test Start");
         ResponseEntity responseEntity = userService.save(testUser);
         assertEquals(STATUS_OK, responseEntity.getStatus());
@@ -59,7 +59,7 @@ public class CourseSelectServiceImplTest {
     }
 
     @After
-    public void tearDown() throws Exception {
+    public void tearDown() {
         ResponseEntity deleteResponse = userService.deleteUserByUsername(testUser.getUsername());
         assertEquals(STATUS_OK, deleteResponse.getStatus());
         log.info("Test End");
@@ -163,7 +163,10 @@ public class CourseSelectServiceImplTest {
         log.info(responseAdd.getMessage().toString());
         assertEquals(STATUS_OK, responseAdd.getStatus());
 
-
+        ResponseEntity response = courseSelectService.getStudentInfoByCourseCode(testCourseCode);
+        assertEquals(STATUS_OK, response.getStatus());
+        assertTrue(response.getBody().toString().contains(testUsername));
+        log.info(response.getBody().toString());
     }
 
     @Test
