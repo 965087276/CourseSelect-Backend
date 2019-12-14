@@ -63,7 +63,7 @@ public class AdminController {
     }
 
 
-    @PostMapping(value = "/users/{username}")
+    @PatchMapping(value = "/users/{username}")
     @ApiOperation(value =  "更新用户信息", notes = "使用用户名")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "username", value = "用户名", required = true, dataType = "String", paramType = "path"),
