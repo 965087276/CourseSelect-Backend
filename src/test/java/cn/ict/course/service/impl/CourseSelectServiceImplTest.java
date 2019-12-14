@@ -31,6 +31,7 @@ public class CourseSelectServiceImplTest {
     @Autowired
     UserService userService;
 
+    private final String MESSAGE_OK = "OK";
     private final int STATUS_OK = 200;
     private final int STATUS_ERROR = 500;
 
@@ -74,7 +75,7 @@ public class CourseSelectServiceImplTest {
         assertEquals(STATUS_ERROR, response2.getStatus());
 
         ResponseEntity responseCurriculum = courseSelectService.getCurriculum(testUsername);
-        assertEquals("OK", responseCurriculum.getMessage().toString());
+        assertEquals(MESSAGE_OK, responseCurriculum.getMessage().toString());
         log.info(responseCurriculum.getBody().toString());
         assertTrue(responseCurriculum.getBody().toString().contains(testCourseCode));
         assertEquals(STATUS_OK, responseCurriculum.getStatus());
@@ -83,10 +84,10 @@ public class CourseSelectServiceImplTest {
     @Test
     public void deleteCourseSelected() {
         ResponseEntity response = courseSelectService.addCourseSelect(testUsername, testCourseCode);
-        assertEquals("OK", response.getMessage().toString());
+        assertEquals(MESSAGE_OK, response.getMessage().toString());
         assertEquals(STATUS_OK, response.getStatus());
         ResponseEntity responseDelete = courseSelectService.deleteCourseSelected(testCourseCode, testUsername);
-        assertEquals("OK", responseDelete.getMessage().toString());
+        assertEquals(MESSAGE_OK, responseDelete.getMessage().toString());
         assertEquals(STATUS_OK, responseDelete.getStatus());
     }
 
@@ -98,7 +99,7 @@ public class CourseSelectServiceImplTest {
     @Test
     public void getEnableTime() {
         ResponseEntity response = courseSelectService.getEnableTime();
-        assertEquals("OK", response.getMessage().toString());
+        assertEquals(MESSAGE_OK, response.getMessage().toString());
         log.info(response.getBody().toString());
         assertEquals(STATUS_OK, response.getStatus());
     }
@@ -106,17 +107,13 @@ public class CourseSelectServiceImplTest {
     @Test
     public void getCourseSelectStatus() {
         ResponseEntity response =courseSelectService.getCourseSelectStatus();
-        assertEquals("OK", response.getMessage().toString());
+        assertEquals(MESSAGE_OK, response.getMessage().toString());
         log.info(response.getBody().toString());
         assertEquals(STATUS_OK, response.getStatus());
     }
 
     @Test
     public void getCurriculum() {
-        ResponseEntity response = courseSelectService.getCurriculum(testUsername);
-        assertEquals("OK", response.getMessage().toString());
-        log.info(response.getBody().toString());
-        assertEquals(STATUS_OK, response.getStatus());
 
         ResponseEntity responseAdd = courseSelectService.addCourseSelect(testUsername, testCourseCode);
         log.info(responseAdd.getMessage().toString());
@@ -127,13 +124,23 @@ public class CourseSelectServiceImplTest {
         assertEquals(STATUS_ERROR, responseAdd2.getStatus());
 
         ResponseEntity responseCurriculum = courseSelectService.getCurriculum(testUsername);
-        assertEquals("OK", responseCurriculum.getMessage().toString());
+        assertEquals(MESSAGE_OK, responseCurriculum.getMessage().toString());
         log.info(responseCurriculum.getBody().toString());
         assertEquals(STATUS_OK, responseCurriculum.getStatus());
+        assertTrue(responseCurriculum.getBody().toString().contains(testCourseCode));
     }
 
     @Test
     public void getSelectedCourseCodesByUsername() {
+        ResponseEntity responseAdd = courseSelectService.addCourseSelect(testUsername, testCourseCode);
+        assertEquals(MESSAGE_OK, responseAdd.getMessage().toString());
+        log.info(responseAdd.getMessage().toString());
+        assertEquals(STATUS_OK, responseAdd.getStatus());
+
+        ResponseEntity responseGetCourseCode = courseSelectService.getSelectedCourseCodesByUsername(testUsername);
+        assertEquals(STATUS_OK, responseGetCourseCode.getStatus());
+        assertTrue(responseGetCourseCode.getBody().toString().contains(testCourseCode));
+        log.info(responseGetCourseCode.getBody().toString());
     }
 
     @Test
