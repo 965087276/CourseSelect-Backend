@@ -1,5 +1,7 @@
 package cn.ict.course.service.impl;
 
+import cn.ict.course.constants.CourseConflictConst;
+import cn.ict.course.entity.bo.GradesInfoBO;
 import cn.ict.course.entity.db.CourseSelect;
 import cn.ict.course.entity.db.User;
 import cn.ict.course.entity.http.ResponseEntity;
@@ -140,6 +142,7 @@ public class CourseSelectServiceImplTest {
         ResponseEntity responseGetCourseCode = courseSelectService.getSelectedCourseCodesByUsername(testUsername);
         assertEquals(STATUS_OK, responseGetCourseCode.getStatus());
         assertTrue(responseGetCourseCode.getBody().toString().contains(testCourseCode));
+        assertEquals(MESSAGE_OK, responseGetCourseCode.getMessage().toString());
         log.info(responseGetCourseCode.getBody().toString());
     }
 
@@ -153,6 +156,7 @@ public class CourseSelectServiceImplTest {
         ResponseEntity response = courseSelectService.getSelectedCourses(testUsername);
         assertEquals(STATUS_OK, response.getStatus());
         assertTrue(response.getBody().toString().contains(testCourseCode));
+        assertEquals(MESSAGE_OK, response.getMessage().toString());
         log.info(response.getBody().toString());
     }
 
@@ -166,22 +170,52 @@ public class CourseSelectServiceImplTest {
         ResponseEntity response = courseSelectService.getStudentInfoByCourseCode(testCourseCode);
         assertEquals(STATUS_OK, response.getStatus());
         assertTrue(response.getBody().toString().contains(testUsername));
+        assertEquals(MESSAGE_OK, response.getMessage().toString());
         log.info(response.getBody().toString());
     }
 
     @Test
     public void getStudentGradesByUsername() {
+        ResponseEntity responseAdd = courseSelectService.addCourseSelect(testUsername, testCourseCode);
+        assertEquals(MESSAGE_OK, responseAdd.getMessage().toString());
+        log.info(responseAdd.getMessage().toString());
+        assertEquals(STATUS_OK, responseAdd.getStatus());
+
+        ResponseEntity response = courseSelectService.getStudentGradesByUsername(testUsername);
+        assertEquals(STATUS_ERROR, response.getStatus());
     }
 
     @Test
     public void updateStudentGrades() {
+
+        ResponseEntity responseAdd = courseSelectService.addCourseSelect(testUsername, testCourseCode);
+        assertEquals(MESSAGE_OK, responseAdd.getMessage().toString());
+        log.info(responseAdd.getMessage().toString());
+        assertEquals(STATUS_OK, responseAdd.getStatus());
+
+        ResponseEntity responseAdd2 = courseSelectService.addCourseSelect(testUsername, testCourseCode);
+        log.info(responseAdd2.getMessage().toString());
+        assertEquals(STATUS_ERROR, responseAdd2.getStatus());
+
+        GradesInfoBO gradesInfo = new GradesInfoBO();
+        gradesInfo.setCourseCode(testCourseCode);
+        gradesInfo.setStudentId(testUsername);
+        gradesInfo.setGrade(90.0);
+
+        ResponseEntity response2 = courseSelectService.updateStudentGrades(gradesInfo);
+        log.info("response2: " + response2.getMessage().toString());
+        assertEquals(STATUS_OK, response2.getStatus());
+
     }
 
     @Test
     public void updateStudentGradesByFile() {
+
     }
 
     @Test
     public void getConflictedCourseCode() {
+//        String conflicted = courseSelectService.getConflictedCourseCode(testCourseCode, testUsername);
+//        assertEquals(CourseConflictConst.NO_COURSE_SCHEDULE_CONFLICT);
     }
 }
