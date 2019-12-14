@@ -3,12 +3,14 @@ package cn.ict.course.service.impl;
 import cn.ict.course.entity.bo.UserUpdateInfo;
 import cn.ict.course.entity.db.User;
 import cn.ict.course.entity.dto.LoginDTO;
+import cn.ict.course.entity.dto.UserUpdateDTO;
 import cn.ict.course.entity.http.ResponseEntity;
 import cn.ict.course.entity.vo.LoginVO;
 import cn.ict.course.entity.vo.UserDetailVO;
 import cn.ict.course.service.CourseService;
 import cn.ict.course.service.UserService;
 import com.alibaba.fastjson.JSONObject;
+import lombok.extern.slf4j.Slf4j;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,13 +23,14 @@ import static org.junit.Assert.*;
 @RunWith(SpringRunner.class)
 @SpringBootTest
 @Transactional
+@Slf4j
 public class UserServiceImplTest {
 
     @Autowired
     UserService userService;
 
-    private long STATUS_OK = 200;
-    private long STATUS_ERROR = 500;
+    private int STATUS_OK = 200;
+    private int STATUS_ERROR = 500;
 
     private User testUser = JSONObject.parseObject("{\n" +
             "  \"college\": \"计算机科学与技术学院\",\n" +
@@ -105,7 +108,7 @@ public class UserServiceImplTest {
         ResponseEntity saveResponse = userService.save(testUser);
         assertEquals(STATUS_OK, saveResponse.getStatus());
         boolean isRepeat = userService.repeatByUsername(testUser.getUsername());
-        assertFalse(isRepeat);
+        assertTrue(isRepeat);
         ResponseEntity saveResponse2 = userService.save(testUser);
         assertEquals(STATUS_ERROR, saveResponse2.getStatus());
 
@@ -113,5 +116,31 @@ public class UserServiceImplTest {
 
     @Test
     public void updateUser() {
+        String newPassword = "newPassword";
+        String oldPassword = "ername";
+        ResponseEntity saveResponse = userService.save(testUser);
+        assertEquals(STATUS_OK, saveResponse.getStatus());
+        UserUpdateDTO update = new UserUpdateDTO();
+        update.setCollege("计算机科学与技术学院");
+        update.setEmail("test2@test.com");
+        update.setPhoneNumber("testPhone");
+        update.setOldPassword("wrong old password");
+        update.setUsername(testUser.getUsername());
+        update.setRealName(testUser.getRealName());
+        update.setPassword(newPassword);
+        ResponseEntity updateResponse = userService.updateUser(update);
+        assertEquals(STATUS_ERROR, updateResponse.getStatus());
+
+        update.setOldPassword(oldPassword);
+        ResponseEntity updateResponse2 = userService.updateUser(update);
+        log.info(update.getUsername());
+        log.info(update.getPassword());
+        log.info(update.getOldPassword());
+        assertEquals("OK", updateResponse2.getMessage());
+        assertEquals(STATUS_OK, updateResponse2.getStatus());
+
+        LoginDTO loginDTO = new LoginDTO(update.getUsername(), newPassword);
+        LoginVO loginVO = userService.login(loginDTO);
+        assertEquals(STATUS_OK, loginVO.getCode().intValue());
     }
 }
