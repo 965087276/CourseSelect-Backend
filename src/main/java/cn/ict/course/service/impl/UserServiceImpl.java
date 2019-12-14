@@ -153,6 +153,9 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserDetailVO detail(String username) {
         User user = userRepo.findByUsername(username);
+        if (user == null) {
+            return null;
+        }
         return mapper.map(user, UserDetailVO.class);
     }
 

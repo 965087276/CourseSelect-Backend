@@ -25,7 +25,7 @@ public class CourseConflictUtil {
     private static boolean isConflict(CourseSchedule schedule1, CourseSchedule schedule2) {
         if (schedule1.getEndWeek() < schedule2.getStartWeek()
                 || schedule2.getEndWeek() < schedule1.getStartWeek()) {
-            return true;
+            return false;
         }
         return schedule1.getDay() == schedule2.getDay() && schedule1.getTime() == schedule2.getTime();
     }

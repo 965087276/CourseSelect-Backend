@@ -40,7 +40,7 @@ public class AdminController {
         this.userService = userService;
     }
 
-    @PostMapping("/enabletimes_edit")
+    @PutMapping("/enabletimes_edit")
     @ApiOperation(value = "管理员编辑选课时间")
     @ApiImplicitParam(name = "selectionControl", value = "选课结束时间", required = true, dataType = "SelectionControl")
     public ResponseEntity editEnableTime(@RequestBody SelectionControl selectionControl) {
