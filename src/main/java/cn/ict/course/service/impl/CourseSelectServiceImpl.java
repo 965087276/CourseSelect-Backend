@@ -210,7 +210,7 @@ public class CourseSelectServiceImpl implements CourseSelectService {
             return ResponseEntity.error(HttpStatus.INTERNAL_SERVER_ERROR,
                                           "管理员未设置选课状态");
         }
-        boolean status = selectionControl.getStart();
+        boolean status = !selectCourseClosed();
         return ResponseEntity.ok(status);
     }
 
