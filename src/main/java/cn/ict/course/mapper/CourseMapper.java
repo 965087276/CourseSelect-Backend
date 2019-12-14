@@ -118,6 +118,7 @@ public interface CourseMapper {
             "    A.end_week endWeek, " +
             "    A.`day` `day`, " +
             "    A.time time, " +
+            "    A.classroom classroom, " +
             "    B.course_code courseCode, " +
             "    B.course_name courseName, " +
             "    B.college college, " +
