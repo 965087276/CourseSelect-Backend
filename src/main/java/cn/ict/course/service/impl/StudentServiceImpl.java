@@ -17,8 +17,13 @@ import java.util.List;
  */
 @Service
 public class StudentServiceImpl implements StudentService {
+
+    private final CourseSelectRepo courseSelectRepo;
+
     @Autowired
-    private CourseSelectRepo courseSelectRepo;
+    public StudentServiceImpl(CourseSelectRepo courseSelectRepo) {
+        this.courseSelectRepo = courseSelectRepo;
+    }
 
     @Override
     public List<CourseSelectStatsVO> getCoursesSelectedStats(String username) {
