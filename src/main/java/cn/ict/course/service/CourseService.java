@@ -50,22 +50,4 @@ public interface CourseService {
      */
     ResponseEntity addCoursesByExcel(MultipartFile file) throws IOException;
 
-//
-//    /**
-//     * 查看学生已选课程
-//     * @param username 路径参数，学生用户名
-//     * @return 学生所有已选课程的信息
-//     */
-//    ResponseEntity getSelectedCourses(String username);
-//
-//    /**
-//     * 获取课程的上课时间、教室信息
-//     * @param courseCode 路径参数，课程编码
-//     * @return 该课程的Schedule
-//     */
-//    ResponseEntity getCourseSchedules(String courseCode);
-//
-//    ResponseEntity getWeekSchedule(String username, Integer week);
-
-
 }
