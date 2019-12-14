@@ -44,6 +44,9 @@ public class CourseSelectServiceImplTest {
             "  \"username\": \"test_user123456\"\n" +
             "}", User.class);
 
+    private final String testUsername = testUser.getUsername();
+    private final String testCourseCode = "UCASO5KBI075388";
+
     @Before
     public void setUp() throws Exception {
         ResponseEntity responseEntity = userService.save(testUser);
@@ -58,10 +61,16 @@ public class CourseSelectServiceImplTest {
 
     @Test
     public void addCourseSelect() {
+        ResponseEntity response = courseSelectService.addCourseSelect(testUsername, testCourseCode);
+        log.info(response.getMessage().toString());
+        assertEquals(STATUS_OK, response.getStatus());
+        ResponseEntity response2 = courseSelectService.addCourseSelect(testUsername, testCourseCode);
+        assertEquals(STATUS_ERROR, response2.getStatus());
     }
 
     @Test
     public void deleteCourseSelected() {
+
     }
 
     @Test
