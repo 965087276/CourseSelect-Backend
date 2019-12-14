@@ -23,8 +23,8 @@ public class CollegeServiceImplTest {
     @Autowired
     CollegeService collegeService;
 
-    private int STATUS_OK = 200;
-    private int STATUS_ERROR = 500;
+    private final int STATUS_OK = 200;
+    private final int STATUS_ERROR = 500;
 
     @Test
     public void getCollegeList() {
