@@ -323,13 +323,12 @@ public class CourseServiceImpl implements CourseService {
                 .map(ScheduleDTO::getClassroom)
                 .collect(Collectors.toList());
         List<CourseSchedule> schedulesPreviousByClassrooms = scheduleRepo.findByClassroomIn(classrooms);
-        CourseCodeScheduleConflicted = CourseConflictUtil.getConflictedCourseCode(
+        String ClassroomScheduleConflicted = CourseConflictUtil.getConflictedClassroom(
                 schedulesPreviousByClassrooms,
                 schedulesCurrent
         );
-        if (!CourseCodeScheduleConflicted.equals(CourseConflictConst.NO_COURSE_SCHEDULE_CONFLICT)) {
-            String conflictedCourseName = courseRepo.findByCourseCode(CourseCodeScheduleConflicted).getCourseName();
-            return "当前添加的课程与" + conflictedCourseName + "冲突";
+        if (!ClassroomScheduleConflicted.equals(CourseConflictConst.NO_COURSE_SCHEDULE_CONFLICT)) {
+            return "当前添加的课程时间与" + ClassroomScheduleConflicted + "的课程时间冲突";
         }
 
         return null;

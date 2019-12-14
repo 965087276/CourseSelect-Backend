@@ -57,6 +57,19 @@ public class CourseConflictUtil {
         return CourseConflictConst.NO_COURSE_SCHEDULE_CONFLICT;
     }
 
+    public static String getConflictedClassroom(List<CourseSchedule> schedulesPrevious, List<CourseSchedule> schedulesCurrent) {
+        schedulesPrevious.addAll(schedulesCurrent);
+        int len = schedulesPrevious.size();
+        for (int i = 0; i < len; i++) {
+            for (int j = i+1; j < len; j++) {
+                if (isConflict(schedulesPrevious.get(i), schedulesPrevious.get(j))) {
+                    return schedulesPrevious.get(i).getClassroom();
+                }
+            }
+        }
+        return CourseConflictConst.NO_COURSE_SCHEDULE_CONFLICT;
+    }
+
     public static String getConflictedCourseCode(List<CourseSchedule> schedules) {
         for (int i = 0; i < schedules.size(); i++) {
             for (int j = i+1; j < schedules.size(); j++) {
