@@ -145,10 +145,25 @@ public class CourseSelectServiceImplTest {
 
     @Test
     public void getSelectedCourses() {
+        ResponseEntity responseAdd = courseSelectService.addCourseSelect(testUsername, testCourseCode);
+        assertEquals(MESSAGE_OK, responseAdd.getMessage().toString());
+        log.info(responseAdd.getMessage().toString());
+        assertEquals(STATUS_OK, responseAdd.getStatus());
+
+        ResponseEntity response = courseSelectService.getSelectedCourses(testUsername);
+        assertEquals(STATUS_OK, response.getStatus());
+        assertTrue(response.getBody().toString().contains(testCourseCode));
+        log.info(response.getBody().toString());
     }
 
     @Test
     public void getStudentInfoByCourseCode() {
+        ResponseEntity responseAdd = courseSelectService.addCourseSelect(testUsername, testCourseCode);
+        assertEquals(MESSAGE_OK, responseAdd.getMessage().toString());
+        log.info(responseAdd.getMessage().toString());
+        assertEquals(STATUS_OK, responseAdd.getStatus());
+
+
     }
 
     @Test
